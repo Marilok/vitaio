@@ -1,4 +1,4 @@
-import { HEALTH_LIMITS } from './config';
+import { HEALTH_LIMITS } from "./config";
 
 /**
  * Type definition for sport activity entry
@@ -13,14 +13,18 @@ export interface SportActivity {
  * @param activities - Array of sport activities with name and minutes
  * @returns Total minutes of sport activity
  */
-export function calculateTotalSportMinutes(activities: SportActivity[]): number {
+export function calculateTotalSportMinutes(
+  activities: SportActivity[]
+): number {
   if (!Array.isArray(activities)) {
-    throw new Error('Activities must be an array');
+    throw new Error("Activities must be an array");
   }
-  
+
   return activities.reduce((total, activity) => {
-    if (typeof activity.minutes !== 'number' || activity.minutes < 0) {
-      throw new Error(`Invalid minutes value for activity "${activity.name}": must be a non-negative number`);
+    if (typeof activity.minutes !== "number" || activity.minutes < 0) {
+      throw new Error(
+        `Invalid minutes value for activity "${activity.name}": must be a non-negative number`
+      );
     }
     return total + activity.minutes;
   }, 0);
@@ -32,7 +36,10 @@ export function calculateTotalSportMinutes(activities: SportActivity[]): number 
  * @param minimumLimit - Minimum recommended activity threshold (defaults to config value)
  * @returns true if activity is below minimum (insufficient), false otherwise
  */
-export function isLimitSportActivity(activities: SportActivity[], minimumLimit: number = HEALTH_LIMITS.SPORT_ACTIVITY_MINIMUM): boolean {
+export function isLimitSportActivity(
+  activities: SportActivity[],
+  minimumLimit: number = HEALTH_LIMITS.SPORT_ACTIVITY_MINIMUM
+): boolean {
   const totalMinutes = calculateTotalSportMinutes(activities);
   return totalMinutes < minimumLimit;
 }
@@ -43,6 +50,9 @@ export function isLimitSportActivity(activities: SportActivity[], minimumLimit: 
  * @param minimumLimit - Minimum recommended activity threshold (defaults to config value)
  * @returns true if activity meets or exceeds minimum, false otherwise
  */
-export function meetsSportActivityRequirements(activities: SportActivity[], minimumLimit: number = HEALTH_LIMITS.SPORT_ACTIVITY_MINIMUM): boolean {
+export function meetsSportActivityRequirements(
+  activities: SportActivity[],
+  minimumLimit: number = HEALTH_LIMITS.SPORT_ACTIVITY_MINIMUM
+): boolean {
   return !isLimitSportActivity(activities, minimumLimit);
 }

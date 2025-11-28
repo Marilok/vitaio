@@ -1,4 +1,4 @@
-import { HEALTH_LIMITS } from './config';
+import { HEALTH_LIMITS } from "./config";
 
 /**
  * Calculates Body Mass Index (BMI)
@@ -8,9 +8,9 @@ import { HEALTH_LIMITS } from './config';
  */
 export function calculateBMI(weight: number, height: number): number {
   if (height <= 0 || weight <= 0) {
-    throw new Error('Weight and height must be positive numbers');
+    throw new Error("Weight and height must be positive numbers");
   }
-  
+
   return weight / (height * height);
 }
 
@@ -20,7 +20,10 @@ export function calculateBMI(weight: number, height: number): number {
  * @param limit - BMI limit threshold (defaults to config value)
  * @returns true if BMI > limit (unhealthy), false otherwise
  */
-export function isLimitBMI(bmi: number, limit: number = HEALTH_LIMITS.BMI_LIMIT): boolean {
+export function isLimitBMI(
+  bmi: number,
+  limit: number = HEALTH_LIMITS.BMI_LIMIT
+): boolean {
   return bmi > limit;
 }
 

@@ -1,4 +1,4 @@
-import { HEALTH_LIMITS } from './config';
+import { HEALTH_LIMITS } from "./config";
 
 /**
  * Type definition for alcoholic drink entry
@@ -15,12 +15,14 @@ export interface AlcoholicDrink {
  */
 export function calculateTotalDrinks(drinks: AlcoholicDrink[]): number {
   if (!Array.isArray(drinks)) {
-    throw new Error('Drinks must be an array');
+    throw new Error("Drinks must be an array");
   }
-  
+
   return drinks.reduce((total, drink) => {
-    if (typeof drink.count !== 'number' || drink.count < 0) {
-      throw new Error(`Invalid count value for drink "${drink.name}": must be a non-negative number`);
+    if (typeof drink.count !== "number" || drink.count < 0) {
+      throw new Error(
+        `Invalid count value for drink "${drink.name}": must be a non-negative number`
+      );
     }
     return total + drink.count;
   }, 0);
@@ -32,7 +34,10 @@ export function calculateTotalDrinks(drinks: AlcoholicDrink[]): number {
  * @param dailyLimit - Maximum recommended daily drinks (defaults to config value)
  * @returns true if consumption exceeds limit (over limit), false otherwise
  */
-export function isLimitAlcohol(drinks: AlcoholicDrink[], dailyLimit: number = HEALTH_LIMITS.ALCOHOL_DAILY_LIMIT): boolean {
+export function isLimitAlcohol(
+  drinks: AlcoholicDrink[],
+  dailyLimit: number = HEALTH_LIMITS.ALCOHOL_DAILY_LIMIT
+): boolean {
   const totalDrinks = calculateTotalDrinks(drinks);
   return totalDrinks > dailyLimit;
 }
@@ -43,6 +48,9 @@ export function isLimitAlcohol(drinks: AlcoholicDrink[], dailyLimit: number = HE
  * @param dailyLimit - Maximum recommended daily drinks (defaults to config value)
  * @returns true if consumption is within limits, false otherwise
  */
-export function meetsAlcoholLimits(drinks: AlcoholicDrink[], dailyLimit: number = HEALTH_LIMITS.ALCOHOL_DAILY_LIMIT): boolean {
+export function meetsAlcoholLimits(
+  drinks: AlcoholicDrink[],
+  dailyLimit: number = HEALTH_LIMITS.ALCOHOL_DAILY_LIMIT
+): boolean {
   return !isLimitAlcohol(drinks, dailyLimit);
 }

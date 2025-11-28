@@ -1,4 +1,4 @@
-import { HEALTH_LIMITS } from './config';
+import { HEALTH_LIMITS } from "./config";
 
 /**
  * Calculates pack-years of smoking
@@ -7,11 +7,16 @@ import { HEALTH_LIMITS } from './config';
  * @param yearsOfSmoking - Number of years the person has been smoking
  * @returns Pack-years value
  */
-export function calculatePackYears(cigarettesPerDay: number, yearsOfSmoking: number): number {
+export function calculatePackYears(
+  cigarettesPerDay: number,
+  yearsOfSmoking: number
+): number {
   if (cigarettesPerDay < 0 || yearsOfSmoking < 0) {
-    throw new Error('Cigarettes per day and years of smoking must be non-negative numbers');
+    throw new Error(
+      "Cigarettes per day and years of smoking must be non-negative numbers"
+    );
   }
-  
+
   return (cigarettesPerDay / 20) * yearsOfSmoking;
 }
 
@@ -21,7 +26,10 @@ export function calculatePackYears(cigarettesPerDay: number, yearsOfSmoking: num
  * @param limit - Pack-years limit threshold (defaults to config value)
  * @returns true if pack-years < limit (within limits), false otherwise
  */
-export function isLimitSmoking(packYears: number, limit: number = HEALTH_LIMITS.SMOKING_PACK_YEARS_LIMIT): boolean {
+export function isLimitSmoking(
+  packYears: number,
+  limit: number = HEALTH_LIMITS.SMOKING_PACK_YEARS_LIMIT
+): boolean {
   return packYears < limit;
 }
 
@@ -31,7 +39,10 @@ export function isLimitSmoking(packYears: number, limit: number = HEALTH_LIMITS.
  * @param yearsOfSmoking - Number of years the person has been smoking
  * @returns true if pack-years < 20 (within limits), false otherwise
  */
-export function isSmokingWithinLimits(cigarettesPerDay: number, yearsOfSmoking: number): boolean {
+export function isSmokingWithinLimits(
+  cigarettesPerDay: number,
+  yearsOfSmoking: number
+): boolean {
   const packYears = calculatePackYears(cigarettesPerDay, yearsOfSmoking);
   return isLimitSmoking(packYears);
 }
