@@ -25,9 +25,16 @@ export default function ConfirmationPage({
     <Container
       size="sm"
       py="xl"
-      style={{ minHeight: "100vh", display: "flex", alignItems: "center" }}
+      style={{
+        minHeight: "100vh",
+        minWidth: "100vw",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+      bg="var(--mantine-primary-color-filled)"
     >
-      <Paper shadow="md" p="xl" radius="md" w="100%">
+      <Paper shadow="md" p="xl" radius="md" w="100%" maw={500}>
         <Stack align="center" gap="lg">
           {/* Checkmark Icon */}
           <ThemeIcon size={80} radius="xl" color="green" variant="light">
