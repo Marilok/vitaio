@@ -20,7 +20,6 @@ export function Step1BasicInfo() {
   } = useFormContext<FormData>();
 
   return (
-  return (
     <Stack gap="lg" pt="md">
       <Box>
         <Title order={3} mb="xs">
