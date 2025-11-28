@@ -1,0 +1,12 @@
+[
+  { "id": 1, "name": "Kolonoskopie" },
+  { "id": 2, "name": "Genetická konzultace" },
+  { "id": 3, "name": "Gynekologické vyšetření" },
+  { "id": 4, "name": "Poradna zdravý životní styl" },
+  { "id": 5, "name": "Poradna odvykání kouření" },
+  { "id": 6, "name": "Poradna adiktologa" },
+  { "id": 7, "name": "Pohybová poradna" },
+  { "id": 8, "name": "PSA vyšetření" },
+  { "id": 9, "name": "Mamograf" },
+  { "id": 10, "name": "Odběr krve" }
+]
