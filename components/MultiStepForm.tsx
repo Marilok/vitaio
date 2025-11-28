@@ -8,6 +8,7 @@ import { Step3FamilyHistory } from "./steps/Step3FamilyHistory";
 import { Step4Medications } from "./steps/Step4Medications";
 import { Step5WomenOnly } from "./steps/Step5WomenOnly";
 import { Step6Lifestyle } from "./steps/Step6Lifestyle";
+import { Step7Screening } from "./steps/Step7Screening";
 import { FormProgress } from "./form/FormProgress";
 import { FormNavigation } from "./form/FormNavigation";
 import { StepContainer } from "./form/StepContainer";
@@ -59,6 +60,11 @@ export function MultiStepForm() {
       weeklyExerciseMinutes: undefined,
       weeklyCigarettes: undefined,
       alcoholConsumption: undefined,
+      hadProstateScreening: undefined,
+      hadLungCancerScreening: undefined,
+      hadCervicalCancerScreening: undefined,
+      hadBreastCancerScreening: undefined,
+      hadColorectalCancerScreening: undefined,
     },
   });
 
@@ -116,7 +122,7 @@ export function MultiStepForm() {
       case 5:
         return <Step6Lifestyle />;
       case 6:
-        return <PlaceholderStep stepNumber={7} />;
+        return <Step7Screening />;
       case 7:
         return <PlaceholderStep stepNumber={8} />;
       case 8:

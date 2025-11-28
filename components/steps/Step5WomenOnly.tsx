@@ -63,7 +63,7 @@ export function Step5WomenOnly() {
         )}
       />
 
-      {hasGynecologist === true && (
+      {hasGynecologist === false && (
         <Controller
           name="bookGynecologyExam"
           control={control}

@@ -23,5 +23,12 @@ export interface FormData {
   weeklyCigarettes?: number;
   alcoholConsumption: string;
 
+  // Step 7 - Screening
+  hadProstateScreening?: boolean;
+  hadLungCancerScreening?: boolean;
+  hadCervicalCancerScreening?: boolean; // Only for women
+  hadBreastCancerScreening?: boolean; // Only for women
+  hadColorectalCancerScreening?: boolean;
+
   // Add more steps data as needed
 }
