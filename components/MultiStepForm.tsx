@@ -6,6 +6,7 @@ import { Step1BasicInfo } from "./steps/Step1BasicInfo";
 import { Step2Symptoms } from "./steps/Step2Symptoms";
 import { Step3FamilyHistory } from "./steps/Step3FamilyHistory";
 import { Step4Medications } from "./steps/Step4Medications";
+import { Step5WomenOnly } from "./steps/Step5WomenOnly";
 import { FormProgress } from "./form/FormProgress";
 import { FormNavigation } from "./form/FormNavigation";
 import { StepContainer } from "./form/StepContainer";
@@ -49,8 +50,21 @@ export function MultiStepForm() {
   const {
     handleSubmit,
     trigger,
+    getValues,
     formState: { isSubmitting },
   } = methods;
+
+  // Helper function to check if a step should be skipped
+  const shouldSkipStep = (step: number): boolean => {
+    const gender = getValues("gender");
+
+    // Step 5 (index 4) is only for women
+    if (step === 4 && gender === "male") {
+      return true;
+    }
+
+    return false;
+  };
 
   const {
     activeStep,
@@ -64,6 +78,7 @@ export function MultiStepForm() {
     totalSteps: TOTAL_STEPS,
     getFieldsForStep,
     trigger,
+    shouldSkipStep,
   });
 
   const onSubmit = (data: FormData) => {
@@ -82,7 +97,7 @@ export function MultiStepForm() {
       case 3:
         return <Step4Medications />;
       case 4:
-        return <PlaceholderStep stepNumber={5} />;
+        return <Step5WomenOnly />;
       case 5:
         return <PlaceholderStep stepNumber={6} />;
       case 6:

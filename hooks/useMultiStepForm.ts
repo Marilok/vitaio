@@ -5,12 +5,14 @@ interface UseMultiStepFormProps<T> {
   totalSteps: number;
   getFieldsForStep: (step: number) => (keyof T)[];
   trigger: UseFormTrigger<T>;
+  shouldSkipStep?: (step: number) => boolean;
 }
 
 export function useMultiStepForm<T>({
   totalSteps,
   getFieldsForStep,
   trigger,
+  shouldSkipStep,
 }: UseMultiStepFormProps<T>) {
   const [activeStep, setActiveStep] = useState(0);
   const [direction, setDirection] = useState<"forward" | "backward">("forward");
@@ -18,13 +20,27 @@ export function useMultiStepForm<T>({
   const isFirstStep = activeStep === 0;
   const isLastStep = activeStep === totalSteps - 1;
 
+  const findNextValidStep = (currentStep: number, forward: boolean): number => {
+    let nextStep = forward ? currentStep + 1 : currentStep - 1;
+    
+    while (nextStep >= 0 && nextStep < totalSteps) {
+      if (!shouldSkipStep || !shouldSkipStep(nextStep)) {
+        return nextStep;
+      }
+      nextStep = forward ? nextStep + 1 : nextStep - 1;
+    }
+    
+    return currentStep;
+  };
+
   const nextStep = async () => {
     const fieldsToValidate = getFieldsForStep(activeStep);
     const isValid = await trigger(fieldsToValidate);
 
     if (isValid && !isLastStep) {
       setDirection("forward");
-      setActiveStep((current) => current + 1);
+      const nextValidStep = findNextValidStep(activeStep, true);
+      setActiveStep(nextValidStep);
     }
 
     return isValid;
@@ -33,7 +49,8 @@ export function useMultiStepForm<T>({
   const prevStep = () => {
     if (!isFirstStep) {
       setDirection("backward");
-      setActiveStep((current) => current - 1);
+      const prevValidStep = findNextValidStep(activeStep, false);
+      setActiveStep(prevValidStep);
     }
   };
 
