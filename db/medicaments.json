@@ -1,0 +1,73 @@
+[
+  { "id": 1, "name": "Ibalgin", "ingredients": ["ibuprofen"] },
+  { "id": 2, "name": "Paralen", "ingredients": ["paracetamol"] },
+  { "id": 3, "name": "Aspirin", "ingredients": ["acetylsalicylic acid"] },
+  { "id": 4, "name": "Nurofen", "ingredients": ["ibuprofen"] },
+  { "id": 5, "name": "Brufen", "ingredients": ["ibuprofen"] },
+  { "id": 6, "name": "Panadol", "ingredients": ["paracetamol"] },
+  {
+    "id": 7,
+    "name": "Coldrex",
+    "ingredients": ["paracetamol", "phenylephrine", "caffeine"]
+  },
+  { "id": 8, "name": "ACC Long", "ingredients": ["acetylcysteine"] },
+  { "id": 9, "name": "Mucosolvan", "ingredients": ["ambroxol"] },
+  { "id": 10, "name": "Faringosept", "ingredients": ["ambazon"] },
+
+  {
+    "id": 11,
+    "name": "Strepsils",
+    "ingredients": ["amylmetacresol", "dichlorobenzyl alcohol"]
+  },
+  {
+    "id": 12,
+    "name": "Septolete",
+    "ingredients": ["cetylpyridinium chloride", "benzocaine"]
+  },
+  { "id": 13, "name": "Imodium", "ingredients": ["loperamide"] },
+  { "id": 14, "name": "Smecta", "ingredients": ["diosmectite"] },
+  { "id": 15, "name": "Enterol", "ingredients": ["Saccharomyces boulardii"] },
+  { "id": 16, "name": "Erceflora", "ingredients": ["Bacillus clausii"] },
+  { "id": 17, "name": "Xanax", "ingredients": ["alprazolam"] },
+  { "id": 18, "name": "Lexaurin", "ingredients": ["bromazepam"] },
+  { "id": 19, "name": "Zyrtec", "ingredients": ["cetirizine"] },
+  { "id": 20, "name": "Claritin", "ingredients": ["loratadine"] },
+
+  { "id": 21, "name": "Zodac", "ingredients": ["cetirizine"] },
+  { "id": 22, "name": "Fenistil", "ingredients": ["dimetindene maleate"] },
+  { "id": 23, "name": "Aerius", "ingredients": ["desloratadine"] },
+  { "id": 24, "name": "Flonase", "ingredients": ["fluticasone propionate"] },
+  { "id": 25, "name": "Nasonex", "ingredients": ["mometasone furoate"] },
+  { "id": 26, "name": "Olynth", "ingredients": ["xylometazoline"] },
+  { "id": 27, "name": "Nasivin", "ingredients": ["oxymetazoline"] },
+  { "id": 28, "name": "Pamycon", "ingredients": ["neomycin", "bacitracin"] },
+  { "id": 29, "name": "Bepanthen", "ingredients": ["dexpanthenol"] },
+  {
+    "id": 30,
+    "name": "Sudocrem",
+    "ingredients": ["zinc oxide", "benzyl alcohol", "benzyl benzoate"]
+  },
+
+  { "id": 31, "name": "Canesten", "ingredients": ["clotrimazole"] },
+  { "id": 32, "name": "Exoderil", "ingredients": ["naftifine"] },
+  { "id": 33, "name": "Zovirax", "ingredients": ["aciclovir"] },
+  { "id": 34, "name": "Apo-Ibuprofen", "ingredients": ["ibuprofen"] },
+  { "id": 35, "name": "Apo-Diclo", "ingredients": ["diclofenac sodium"] },
+  { "id": 36, "name": "Voltaren", "ingredients": ["diclofenac sodium"] },
+  { "id": 37, "name": "Metformin Zentiva", "ingredients": ["metformin"] },
+  { "id": 38, "name": "Euthyrox", "ingredients": ["levothyroxine"] },
+  { "id": 39, "name": "Letrox", "ingredients": ["levothyroxine"] },
+  { "id": 40, "name": "Sortis", "ingredients": ["atorvastatin"] },
+
+  { "id": 41, "name": "Torvacard", "ingredients": ["atorvastatin"] },
+  { "id": 42, "name": "Rosucard", "ingredients": ["rosuvastatin"] },
+  { "id": 43, "name": "Prestarium", "ingredients": ["perindopril"] },
+  { "id": 44, "name": "Enap", "ingredients": ["enalapril"] },
+  { "id": 45, "name": "Lokren", "ingredients": ["betaxolol"] },
+  { "id": 46, "name": "Bisoprolol Zentiva", "ingredients": ["bisoprolol"] },
+  { "id": 47, "name": "Godasal", "ingredients": ["acetylsalicylic acid"] },
+  { "id": 48, "name": "Anopyrin", "ingredients": ["acetylsalicylic acid"] },
+  { "id": 49, "name": "Warfarin Orion", "ingredients": ["warfarin"] },
+  { "id": 50, "name": "Xarelto", "ingredients": ["rivaroxaban"] }
+  { "id": 51, "name": "Nebezpečný lék", "ingredients": ["cyclophosphamide"] }
+]

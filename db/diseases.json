@@ -1,0 +1,265 @@
+[
+  { "id": 1, "latin": "Influenza", "czech": "chřipka" },
+  { "id": 2, "latin": "Pneumonia", "czech": "zápal plic" },
+  { "id": 3, "latin": "Varicella", "czech": "plané neštovice" },
+  { "id": 4, "latin": "Morbilli", "czech": "spalničky" },
+  { "id": 5, "latin": "Rubella", "czech": "zarděnky" },
+  { "id": 6, "latin": "Pertussis", "czech": "černý kašel" },
+  { "id": 7, "latin": "Tetanus", "czech": "tetanus" },
+  { "id": 8, "latin": "Diphtheria", "czech": "záškrt" },
+  { "id": 9, "latin": "Poliomyelitis anterior acuta", "czech": "dětská obrna" },
+  { "id": 10, "latin": "Tuberculosis pulmonum", "czech": "plicní tuberkulóza" },
+
+  { "id": 11, "latin": "Bronchitis acuta", "czech": "akutní zánět průdušek" },
+  { "id": 12, "latin": "Asthma bronchiale", "czech": "bronchiální astma" },
+  { "id": 13, "latin": "Rhinitis allergica", "czech": "alergická rýma" },
+  {
+    "id": 14,
+    "latin": "Sinusitis acuta",
+    "czech": "akutní zánět vedlejších nosních dutin"
+  },
+  {
+    "id": 15,
+    "latin": "Otitis media acuta",
+    "czech": "akutní zánět středního ucha"
+  },
+  {
+    "id": 16,
+    "latin": "Gastroenteritis acuta",
+    "czech": "akutní gastroenteritida"
+  },
+  {
+    "id": 17,
+    "latin": "Appendicitis acuta",
+    "czech": "akutní zánět slepého střeva"
+  },
+  {
+    "id": 18,
+    "latin": "Cholecystitis acuta",
+    "czech": "akutní zánět žlučníku"
+  },
+  {
+    "id": 19,
+    "latin": "Pancreatitis acuta",
+    "czech": "akutní zánět slinivky břišní"
+  },
+  { "id": 20, "latin": "Hepatitis A", "czech": "virová hepatitida A" },
+
+  { "id": 21, "latin": "Hepatitis B", "czech": "virová hepatitida B" },
+  { "id": 22, "latin": "Hepatitis C", "czech": "virová hepatitida C" },
+  { "id": 23, "latin": "Cirrhosis hepatis", "czech": "jaterní cirhóza" },
+  { "id": 24, "latin": "Pyelonephritis acuta", "czech": "akutní zánět ledvin" },
+  {
+    "id": 25,
+    "latin": "Cystitis acuta",
+    "czech": "akutní zánět močového měchýře"
+  },
+  { "id": 26, "latin": "Nephrolithiasis", "czech": "ledvinové kameny" },
+  { "id": 27, "latin": "Urolithiasis", "czech": "močové kameny" },
+  {
+    "id": 28,
+    "latin": "Diabetes mellitus typ 1",
+    "czech": "diabetes mellitus 1. typu"
+  },
+  {
+    "id": 29,
+    "latin": "Diabetes mellitus typ 2",
+    "czech": "diabetes mellitus 2. typu"
+  },
+  {
+    "id": 30,
+    "latin": "Hypothyreosis",
+    "czech": "snížená činnost štítné žlázy"
+  },
+
+  {
+    "id": 31,
+    "latin": "Hyperthyreosis",
+    "czech": "zvýšená činnost štítné žlázy"
+  },
+  { "id": 32, "latin": "Obesitas", "czech": "obezita" },
+  {
+    "id": 33,
+    "latin": "Hypertonia arterialis essentialis",
+    "czech": "esenciální arteriální hypertenze"
+  },
+  {
+    "id": 34,
+    "latin": "Insufficientia cordis chronica",
+    "czech": "chronické srdeční selhání"
+  },
+  {
+    "id": 35,
+    "latin": "Infarctus myocardii acutus",
+    "czech": "akutní infarkt myokardu"
+  },
+  { "id": 36, "latin": "Angina pectoris", "czech": "angina pectoris" },
+  { "id": 37, "latin": "Atherosclerosis", "czech": "ateroskleróza" },
+  { "id": 38, "latin": "Fibrillatio atriorum", "czech": "fibrilace síní" },
+  {
+    "id": 39,
+    "latin": "Ictus cerebri ischaemicus",
+    "czech": "ischemická cévní mozková příhoda"
+  },
+  {
+    "id": 40,
+    "latin": "Haemorrhagia cerebri",
+    "czech": "hemoragická cévní mozková příhoda"
+  },
+
+  { "id": 41, "latin": "Epilepsia", "czech": "epilepsie" },
+  { "id": 42, "latin": "Morbus Parkinson", "czech": "Parkinsonova nemoc" },
+  { "id": 43, "latin": "Morbus Alzheimer", "czech": "Alzheimerova choroba" },
+  { "id": 44, "latin": "Sclerosis multiplex", "czech": "roztroušená skleróza" },
+  { "id": 45, "latin": "Depressio major", "czech": "depresivní porucha" },
+  { "id": 46, "latin": "Schizophrenia", "czech": "schizofrenie" },
+  { "id": 47, "latin": "Autismus infantilis", "czech": "dětský autismus" },
+  {
+    "id": 48,
+    "latin": "Anxietas generalisata",
+    "czech": "generalizovaná úzkostná porucha"
+  },
+  { "id": 49, "latin": "Insomnia", "czech": "nespavost" },
+  { "id": 50, "latin": "Anorexia nervosa", "czech": "mentální anorexie" },
+
+  { "id": 51, "latin": "Bulimia nervosa", "czech": "mentální bulimie" },
+  { "id": 52, "latin": "Psoriasis vulgaris", "czech": "lupénka" },
+  { "id": 53, "latin": "Atopic dermatitis", "czech": "atopická dermatitida" },
+  { "id": 54, "latin": "Urticaria", "czech": "kopřivka" },
+  { "id": 55, "latin": "Acne vulgaris", "czech": "akné" },
+  {
+    "id": 56,
+    "latin": "Melanoma malignum cutis",
+    "czech": "maligní melanom kůže"
+  },
+  { "id": 57, "latin": "Carcinoma mammae", "czech": "karcinom prsu" },
+  { "id": 58, "latin": "Carcinoma pulmonis", "czech": "karcinom plic" },
+  { "id": 59, "latin": "Carcinoma coli", "czech": "karcinom tlustého střeva" },
+  { "id": 60, "latin": "Carcinoma recti", "czech": "karcinom rekta" },
+
+  {
+    "id": 61,
+    "latin": "Leucaemia myeloides chronica",
+    "czech": "chronická myeloidní leukémie"
+  },
+  {
+    "id": 62,
+    "latin": "Leucaemia lymphoblastica acuta",
+    "czech": "akutní lymfoblastická leukémie"
+  },
+  { "id": 63, "latin": "Osteoporosis", "czech": "osteoporóza" },
+  { "id": 64, "latin": "Arthrosis genus", "czech": "artróza kolenního kloubu" },
+  { "id": 65, "latin": "Arthrosis coxae", "czech": "artróza kyčelního kloubu" },
+  {
+    "id": 66,
+    "latin": "Rheumatoid arthritis",
+    "czech": "revmatoidní artritida"
+  },
+  { "id": 67, "latin": "Arthritis urica", "czech": "dna" },
+  { "id": 68, "latin": "Scoliosis", "czech": "skolióza páteře" },
+  {
+    "id": 69,
+    "latin": "Fractura colli femoris",
+    "czech": "zlomenina krčku stehenní kosti"
+  },
+  {
+    "id": 70,
+    "latin": "Fractura radii typica",
+    "czech": "zlomenina vřetenní kosti v typickém místě"
+  },
+
+  { "id": 71, "latin": "Concussio cerebri", "czech": "otřes mozku" },
+  {
+    "id": 72,
+    "latin": "Luxatio humeri",
+    "czech": "vykloubení ramenního kloubu"
+  },
+  {
+    "id": 73,
+    "latin": "Varices extremitatum inferiorum",
+    "czech": "křečové žíly dolních končetin"
+  },
+  { "id": 74, "latin": "Haemorrhoides", "czech": "hemoroidy" },
+  { "id": 75, "latin": "Ulcus ventriculi", "czech": "žaludeční vřed" },
+  { "id": 76, "latin": "Ulcus duodeni", "czech": "dvanáctníkový vřed" },
+  {
+    "id": 77,
+    "latin": "Refluxus gastrooesophageus",
+    "czech": "gastroezofageální reflux"
+  },
+  { "id": 78, "latin": "Colitis ulcerosa", "czech": "ulcerózní kolitida" },
+  { "id": 79, "latin": "Morbus Crohn", "czech": "Crohnova choroba" },
+  { "id": 80, "latin": "Anemia sideropenica", "czech": "sideropenická anémie" },
+
+  { "id": 81, "latin": "Anemia perniciosa", "czech": "perniciózní anémie" },
+  { "id": 82, "latin": "Thrombocytopenia", "czech": "trombocytopenie" },
+  { "id": 83, "latin": "Astigmatismus", "czech": "astigmatismus" },
+  { "id": 84, "latin": "Cataracta senilis", "czech": "stařecký šedý zákal" },
+  { "id": 85, "latin": "Glaucoma", "czech": "glaukom (zelený zákal)" },
+  { "id": 86, "latin": "Otitis externa", "czech": "zánět zevního zvukovodu" },
+  {
+    "id": 87,
+    "latin": "Tonsillitis acuta",
+    "czech": "akutní zánět krčních mandlí"
+  },
+  { "id": 88, "latin": "Pharyngitis acuta", "czech": "akutní zánět hltanu" },
+  { "id": 89, "latin": "Laryngitis acuta", "czech": "akutní zánět hrtanu" },
+  {
+    "id": 90,
+    "latin": "Sinusitis chronica",
+    "czech": "chronický zánět vedlejších nosních dutin"
+  },
+
+  {
+    "id": 91,
+    "latin": "Bronchitis chronica",
+    "czech": "chronická bronchitida"
+  },
+  {
+    "id": 92,
+    "latin": "Morbus chronicus obstructivus pulmonum",
+    "czech": "chronická obstrukční plicní nemoc"
+  },
+  {
+    "id": 93,
+    "latin": "Infectio viro SARS-CoV-2 (COVID-19)",
+    "czech": "onemocnění COVID-19"
+  },
+  { "id": 94, "latin": "Infectio HIV", "czech": "infekce HIV" },
+  { "id": 95, "latin": "AIDS", "czech": "syndrom získané imunodeficience" },
+  { "id": 96, "latin": "Lyme borreliosis", "czech": "lymeská borelióza" },
+  { "id": 97, "latin": "Scabies", "czech": "svrab" },
+  {
+    "id": 98,
+    "latin": "Pediculosis capitis",
+    "czech": "zavšivení vlasaté části hlavy"
+  },
+  { "id": 99, "latin": "Malaria", "czech": "malárie" },
+  { "id": 100, "latin": "Typhus abdominalis", "czech": "břišní tyfus" },
+
+  { "id": 101, "latin": "Cholera", "czech": "cholera" },
+  { "id": 102, "latin": "Rabies", "czech": "vzteklina" },
+  { "id": 103, "latin": "Toxoplasmosis", "czech": "toxoplazmóza" },
+  {
+    "id": 104,
+    "latin": "Mononucleosis infectiosa",
+    "czech": "infekční mononukleóza"
+  },
+  { "id": 105, "latin": "Herpes zoster", "czech": "pásový opar" },
+  { "id": 106, "latin": "Herpes simplex labialis", "czech": "opar rtu" },
+  {
+    "id": 107,
+    "latin": "Vulvovaginitis mycotica",
+    "czech": "mykotický zánět pochvy"
+  },
+  {
+    "id": 108,
+    "latin": "Prostatitis chronica",
+    "czech": "chronický zánět prostaty"
+  },
+  {
+    "id": 109,
+    "latin": "Benign prostatic hyperplasia",
+    "czech": "benigní hyperplazie prostaty"
+  }
+]
