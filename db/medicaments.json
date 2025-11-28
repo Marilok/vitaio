@@ -68,6 +68,6 @@
   { "id": 47, "name": "Godasal", "ingredients": ["acetylsalicylic acid"] },
   { "id": 48, "name": "Anopyrin", "ingredients": ["acetylsalicylic acid"] },
   { "id": 49, "name": "Warfarin Orion", "ingredients": ["warfarin"] },
-  { "id": 50, "name": "Xarelto", "ingredients": ["rivaroxaban"] }
+  { "id": 50, "name": "Xarelto", "ingredients": ["rivaroxaban"] },
   { "id": 51, "name": "Nebezpečný lék", "ingredients": ["cyclophosphamide"] }
 ]

@@ -5,6 +5,7 @@ import { Paper, Stack } from "@mantine/core";
 import { Step1BasicInfo } from "./steps/Step1BasicInfo";
 import { Step2Symptoms } from "./steps/Step2Symptoms";
 import { Step3FamilyHistory } from "./steps/Step3FamilyHistory";
+import { Step4Medications } from "./steps/Step4Medications";
 import { FormProgress } from "./form/FormProgress";
 import { FormNavigation } from "./form/FormNavigation";
 import { StepContainer } from "./form/StepContainer";
@@ -24,6 +25,8 @@ const getFieldsForStep = (step: number): (keyof FormData)[] => {
       return []; // No required fields in step 2
     case 2:
       return []; // No required fields in step 3
+    case 3:
+      return ["medications"];
     // Add more cases for other steps
     default:
       return [];
@@ -39,6 +42,7 @@ export function MultiStepForm() {
       height: undefined,
       hasRectalBleeding: undefined,
       hasFamilyCancerHistory: undefined,
+      medications: [],
     },
   });
 
@@ -76,7 +80,7 @@ export function MultiStepForm() {
       case 2:
         return <Step3FamilyHistory />;
       case 3:
-        return <PlaceholderStep stepNumber={4} />;
+        return <Step4Medications />;
       case 4:
         return <PlaceholderStep stepNumber={5} />;
       case 5:

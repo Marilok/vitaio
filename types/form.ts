@@ -11,5 +11,8 @@ export interface FormData {
   // Step 3 - Family History
   hasFamilyCancerHistory: boolean;
 
+  // Step 4 - Medications
+  medications: string[];
+
   // Add more steps data as needed
 }
