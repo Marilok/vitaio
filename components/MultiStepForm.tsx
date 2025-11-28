@@ -3,21 +3,14 @@
 import { useForm } from "react-hook-form";
 import { Paper, Stack } from "@mantine/core";
 import { Step1BasicInfo } from "./steps/Step1BasicInfo";
+import { Step2Symptoms } from "./steps/Step2Symptoms";
 import { FormProgress } from "./form/FormProgress";
 import { FormNavigation } from "./form/FormNavigation";
 import { StepContainer } from "./form/StepContainer";
 import { PlaceholderStep } from "./form/PlaceholderStep";
 import { useMultiStepForm } from "@/hooks/useMultiStepForm";
 import { MultiStepFormProvider } from "@/contexts/MultiStepFormContext";
-
-interface FormData {
-  // Step 1
-  gender: "male" | "female";
-  age: number;
-  weight: number;
-  height: number;
-  // Add more steps data as needed
-}
+import { FormData } from "@/types/form";
 
 const TOTAL_STEPS = 10;
 
@@ -26,6 +19,8 @@ const getFieldsForStep = (step: number): (keyof FormData)[] => {
   switch (step) {
     case 0:
       return ["gender", "age", "weight", "height"];
+    case 1:
+      return ["hasRectalBleeding"];
     // Add more cases for other steps
     default:
       return [];
@@ -45,6 +40,7 @@ export function MultiStepForm() {
       age: undefined,
       weight: undefined,
       height: undefined,
+      hasRectalBleeding: undefined,
     },
   });
 
@@ -74,7 +70,9 @@ export function MultiStepForm() {
           <Step1BasicInfo control={control} errors={errors} watch={watch} />
         );
       case 1:
-        return <PlaceholderStep stepNumber={2} />;
+        return (
+          <Step2Symptoms control={control} errors={errors} watch={watch} />
+        );
       case 2:
         return <PlaceholderStep stepNumber={3} />;
       case 3:
