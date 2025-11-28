@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { Control, FieldErrors, UseFormWatch } from 'react-hook-form';
+import { Control, FieldErrors, UseFormWatch } from "react-hook-form";
 import {
   Stack,
   Title,
@@ -8,15 +8,11 @@ import {
   NumberInput,
   SegmentedControl,
   Box,
-} from '@mantine/core';
-import { Controller } from 'react-hook-form';
-
-interface FormData {
-  gender: 'male' | 'female';
-  age: number;
-  weight: number;
-  height: number;
-}
+} from "@mantine/core";
+import { Controller } from "react-hook-form";
+import { FormData } from "@/types/form";
+import { Fragment } from "react";
+import { RequiredIndicator } from "@/components/form/RequiredIndicator";
 
 interface Step1Props {
   control: Control<FormData>;
@@ -29,28 +25,28 @@ export function Step1BasicInfo({ control, errors }: Step1Props) {
     <Stack gap="lg" pt="md">
       <Box>
         <Title order={3} mb="xs">
-          Basic Information
+          Základní informace
         </Title>
         <Text size="sm" c="dimmed">
-          Please provide your basic information to get started
+          Prosím vyplňte vaše základní údaje
         </Text>
       </Box>
 
       <Controller
         name="gender"
         control={control}
-        rules={{ required: 'Gender is required' }}
+        rules={{ required: "Pohlaví je povinné" }}
         render={({ field }) => (
           <Box>
             <Text size="sm" fw={500} mb="xs">
-              Gender <Text component="span" c="red">*</Text>
+              Pohlaví <RequiredIndicator />
             </Text>
             <SegmentedControl
               {...field}
               fullWidth
               data={[
-                { label: 'Male', value: 'male' },
-                { label: 'Female', value: 'female' },
+                { label: "Muž", value: "male" },
+                { label: "Žena", value: "female" },
               ]}
             />
             {errors.gender && (
@@ -66,20 +62,23 @@ export function Step1BasicInfo({ control, errors }: Step1Props) {
         name="age"
         control={control}
         rules={{
-          required: 'Age is required',
-          min: { value: 1, message: 'Age must be at least 1' },
-          max: { value: 120, message: 'Age must be less than 120' },
+          required: "Věk je povinný",
+          min: { value: 1, message: "Věk musí být alespoň 1" },
+          max: { value: 120, message: "Věk musí být menší než 120" },
         }}
         render={({ field }) => (
           <NumberInput
             {...field}
-            label="Age"
-            placeholder="Enter your age"
-            required
+            label={
+              <Fragment>
+                Věk <RequiredIndicator />
+              </Fragment>
+            }
+            placeholder="Zadejte váš věk"
             min={1}
             max={120}
             error={errors.age?.message}
-            description="Years old"
+            description="Roky"
           />
         )}
       />
@@ -88,20 +87,23 @@ export function Step1BasicInfo({ control, errors }: Step1Props) {
         name="weight"
         control={control}
         rules={{
-          required: 'Weight is required',
-          min: { value: 1, message: 'Weight must be at least 1 kg' },
-          max: { value: 500, message: 'Weight must be less than 500 kg' },
+          required: "Hmotnost je povinná",
+          min: { value: 1, message: "Hmotnost musí být alespoň 1 kg" },
+          max: { value: 500, message: "Hmotnost musí být menší než 500 kg" },
         }}
         render={({ field }) => (
           <NumberInput
             {...field}
-            label="Weight"
-            placeholder="Enter your weight"
-            required
+            label={
+              <Fragment>
+                Hmotnost <RequiredIndicator />
+              </Fragment>
+            }
+            placeholder="Zadejte vaši hmotnost"
             min={1}
             max={500}
             error={errors.weight?.message}
-            description="Kilograms (kg)"
+            description="Kilogramy (kg)"
             decimalScale={1}
           />
         )}
@@ -111,24 +113,26 @@ export function Step1BasicInfo({ control, errors }: Step1Props) {
         name="height"
         control={control}
         rules={{
-          required: 'Height is required',
-          min: { value: 50, message: 'Height must be at least 50 cm' },
-          max: { value: 300, message: 'Height must be less than 300 cm' },
+          required: "Výška je povinná",
+          min: { value: 50, message: "Výška musí být alespoň 50 cm" },
+          max: { value: 300, message: "Výška musí být menší než 300 cm" },
         }}
         render={({ field }) => (
           <NumberInput
             {...field}
-            label="Height"
-            placeholder="Enter your height"
-            required
+            label={
+              <Fragment>
+                Výška <RequiredIndicator />
+              </Fragment>
+            }
+            placeholder="Zadejte vaši výšku"
             min={50}
             max={300}
             error={errors.height?.message}
-            description="Centimeters (cm)"
+            description="Centimetry (cm)"
           />
         )}
       />
     </Stack>
   );
 }
-
