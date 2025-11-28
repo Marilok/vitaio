@@ -29,7 +29,7 @@ const getFieldsForStep = (step: number): (keyof FormData)[] => {
     case 2:
       return []; // No required fields in step 3
     case 3:
-      return ["medications"];
+      return []; // No required fields in step 4 (medications optional)
     case 4:
       return ["hasGynecologist"]; // Step 5 - only for women
     case 5:

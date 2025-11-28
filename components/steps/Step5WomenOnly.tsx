@@ -4,7 +4,6 @@ import { useFormContext, Controller } from "react-hook-form";
 import { Stack, Title, Text, Box, Radio, Checkbox, Group } from "@mantine/core";
 import { FormData } from "@/types/form";
 import { RequiredIndicator } from "@/components/form/RequiredIndicator";
-import { Fragment } from "react";
 
 export function Step5WomenOnly() {
   const {
@@ -36,19 +35,12 @@ export function Step5WomenOnly() {
         name="hasGynecologist"
         control={control}
         rules={{ required: "Prosím vyberte jednu z možností" }}
-        render={({ field: { value, onChange, ...field } }) => (
+        render={({ field }) => (
           <Box>
             <Text size="sm" fw={500} mb="xs">
-              Máte vlastního gynekologa?{" "}
-              <Fragment>
-                <RequiredIndicator />
-              </Fragment>
+              Máte vlastního gynekologa? <RequiredIndicator />
             </Text>
-            <Radio.Group
-              {...field}
-              value={value === true ? "yes" : value === false ? "no" : ""}
-              onChange={(val) => onChange(val === "yes")}
-            >
+            <Radio.Group {...field}>
               <Group>
                 <Radio value="yes" label="ANO" />
                 <Radio value="no" label="NE" />
@@ -63,7 +55,7 @@ export function Step5WomenOnly() {
         )}
       />
 
-      {hasGynecologist === false && (
+      {hasGynecologist === "no" && (
         <Controller
           name="bookGynecologyExam"
           control={control}
