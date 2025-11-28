@@ -4,6 +4,33 @@ import { useFormContext, Controller } from "react-hook-form";
 import { Stack, Title, Text, Checkbox, Box } from "@mantine/core";
 import { FormData } from "@/types/form";
 
+interface ScreeningEligibility {
+  showProstateScreening: boolean;
+  showLungCancerScreening: boolean;
+  showCervicalCancerScreening: boolean;
+  showBreastCancerScreening: boolean;
+  showColorectalCancerScreening: boolean;
+}
+
+function getScreeningEligibility(
+  gender: "male" | "female",
+  age: number | undefined,
+  hasFamilyCancerHistory: boolean | undefined
+): ScreeningEligibility {
+  const patientAge = age || 0;
+  const hasFamilyHistory = hasFamilyCancerHistory || false;
+
+  return {
+    showProstateScreening:
+      gender === "male" && patientAge >= 50 && patientAge <= 69,
+    showLungCancerScreening: true,
+    showCervicalCancerScreening: gender === "female" && patientAge >= 15,
+    showBreastCancerScreening:
+      gender === "female" && (patientAge >= 45 || hasFamilyHistory),
+    showColorectalCancerScreening: patientAge >= 45 && patientAge <= 74,
+  };
+}
+
 export function Step7Screening() {
   const {
     control,
@@ -12,6 +39,14 @@ export function Step7Screening() {
   } = useFormContext<FormData>();
 
   const gender = watch("gender");
+  const age = watch("age");
+  const hasFamilyCancerHistory = watch("hasFamilyCancerHistory");
+
+  const eligibility = getScreeningEligibility(
+    gender,
+    age,
+    hasFamilyCancerHistory
+  );
 
   return (
     <Stack gap="lg" pt="md">
@@ -25,81 +60,88 @@ export function Step7Screening() {
       </Box>
 
       <Stack gap="md">
-        <Controller
-          name="hadProstateScreening"
-          control={control}
-          render={({ field: { value, onChange, ...field } }) => (
-            <Checkbox
-              {...field}
-              checked={value || false}
-              onChange={(event) => onChange(event.currentTarget.checked)}
-              label={<Text size="sm">Vyšetření prostaty</Text>}
-              error={errors.hadProstateScreening?.message}
-            />
-          )}
-        />
-
-        <Controller
-          name="hadLungCancerScreening"
-          control={control}
-          render={({ field: { value, onChange, ...field } }) => (
-            <Checkbox
-              {...field}
-              checked={value || false}
-              onChange={(event) => onChange(event.currentTarget.checked)}
-              label={<Text size="sm">Vyšetření karcinomu plic</Text>}
-              error={errors.hadLungCancerScreening?.message}
-            />
-          )}
-        />
-
-        {gender === "female" && (
-          <>
-            <Controller
-              name="hadCervicalCancerScreening"
-              control={control}
-              render={({ field: { value, onChange, ...field } }) => (
-                <Checkbox
-                  {...field}
-                  checked={value || false}
-                  onChange={(event) => onChange(event.currentTarget.checked)}
-                  label={<Text size="sm">Karcinom děložního hrdla</Text>}
-                  error={errors.hadCervicalCancerScreening?.message}
-                />
-              )}
-            />
-
-            <Controller
-              name="hadBreastCancerScreening"
-              control={control}
-              render={({ field: { value, onChange, ...field } }) => (
-                <Checkbox
-                  {...field}
-                  checked={value || false}
-                  onChange={(event) => onChange(event.currentTarget.checked)}
-                  label={<Text size="sm">Karcinom prsu</Text>}
-                  error={errors.hadBreastCancerScreening?.message}
-                />
-              )}
-            />
-          </>
+        {eligibility.showProstateScreening && (
+          <Controller
+            name="hadProstateScreening"
+            control={control}
+            render={({ field: { value, onChange, ...field } }) => (
+              <Checkbox
+                {...field}
+                checked={value || false}
+                onChange={(event) => onChange(event.currentTarget.checked)}
+                label={<Text size="sm">Vyšetření prostaty</Text>}
+                error={errors.hadProstateScreening?.message}
+              />
+            )}
+          />
         )}
 
-        <Controller
-          name="hadColorectalCancerScreening"
-          control={control}
-          render={({ field: { value, onChange, ...field } }) => (
-            <Checkbox
-              {...field}
-              checked={value || false}
-              onChange={(event) => onChange(event.currentTarget.checked)}
-              label={<Text size="sm">Vyšetření kolorektálního karcinomu</Text>}
-              error={errors.hadColorectalCancerScreening?.message}
-            />
-          )}
-        />
+        {eligibility.showLungCancerScreening && (
+          <Controller
+            name="hadLungCancerScreening"
+            control={control}
+            render={({ field: { value, onChange, ...field } }) => (
+              <Checkbox
+                {...field}
+                checked={value || false}
+                onChange={(event) => onChange(event.currentTarget.checked)}
+                label={<Text size="sm">Vyšetření karcinomu plic</Text>}
+                error={errors.hadLungCancerScreening?.message}
+              />
+            )}
+          />
+        )}
+
+        {eligibility.showCervicalCancerScreening && (
+          <Controller
+            name="hadCervicalCancerScreening"
+            control={control}
+            render={({ field: { value, onChange, ...field } }) => (
+              <Checkbox
+                {...field}
+                checked={value || false}
+                onChange={(event) => onChange(event.currentTarget.checked)}
+                label={<Text size="sm">Karcinom děložního hrdla</Text>}
+                error={errors.hadCervicalCancerScreening?.message}
+              />
+            )}
+          />
+        )}
+
+        {eligibility.showBreastCancerScreening && (
+          <Controller
+            name="hadBreastCancerScreening"
+            control={control}
+            render={({ field: { value, onChange, ...field } }) => (
+              <Checkbox
+                {...field}
+                checked={value || false}
+                onChange={(event) => onChange(event.currentTarget.checked)}
+                label={<Text size="sm">Karcinom prsu</Text>}
+                error={errors.hadBreastCancerScreening?.message}
+              />
+            )}
+          />
+        )}
+
+        {eligibility.showColorectalCancerScreening && (
+          <Controller
+            name="hadColorectalCancerScreening"
+            control={control}
+            render={({ field: { value, onChange, ...field } }) => (
+              <Checkbox
+                {...field}
+                checked={value || false}
+                onChange={(event) => onChange(event.currentTarget.checked)}
+                label={
+                  <Text size="sm">Vyšetření kolorektálního karcinomu</Text>
+                }
+                error={errors.hadColorectalCancerScreening?.message}
+              />
+            )}
+          />
+        )}
       </Stack>
     </Stack>
   );
 }
-
