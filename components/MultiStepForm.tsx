@@ -4,6 +4,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import { Paper, Stack } from "@mantine/core";
 import { Step1BasicInfo } from "./steps/Step1BasicInfo";
 import { Step2Symptoms } from "./steps/Step2Symptoms";
+import { Step3FamilyHistory } from "./steps/Step3FamilyHistory";
 import { FormProgress } from "./form/FormProgress";
 import { FormNavigation } from "./form/FormNavigation";
 import { StepContainer } from "./form/StepContainer";
@@ -20,7 +21,9 @@ const getFieldsForStep = (step: number): (keyof FormData)[] => {
     case 0:
       return ["gender", "age", "weight", "height"];
     case 1:
-      return ["hasRectalBleeding"];
+      return []; // No required fields in step 2
+    case 2:
+      return []; // No required fields in step 3
     // Add more cases for other steps
     default:
       return [];
@@ -35,6 +38,7 @@ export function MultiStepForm() {
       weight: undefined,
       height: undefined,
       hasRectalBleeding: undefined,
+      hasFamilyCancerHistory: undefined,
     },
   });
 
@@ -70,7 +74,7 @@ export function MultiStepForm() {
       case 1:
         return <Step2Symptoms />;
       case 2:
-        return <PlaceholderStep stepNumber={3} />;
+        return <Step3FamilyHistory />;
       case 3:
         return <PlaceholderStep stepNumber={4} />;
       case 4:
