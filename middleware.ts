@@ -1,13 +1,8 @@
-import { NextResponse, type NextRequest } from "next/server";
-// import { updateSession } from '@/lib/supabase/middleware';
+import { type NextRequest } from "next/server";
+import { updateSession } from "@/lib/supabase/middleware";
 
-// Simple passthrough middleware - uncomment the updateSession logic below when ready to use Supabase auth
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function middleware(request: NextRequest) {
-  // Uncomment below to enable Supabase authentication middleware:
-  // return await updateSession(request);
-
-  return NextResponse.next();
+  return await updateSession(request);
 }
 
 export const config = {
