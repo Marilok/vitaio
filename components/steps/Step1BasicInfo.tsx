@@ -76,7 +76,6 @@ export function Step1BasicInfo() {
             min={1}
             max={120}
             error={errors.age?.message}
-            description="Roky"
           />
         )}
       />
@@ -101,7 +100,6 @@ export function Step1BasicInfo() {
             min={1}
             max={500}
             error={errors.weight?.message}
-            description="Kilogramy (kg)"
             decimalScale={1}
           />
         )}
@@ -127,7 +125,6 @@ export function Step1BasicInfo() {
             min={50}
             max={300}
             error={errors.height?.message}
-            description="Centimetry (cm)"
           />
         )}
       />
