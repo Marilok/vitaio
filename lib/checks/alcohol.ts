@@ -1,4 +1,4 @@
-import { HEALTH_LIMITS } from "./config";
+import { HEALTH_LIMITS } from "../config";
 
 /**
  * Type definition for alcoholic drink entry

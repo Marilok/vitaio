@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { MantineProvider, createTheme } from '@mantine/core';
-import { Notifications } from '@mantine/notifications';
+import { MantineProvider, createTheme } from "@mantine/core";
+import { Notifications } from "@mantine/notifications";
 
 const theme = createTheme({
   /** Your theme customization here */
-  primaryColor: 'blue',
+  primaryColor: "orange",
 });
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -16,4 +16,3 @@ export function Providers({ children }: { children: React.ReactNode }) {
     </MantineProvider>
   );
 }
-

@@ -1,5 +1,5 @@
-import medicamentsData from "../db/medicaments.json";
-import iarc1Data from "../db/iarc1.json";
+import medicamentsData from "../../db/medicaments.json";
+import iarc1Data from "../../db/iarc1.json";
 
 /**
  * Type definitions for medicament and IARC1 substance data
