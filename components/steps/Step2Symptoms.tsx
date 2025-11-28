@@ -1,18 +1,16 @@
 "use client";
 
-import { Control, FieldErrors, UseFormWatch } from "react-hook-form";
+import { useFormContext, Controller } from "react-hook-form";
 import { Stack, Title, Text, Checkbox, Box } from "@mantine/core";
-import { Controller } from "react-hook-form";
 import { FormData } from "@/types/form";
 import { RequiredIndicator } from "@/components/form/RequiredIndicator";
 
-interface Step2Props {
-  control: Control<FormData>;
-  errors: FieldErrors<FormData>;
-  watch: UseFormWatch<FormData>;
-}
+export function Step2Symptoms() {
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext<FormData>();
 
-export function Step2Symptoms({ control, errors }: Step2Props) {
   return (
     <Stack gap="lg" pt="md">
       <Box>

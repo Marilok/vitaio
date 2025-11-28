@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { Paper, Stack } from "@mantine/core";
 import { Step1BasicInfo } from "./steps/Step1BasicInfo";
 import { Step2Symptoms } from "./steps/Step2Symptoms";
@@ -28,13 +28,7 @@ const getFieldsForStep = (step: number): (keyof FormData)[] => {
 };
 
 export function MultiStepForm() {
-  const {
-    control,
-    handleSubmit,
-    trigger,
-    formState: { errors, isSubmitting },
-    watch,
-  } = useForm<FormData>({
+  const methods = useForm<FormData>({
     defaultValues: {
       gender: "male",
       age: undefined,
@@ -43,6 +37,12 @@ export function MultiStepForm() {
       hasRectalBleeding: undefined,
     },
   });
+
+  const {
+    handleSubmit,
+    trigger,
+    formState: { isSubmitting },
+  } = methods;
 
   const {
     activeStep,
@@ -66,13 +66,9 @@ export function MultiStepForm() {
   const renderStepContent = () => {
     switch (activeStep) {
       case 0:
-        return (
-          <Step1BasicInfo control={control} errors={errors} watch={watch} />
-        );
+        return <Step1BasicInfo />;
       case 1:
-        return (
-          <Step2Symptoms control={control} errors={errors} watch={watch} />
-        );
+        return <Step2Symptoms />;
       case 2:
         return <PlaceholderStep stepNumber={3} />;
       case 3:
@@ -95,29 +91,31 @@ export function MultiStepForm() {
   };
 
   return (
-    <MultiStepFormProvider
-      value={{
-        activeStep,
-        direction,
-        isFirstStep,
-        isLastStep,
-        totalSteps: TOTAL_STEPS,
-        nextStep,
-        prevStep,
-        goToStep,
-        onSubmit: handleSubmit(onSubmit),
-        isSubmitting,
-      }}
-    >
-      <Paper shadow="md" p="xl" radius="md">
-        <Stack gap="xl">
-          <FormProgress />
+    <FormProvider {...methods}>
+      <MultiStepFormProvider
+        value={{
+          activeStep,
+          direction,
+          isFirstStep,
+          isLastStep,
+          totalSteps: TOTAL_STEPS,
+          nextStep,
+          prevStep,
+          goToStep,
+          onSubmit: handleSubmit(onSubmit),
+          isSubmitting,
+        }}
+      >
+        <Paper shadow="md" p="xl" radius="md">
+          <Stack gap="xl">
+            <FormProgress />
 
-          <StepContainer>{renderStepContent()}</StepContainer>
+            <StepContainer>{renderStepContent()}</StepContainer>
 
-          <FormNavigation />
-        </Stack>
-      </Paper>
-    </MultiStepFormProvider>
+            <FormNavigation />
+          </Stack>
+        </Paper>
+      </MultiStepFormProvider>
+    </FormProvider>
   );
 }
