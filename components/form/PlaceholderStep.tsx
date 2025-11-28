@@ -8,18 +8,19 @@ interface PlaceholderStepProps {
 
 export function PlaceholderStep({
   stepNumber,
-  description = "content coming soon...",
+  description = "obsah připravujeme...",
   minHeight = 300,
 }: PlaceholderStepProps) {
   return (
     <Box style={{ minHeight }}>
       <Title order={3} mb="md">
-        Step {stepNumber}
+        Krok {stepNumber}
       </Title>
       <Text c="dimmed">
-        Step {stepNumber} {description}
+        Krok {stepNumber} {description}
       </Text>
     </Box>
   );
 }
+
 

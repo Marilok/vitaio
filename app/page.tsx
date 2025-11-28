@@ -20,14 +20,14 @@ export default function Home() {
       <Stack gap="xl">
         <div>
           <Title order={1} mb="md">
-            Welcome to VitaIO
+            Vítejte ve VitaIO
           </Title>
           <Text size="lg" c="dimmed" mb="md">
-            A Next.js starter with TypeScript, Tailwind CSS, Mantine UI, React
-            Hook Form, and Supabase
+            Next.js aplikace s TypeScript, Tailwind CSS, Mantine UI, React Hook
+            Form a Supabase
           </Text>
           <Anchor href="/assessment" underline="never">
-            <Button size="lg">Start Health Assessment</Button>
+            <Button size="lg">Začít zdravotní posouzení</Button>
           </Anchor>
         </div>
 

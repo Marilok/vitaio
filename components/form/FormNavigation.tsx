@@ -19,16 +19,16 @@ export function FormNavigation() {
         disabled={isFirstStep}
         size="md"
       >
-        Previous
+        Zpět
       </Button>
 
       {isLastStep ? (
         <Button onClick={onSubmit} size="md" loading={isSubmitting}>
-          Submit Assessment
+          Odeslat vyhodnocení
         </Button>
       ) : (
         <Button onClick={nextStep} size="md">
-          Next
+          Další
         </Button>
       )}
     </Group>
