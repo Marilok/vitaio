@@ -28,6 +28,8 @@ const getFieldsForStep = (step: number): (keyof FormData)[] => {
       return []; // No required fields in step 3
     case 3:
       return ["medications"];
+    case 4:
+      return ["hasGynecologist"]; // Step 5 - only for women
     // Add more cases for other steps
     default:
       return [];
@@ -44,6 +46,8 @@ export function MultiStepForm() {
       hasRectalBleeding: undefined,
       hasFamilyCancerHistory: undefined,
       medications: [],
+      hasGynecologist: undefined,
+      bookGynecologyExam: undefined,
     },
   });
 
