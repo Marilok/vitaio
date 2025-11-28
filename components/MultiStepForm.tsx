@@ -22,7 +22,7 @@ const TOTAL_STEPS = 10;
 const getFieldsForStep = (step: number): (keyof FormData)[] => {
   switch (step) {
     case 0:
-      return ["gender", "age", "weight", "height"];
+      return ["gender", "age"];
     case 1:
       return []; // No required fields in step 2
     case 2:
@@ -32,7 +32,12 @@ const getFieldsForStep = (step: number): (keyof FormData)[] => {
     case 4:
       return ["hasGynecologist"]; // Step 5 - only for women
     case 5:
-      return ["weeklyExerciseMinutes", "alcoholConsumption"]; // Step 6
+      return [
+        "height",
+        "weight",
+        "weeklyExerciseMinutes",
+        "alcoholConsumption",
+      ]; // Step 6
     // Add more cases for other steps
     default:
       return [];
@@ -139,7 +144,7 @@ export function MultiStepForm() {
           isSubmitting,
         }}
       >
-        <Paper shadow="md" p="xl" radius="md" miw="680px">
+        <Paper shadow="md" p="xl" radius="md" miw="740px">
           <Stack gap="xl">
             <FormProgress />
 
