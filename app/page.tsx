@@ -8,6 +8,8 @@ import {
   ListItem,
   ThemeIcon,
   Code,
+  Button,
+  Anchor,
 } from "@mantine/core";
 import { IconCheck } from "@tabler/icons-react";
 import { ExampleForm } from "@/components/ExampleForm";
@@ -20,10 +22,13 @@ export default function Home() {
           <Title order={1} mb="md">
             Welcome to VitaIO
           </Title>
-          <Text size="lg" c="dimmed">
+          <Text size="lg" c="dimmed" mb="md">
             A Next.js starter with TypeScript, Tailwind CSS, Mantine UI, React
             Hook Form, and Supabase
           </Text>
+          <Anchor href="/assessment" underline="never">
+            <Button size="lg">Start Health Assessment</Button>
+          </Anchor>
         </div>
 
         <Card shadow="sm" padding="lg" radius="md" withBorder>
