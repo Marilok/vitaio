@@ -139,7 +139,7 @@ export function MultiStepForm() {
           isSubmitting,
         }}
       >
-        <Paper shadow="md" p="xl" radius="md">
+        <Paper shadow="md" p="xl" radius="md" miw="680px">
           <Stack gap="xl">
             <FormProgress />
 
