@@ -1,9 +1,11 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { Paper, Stack } from "@mantine/core";
 import { Step1BasicInfo } from "./steps/Step1BasicInfo";
 import { Step2Symptoms } from "./steps/Step2Symptoms";
+import { Step3FamilyHistory } from "./steps/Step3FamilyHistory";
+import { Step4Medications } from "./steps/Step4Medications";
 import { FormProgress } from "./form/FormProgress";
 import { FormNavigation } from "./form/FormNavigation";
 import { StepContainer } from "./form/StepContainer";
@@ -20,7 +22,11 @@ const getFieldsForStep = (step: number): (keyof FormData)[] => {
     case 0:
       return ["gender", "age", "weight", "height"];
     case 1:
-      return ["hasRectalBleeding"];
+      return []; // No required fields in step 2
+    case 2:
+      return []; // No required fields in step 3
+    case 3:
+      return ["medications"];
     // Add more cases for other steps
     default:
       return [];
@@ -28,21 +34,23 @@ const getFieldsForStep = (step: number): (keyof FormData)[] => {
 };
 
 export function MultiStepForm() {
-  const {
-    control,
-    handleSubmit,
-    trigger,
-    formState: { errors, isSubmitting },
-    watch,
-  } = useForm<FormData>({
+  const methods = useForm<FormData>({
     defaultValues: {
       gender: "male",
       age: undefined,
       weight: undefined,
       height: undefined,
       hasRectalBleeding: undefined,
+      hasFamilyCancerHistory: undefined,
+      medications: [],
     },
   });
+
+  const {
+    handleSubmit,
+    trigger,
+    formState: { isSubmitting },
+  } = methods;
 
   const {
     activeStep,
@@ -66,17 +74,13 @@ export function MultiStepForm() {
   const renderStepContent = () => {
     switch (activeStep) {
       case 0:
-        return (
-          <Step1BasicInfo control={control} errors={errors} watch={watch} />
-        );
+        return <Step1BasicInfo />;
       case 1:
-        return (
-          <Step2Symptoms control={control} errors={errors} watch={watch} />
-        );
+        return <Step2Symptoms />;
       case 2:
-        return <PlaceholderStep stepNumber={3} />;
+        return <Step3FamilyHistory />;
       case 3:
-        return <PlaceholderStep stepNumber={4} />;
+        return <Step4Medications />;
       case 4:
         return <PlaceholderStep stepNumber={5} />;
       case 5:
@@ -95,29 +99,31 @@ export function MultiStepForm() {
   };
 
   return (
-    <MultiStepFormProvider
-      value={{
-        activeStep,
-        direction,
-        isFirstStep,
-        isLastStep,
-        totalSteps: TOTAL_STEPS,
-        nextStep,
-        prevStep,
-        goToStep,
-        onSubmit: handleSubmit(onSubmit),
-        isSubmitting,
-      }}
-    >
-      <Paper shadow="md" p="xl" radius="md">
-        <Stack gap="xl">
-          <FormProgress />
+    <FormProvider {...methods}>
+      <MultiStepFormProvider
+        value={{
+          activeStep,
+          direction,
+          isFirstStep,
+          isLastStep,
+          totalSteps: TOTAL_STEPS,
+          nextStep,
+          prevStep,
+          goToStep,
+          onSubmit: handleSubmit(onSubmit),
+          isSubmitting,
+        }}
+      >
+        <Paper shadow="md" p="xl" radius="md">
+          <Stack gap="xl">
+            <FormProgress />
 
-          <StepContainer>{renderStepContent()}</StepContainer>
+            <StepContainer>{renderStepContent()}</StepContainer>
 
-          <FormNavigation />
-        </Stack>
-      </Paper>
-    </MultiStepFormProvider>
+            <FormNavigation />
+          </Stack>
+        </Paper>
+      </MultiStepFormProvider>
+    </FormProvider>
   );
 }
