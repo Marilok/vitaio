@@ -32,7 +32,7 @@ export default function ConfirmationPage({
         alignItems: "center",
         justifyContent: "center",
       }}
-      bg="var(--mantine-primary-color-filled)"
+      bg="var(--mantine-primary-color-light)"
     >
       <Paper shadow="md" p="xl" radius="md" w="100%" maw={500}>
         <Stack align="center" gap="lg">
