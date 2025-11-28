@@ -18,5 +18,10 @@ export interface FormData {
   hasGynecologist?: boolean;
   bookGynecologyExam?: boolean;
 
+  // Step 6 - Lifestyle
+  weeklyExerciseMinutes: number;
+  weeklyCigarettes?: number;
+  alcoholConsumption: string;
+
   // Add more steps data as needed
 }

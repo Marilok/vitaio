@@ -7,6 +7,7 @@ import { Step2Symptoms } from "./steps/Step2Symptoms";
 import { Step3FamilyHistory } from "./steps/Step3FamilyHistory";
 import { Step4Medications } from "./steps/Step4Medications";
 import { Step5WomenOnly } from "./steps/Step5WomenOnly";
+import { Step6Lifestyle } from "./steps/Step6Lifestyle";
 import { FormProgress } from "./form/FormProgress";
 import { FormNavigation } from "./form/FormNavigation";
 import { StepContainer } from "./form/StepContainer";
@@ -30,6 +31,8 @@ const getFieldsForStep = (step: number): (keyof FormData)[] => {
       return ["medications"];
     case 4:
       return ["hasGynecologist"]; // Step 5 - only for women
+    case 5:
+      return ["weeklyExerciseMinutes", "alcoholConsumption"]; // Step 6
     // Add more cases for other steps
     default:
       return [];
@@ -48,6 +51,9 @@ export function MultiStepForm() {
       medications: [],
       hasGynecologist: undefined,
       bookGynecologyExam: undefined,
+      weeklyExerciseMinutes: undefined,
+      weeklyCigarettes: undefined,
+      alcoholConsumption: undefined,
     },
   });
 
@@ -103,7 +109,7 @@ export function MultiStepForm() {
       case 4:
         return <Step5WomenOnly />;
       case 5:
-        return <PlaceholderStep stepNumber={6} />;
+        return <Step6Lifestyle />;
       case 6:
         return <PlaceholderStep stepNumber={7} />;
       case 7:
