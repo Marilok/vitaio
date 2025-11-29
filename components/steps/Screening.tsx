@@ -49,35 +49,39 @@ export function Screening() {
             {
               name: "hadCervicalCancerScreening",
               show: eligibility.showCervicalCancerScreening,
-              label: "Gynekolog + cytologie čípku (každý rok)",
-              description: "15+ let: preventivní gynekologické vyšetření",
+              label: "Gynekolog + cytologie čípku v posledním roce",
+              description:
+                "Od 15 let je preventivní gynekologické vyšetření hrazeno ZP 1× ročně",
             },
             {
               name: "hadBreastCancerScreening",
               show: eligibility.showBreastCancerScreening,
-              label: "Mamografie (1× za 2 roky)",
-              description: "45+ let: screeningové vyšetření prsů",
+              label: "Mamografie v posledních 2 letech",
+              description:
+                "Od 45 let je screeningové vyšetření prsů hrazeno ZP 1× za 2 roky",
             },
             {
               name: "hadColorectalCancerScreening",
               show: eligibility.showColorectalCancerScreening,
-              label: "Kolonoskopie",
-              description: "50+ let: screening kolorektálního karcinomu",
+              label: "Kolonoskopie v posledních 10 letech",
+              description:
+                "Od 50 let je screening kolorektálního karcinomu hrazen ZP 1× za 10 let",
             },
             {
               name: "hadOccultBloodTest",
               show: eligibility.showOccultBloodTest,
-              label: "Test okultního krvácení stolice (TOKS)",
+              label: "Test okultního krvácení stolice (TOKS) za poslední rok",
               description:
                 age && age >= 55
-                  ? "55+ let: hrazeno 2× ročně"
-                  : "50-54 let: hrazeno 1× ročně",
+                  ? "Od 55 let je TOKS hrazeno 2× ročně ZP"
+                  : "Mezi 50-54 lety je TOKS hrazeno 1× ročně ZP",
             },
             {
               name: "hadProstateScreening",
               show: eligibility.showProstateScreening,
               label: "PSA screening prostaty (pilotní program)",
-              description: "50–69 let: preventivní vyšetření prostaty",
+              description:
+                "Mezi 50–69 lety je preventivní vyšetření prostaty hrazeno ZP jednou za 2 roky",
             },
             {
               name: "hadLungCancerScreening",
@@ -88,7 +92,7 @@ export function Screening() {
                   cigarettePacksPerWeek,
                   smokingYears
                 );
-                return `55–74 let: screening karcinomu plic (≥20 balíčkoroky)${
+                return `Mezi 55–74 lety je screening karcinomu plic (≥20 balíčkoroky) hrazen ZP${
                   packYears > 0 ? ` - Vaše balíčkoroky: ${packYears}` : ""
                 }`;
               })(),

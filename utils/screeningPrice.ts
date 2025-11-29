@@ -35,13 +35,13 @@ export function getScreeningPrice(
     3: {
       isEligible: eligibility.showCervicalCancerScreening,
       hasCompleted: formData.hadCervicalCancerScreening || false,
-      reason: "Screeningový program pro ženy 15+ let",
+      reason: "Screeningový program placený ženám od 15 let",
     },
     // ID 4 - Mamografie (breast cancer screening)
     4: {
       isEligible: eligibility.showBreastCancerScreening,
       hasCompleted: formData.hadBreastCancerScreening || false,
-      reason: "Screeningový program pro ženy 45+ let",
+      reason: "Screeningový program dostupný pro ženy od 45 let",
     },
     // ID 5 - Kolonoskopie (colorectal cancer screening)
     5: {
@@ -49,8 +49,8 @@ export function getScreeningPrice(
       hasCompleted: formData.hadColorectalCancerScreening || false,
       reason:
         formData.gender === "female"
-          ? "Screeningový program pro ženy 50+ let"
-          : "Screeningový program pro muže 50+ let",
+          ? "Máte nárok na screeningový program pro ženy od 50 let"
+          : "Máte nárok na screeningový program pro muže od 50 let",
     },
     // ID 6 - Test okultního krvácení stolice (TOKS)
     6: {
@@ -58,21 +58,22 @@ export function getScreeningPrice(
       hasCompleted: formData.hadOccultBloodTest || false,
       reason:
         (formData.age || 0) >= 55
-          ? "Screeningový program: hrazeno 2× ročně"
-          : "Screeningový program: hrazeno 1× ročně",
+          ? "Screeningový program je pro Vás hrazen 2× ročně"
+          : "Screeningový program je pro Vás hrazen 1× ročně",
     },
     // ID 1 - Vyšetření prostaty (prostate screening) - this might not be in optional, check if needed
     1: {
       isEligible: eligibility.showProstateScreening,
       hasCompleted: formData.hadProstateScreening || false,
-      reason: "Pilotní screeningový program pro muže 50–69 let",
+      reason:
+        "Můžete čerpat z pilotního screeningového programu pro muže 50–69 let",
     },
     // ID 2 - CT plic (lung cancer screening)
     2: {
       isEligible: eligibility.showLungCancerScreening,
       hasCompleted: formData.hadLungCancerScreening || false,
       reason:
-        "Screeningový program pro kuřáky 55–74 let (≥20 balíčkoroky) - hrazeno 1× ročně",
+        "Screeningový program určený pro kuřáky ve věku 55–74 let (s více než 20 balíčkoroky), hrazený 1× ročně",
     },
   };
 

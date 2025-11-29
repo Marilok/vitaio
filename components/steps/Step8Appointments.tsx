@@ -10,11 +10,11 @@ import {
   Card,
   Checkbox,
   Group,
-  Anchor,
   Box,
   Badge,
 } from "@mantine/core";
-import { IconExternalLink } from "@tabler/icons-react";
+
+import { AppointmentCard } from "./AppointmentCard";
 import { FormData } from "@/types/form";
 import appointmentsData from "@/db/appointments.json";
 import { getScreeningEligibility } from "@/utils/priority";
@@ -268,144 +268,41 @@ export function Step8Appointments() {
                 <Text size="sm" c="dimmed" mb="md">
                   Vyberte další vyšetření, která byste chtěli absolvovat.
                 </Text>
-                <Grid>
+                <Box
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "1rem",
+                    alignItems: "stretch",
+                  }}
+                >
                   {examinationAppointments.map((appointment) => {
                     const isSelected = field.value.includes(appointment.id);
-                    const priority = appointment.priority;
 
-                    // Determine badge based on priority
-                    let priorityBadge = null;
-                    if (priority >= PRIORITY_THRESHOLD_HIGH) {
-                      priorityBadge = (
-                        <Badge size="sm" variant="filled" color="red">
-                          Silně doporučeno
-                        </Badge>
-                      );
-                    } else if (priority >= PRIORITY_THRESHOLD_LOW) {
-                      priorityBadge = (
-                        <Badge size="sm" variant="filled" color="orange">
-                          Doporučeno
-                        </Badge>
-                      );
-                    }
+                    const handleToggleSelection = (appointmentId: number) => {
+                      const newValue = isSelected
+                        ? field.value.filter(
+                            (id: number) => id !== appointmentId
+                          )
+                        : [...field.value, appointmentId];
+                      field.onChange(newValue);
+                    };
 
                     return (
-                      <Grid.Col
+                      <AppointmentCard
                         key={appointment.id}
-                        span={{ base: 12, sm: 6, md: 4 }}
-                        style={{ display: "flex" }}
-                      >
-                        <Card
-                          shadow="sm"
-                          padding="lg"
-                          radius="md"
-                          withBorder
-                          style={{
-                            cursor: "pointer",
-                            transition: "all 0.2s ease",
-                            borderColor:
-                              priority >= PRIORITY_THRESHOLD_HIGH
-                                ? "var(--mantine-color-red-4)"
-                                : priority >= PRIORITY_THRESHOLD_LOW
-                                ? "var(--mantine-color-orange-4)"
-                                : undefined,
-                            borderWidth: 1,
-                            backgroundColor: isSelected
-                              ? priority >= PRIORITY_THRESHOLD_HIGH
-                                ? "var(--mantine-color-red-0)"
-                                : "var(--mantine-color-orange-0)"
-                              : "white",
-                            position: "relative",
-                            width: "100%",
-                            display: "flex",
-                            flexDirection: "column",
-                          }}
-                          onClick={() => {
-                            const newValue = isSelected
-                              ? field.value.filter(
-                                  (id: number) => id !== appointment.id
-                                )
-                              : [...field.value, appointment.id];
-                            field.onChange(newValue);
-                          }}
-                        >
-                          {priorityBadge && <Box mb="sm">{priorityBadge}</Box>}
-                          <Group
-                            justify="space-between"
-                            align="flex-start"
-                            mb="xs"
-                          >
-                            <Box style={{ flex: 1 }}>
-                              <Text fw={500} size="md" mb="xs">
-                                {appointment.name}
-                              </Text>
-                              {(() => {
-                                const screeningPrice = getScreeningPrice(
-                                  appointment.id,
-                                  formData
-                                );
-                                if (screeningPrice.isFree) {
-                                  return (
-                                    <>
-                                      <Text size="lg" fw={700} c="green">
-                                        ZDARMA
-                                      </Text>
-                                      <Text size="xs" c="dimmed">
-                                        {screeningPrice.reason}
-                                      </Text>
-                                    </>
-                                  );
-                                } else if (appointment.price) {
-                                  return (
-                                    <Text size="lg" fw={600} c="blue">
-                                      {appointment.price.toLocaleString(
-                                        "cs-CZ"
-                                      )}{" "}
-                                      Kč
-                                    </Text>
-                                  );
-                                }
-                                return null;
-                              })()}
-                            </Box>
-                            <Checkbox
-                              checked={isSelected}
-                              onChange={() => {
-                                const newValue = isSelected
-                                  ? field.value.filter(
-                                      (id: number) => id !== appointment.id
-                                    )
-                                  : [...field.value, appointment.id];
-                                field.onChange(newValue);
-                              }}
-                              onClick={(e) => e.stopPropagation()}
-                              size="md"
-                            />
-                          </Group>
-                          {appointment.description && (
-                            <Text size="sm" c="dimmed" mb="md">
-                              {appointment.description}
-                            </Text>
-                          )}
-                          {appointment.url && (
-                            <Anchor
-                              href={appointment.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              size="sm"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <Group gap="xs" align="center">
-                                <Text size="sm">Dozvědět se více</Text>
-                                <IconExternalLink size={14} />
-                              </Group>
-                            </Anchor>
-                          )}
-                        </Card>
-                      </Grid.Col>
+                        appointment={appointment}
+                        isSelected={isSelected}
+                        formData={formData}
+                        onToggleSelection={handleToggleSelection}
+                        priorityThresholds={{
+                          high: PRIORITY_THRESHOLD_HIGH,
+                          low: PRIORITY_THRESHOLD_LOW,
+                        }}
+                      />
                     );
                   })}
-                </Grid>
+                </Box>
               </Box>
             )}
 
@@ -418,144 +315,39 @@ export function Step8Appointments() {
                 <Text size="sm" c="dimmed" mb="md">
                   Vyberte konzultace s odborníky.
                 </Text>
-                <Grid>
+                <Box
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "1rem",
+                    alignItems: "stretch",
+                  }}
+                >
                   {consultationAppointments.map((appointment) => {
                     const isSelected = field.value.includes(appointment.id);
-                    const priority = appointment.priority;
-
-                    // Determine badge based on priority
-                    let priorityBadge = null;
-                    if (priority >= PRIORITY_THRESHOLD_HIGH) {
-                      priorityBadge = (
-                        <Badge size="sm" variant="filled" color="red">
-                          Silně doporučeno
-                        </Badge>
-                      );
-                    } else if (priority >= PRIORITY_THRESHOLD_LOW) {
-                      priorityBadge = (
-                        <Badge size="sm" variant="filled" color="orange">
-                          Doporučeno
-                        </Badge>
-                      );
-                    }
 
                     return (
-                      <Grid.Col
+                      <AppointmentCard
                         key={appointment.id}
-                        span={{ base: 12, sm: 6, md: 4 }}
-                        style={{ display: "flex" }}
-                      >
-                        <Card
-                          shadow="sm"
-                          padding="lg"
-                          radius="md"
-                          withBorder
-                          style={{
-                            cursor: "pointer",
-                            transition: "all 0.2s ease",
-                            borderColor:
-                              priority >= PRIORITY_THRESHOLD_HIGH
-                                ? "var(--mantine-color-red-4)"
-                                : priority >= PRIORITY_THRESHOLD_LOW
-                                ? "var(--mantine-color-orange-4)"
-                                : undefined,
-                            borderWidth: 1,
-                            backgroundColor: isSelected
-                              ? priority >= PRIORITY_THRESHOLD_HIGH
-                                ? "var(--mantine-color-red-0)"
-                                : "var(--mantine-color-orange-0)"
-                              : "white",
-                            position: "relative",
-                            width: "100%",
-                            display: "flex",
-                            flexDirection: "column",
-                          }}
-                          onClick={() => {
-                            const newValue = isSelected
-                              ? field.value.filter(
-                                  (id: number) => id !== appointment.id
-                                )
-                              : [...field.value, appointment.id];
-                            field.onChange(newValue);
-                          }}
-                        >
-                          {priorityBadge && <Box mb="sm">{priorityBadge}</Box>}
-                          <Group
-                            justify="space-between"
-                            align="flex-start"
-                            mb="xs"
-                          >
-                            <Box style={{ flex: 1 }}>
-                              <Text fw={500} size="md" mb="xs">
-                                {appointment.name}
-                              </Text>
-                              {(() => {
-                                const screeningPrice = getScreeningPrice(
-                                  appointment.id,
-                                  formData
-                                );
-                                if (screeningPrice.isFree) {
-                                  return (
-                                    <>
-                                      <Text size="lg" fw={700} c="green">
-                                        ZDARMA
-                                      </Text>
-                                      <Text size="xs" c="dimmed">
-                                        {screeningPrice.reason}
-                                      </Text>
-                                    </>
-                                  );
-                                } else if (appointment.price) {
-                                  return (
-                                    <Text size="lg" fw={600} c="blue">
-                                      {appointment.price.toLocaleString(
-                                        "cs-CZ"
-                                      )}{" "}
-                                      Kč
-                                    </Text>
-                                  );
-                                }
-                                return null;
-                              })()}
-                            </Box>
-                            <Checkbox
-                              checked={isSelected}
-                              onChange={() => {
-                                const newValue = isSelected
-                                  ? field.value.filter(
-                                      (id: number) => id !== appointment.id
-                                    )
-                                  : [...field.value, appointment.id];
-                                field.onChange(newValue);
-                              }}
-                              onClick={(e) => e.stopPropagation()}
-                              size="md"
-                            />
-                          </Group>
-                          {appointment.description && (
-                            <Text size="sm" c="dimmed" mb="md">
-                              {appointment.description}
-                            </Text>
-                          )}
-                          {appointment.url && (
-                            <Anchor
-                              href={appointment.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              size="sm"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <Group gap="xs" align="center">
-                                <Text size="sm">Dozvědět se více</Text>
-                                <IconExternalLink size={14} />
-                              </Group>
-                            </Anchor>
-                          )}
-                        </Card>
-                      </Grid.Col>
+                        appointment={appointment}
+                        isSelected={isSelected}
+                        formData={formData}
+                        priorityThresholds={{
+                          high: PRIORITY_THRESHOLD_HIGH,
+                          low: PRIORITY_THRESHOLD_LOW,
+                        }}
+                        onToggleSelection={(appointmentId: number) => {
+                          const newValue = isSelected
+                            ? field.value.filter(
+                                (id: number) => id !== appointmentId
+                              )
+                            : [...field.value, appointmentId];
+                          field.onChange(newValue);
+                        }}
+                      />
                     );
                   })}
-                </Grid>
+                </Box>
               </Box>
             )}
 
@@ -568,144 +360,39 @@ export function Step8Appointments() {
                 <Text size="sm" c="dimmed" mb="md">
                   Vyberte poradenství pro zdravý životní styl.
                 </Text>
-                <Grid>
+                <Box
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "1rem",
+                    alignItems: "stretch",
+                  }}
+                >
                   {counselingAppointments.map((appointment) => {
                     const isSelected = field.value.includes(appointment.id);
-                    const priority = appointment.priority;
-
-                    // Determine badge based on priority
-                    let priorityBadge = null;
-                    if (priority >= PRIORITY_THRESHOLD_HIGH) {
-                      priorityBadge = (
-                        <Badge size="sm" variant="filled" color="red">
-                          Silně doporučeno
-                        </Badge>
-                      );
-                    } else if (priority >= PRIORITY_THRESHOLD_LOW) {
-                      priorityBadge = (
-                        <Badge size="sm" variant="filled" color="orange">
-                          Doporučeno
-                        </Badge>
-                      );
-                    }
 
                     return (
-                      <Grid.Col
+                      <AppointmentCard
                         key={appointment.id}
-                        span={{ base: 12, sm: 6, md: 4 }}
-                        style={{ display: "flex" }}
-                      >
-                        <Card
-                          shadow="sm"
-                          padding="lg"
-                          radius="md"
-                          withBorder
-                          style={{
-                            cursor: "pointer",
-                            transition: "all 0.2s ease",
-                            borderColor:
-                              priority >= PRIORITY_THRESHOLD_HIGH
-                                ? "var(--mantine-color-red-4)"
-                                : priority >= PRIORITY_THRESHOLD_LOW
-                                ? "var(--mantine-color-orange-4)"
-                                : undefined,
-                            borderWidth: 1,
-                            backgroundColor: isSelected
-                              ? priority >= PRIORITY_THRESHOLD_HIGH
-                                ? "var(--mantine-color-red-0)"
-                                : "var(--mantine-color-orange-0)"
-                              : "white",
-                            position: "relative",
-                            width: "100%",
-                            display: "flex",
-                            flexDirection: "column",
-                          }}
-                          onClick={() => {
-                            const newValue = isSelected
-                              ? field.value.filter(
-                                  (id: number) => id !== appointment.id
-                                )
-                              : [...field.value, appointment.id];
-                            field.onChange(newValue);
-                          }}
-                        >
-                          {priorityBadge && <Box mb="sm">{priorityBadge}</Box>}
-                          <Group
-                            justify="space-between"
-                            align="flex-start"
-                            mb="xs"
-                          >
-                            <Box style={{ flex: 1 }}>
-                              <Text fw={500} size="md" mb="xs">
-                                {appointment.name}
-                              </Text>
-                              {(() => {
-                                const screeningPrice = getScreeningPrice(
-                                  appointment.id,
-                                  formData
-                                );
-                                if (screeningPrice.isFree) {
-                                  return (
-                                    <>
-                                      <Text size="lg" fw={700} c="green">
-                                        ZDARMA
-                                      </Text>
-                                      <Text size="xs" c="dimmed">
-                                        {screeningPrice.reason}
-                                      </Text>
-                                    </>
-                                  );
-                                } else if (appointment.price) {
-                                  return (
-                                    <Text size="lg" fw={600} c="blue">
-                                      {appointment.price.toLocaleString(
-                                        "cs-CZ"
-                                      )}{" "}
-                                      Kč
-                                    </Text>
-                                  );
-                                }
-                                return null;
-                              })()}
-                            </Box>
-                            <Checkbox
-                              checked={isSelected}
-                              onChange={() => {
-                                const newValue = isSelected
-                                  ? field.value.filter(
-                                      (id: number) => id !== appointment.id
-                                    )
-                                  : [...field.value, appointment.id];
-                                field.onChange(newValue);
-                              }}
-                              onClick={(e) => e.stopPropagation()}
-                              size="md"
-                            />
-                          </Group>
-                          {appointment.description && (
-                            <Text size="sm" c="dimmed" mb="md">
-                              {appointment.description}
-                            </Text>
-                          )}
-                          {appointment.url && (
-                            <Anchor
-                              href={appointment.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              size="sm"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <Group gap="xs" align="center">
-                                <Text size="sm">Dozvědět se více</Text>
-                                <IconExternalLink size={14} />
-                              </Group>
-                            </Anchor>
-                          )}
-                        </Card>
-                      </Grid.Col>
+                        appointment={appointment}
+                        isSelected={isSelected}
+                        formData={formData}
+                        priorityThresholds={{
+                          high: PRIORITY_THRESHOLD_HIGH,
+                          low: PRIORITY_THRESHOLD_LOW,
+                        }}
+                        onToggleSelection={(appointmentId: number) => {
+                          const newValue = isSelected
+                            ? field.value.filter(
+                                (id: number) => id !== appointmentId
+                              )
+                            : [...field.value, appointmentId];
+                          field.onChange(newValue);
+                        }}
+                      />
                     );
                   })}
-                </Grid>
+                </Box>
               </Box>
             )}
 

@@ -13,7 +13,18 @@ const theme = createTheme({
 
   primaryColor: "mou-orange",
   colors: {
-    "mou-orange": colorsTuple("#f04600"),
+    "mou-orange": [
+      "#ffefe4",
+      "#ffddce",
+      "#ffb99c",
+      "#fe9265",
+      "#fe7138",
+      "#fe5d1b",
+      "#fe520c",
+      "#f04600",
+      "#cb3900",
+      "#b12e00",
+    ],
     "mou-blue": [
       "#e5f9ff",
       "#d0eeff",
