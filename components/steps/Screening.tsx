@@ -5,7 +5,7 @@ import { Stack, Title, Text, Checkbox, Box } from "@mantine/core";
 import { FormData } from "@/types/form";
 import { getScreeningEligibility } from "@/utils/priority";
 
-export function Step7Screening() {
+export function Screening() {
   const {
     control,
     watch,

@@ -2,13 +2,12 @@
 
 import { useForm, FormProvider } from "react-hook-form";
 import { Paper, Stack } from "@mantine/core";
-import { Step1BasicInfo } from "./steps/Step1BasicInfo";
-import { Step2Symptoms } from "./steps/Step2Symptoms";
-import { Step3FamilyHistory } from "./steps/Step3FamilyHistory";
-import { Step4Medications } from "./steps/Step4Medications";
-import { Step5WomenOnly } from "./steps/Step5WomenOnly";
-import { Step6Lifestyle } from "./steps/Step6Lifestyle";
-import { Step7Screening } from "./steps/Step7Screening";
+import { BasicInfo } from "./steps/BasicInfo";
+import { SymptomsAndFamily } from "./steps/SymptomsAndFamily";
+import { Medications } from "./steps/Medications";
+import { WomenOnly } from "./steps/WomenOnly";
+import { Lifestyle } from "./steps/Lifestyle";
+import { Screening } from "./steps/Screening";
 import { FormProgress } from "./form/FormProgress";
 import { FormNavigation } from "./form/FormNavigation";
 import { StepContainer } from "./form/StepContainer";
@@ -26,20 +25,18 @@ const getFieldsForStep = (step: number): (keyof FormData)[] => {
     case 0:
       return ["gender", "age"];
     case 1:
-      return []; // No required fields in step 2
+      return []; // No required fields in step 2 (symptoms + family history)
     case 2:
-      return []; // No required fields in step 3
+      return []; // No required fields in step 3 (medications)
     case 3:
-      return []; // No required fields in step 4 (medications optional)
+      return ["hasGynecologist"]; // Step 4 - only for women
     case 4:
-      return ["hasGynecologist"]; // Step 5 - only for women
-    case 5:
       return [
         "height",
         "weight",
         "weeklyExerciseMinutes",
         "alcoholConsumption",
-      ]; // Step 6
+      ]; // Step 5
     // Add more cases for other steps
     default:
       return [];
@@ -81,8 +78,8 @@ export function MultiStepForm() {
   const shouldSkipStep = (step: number): boolean => {
     const gender = getValues("gender");
 
-    // Step 5 (index 4) is only for women
-    if (step === 4 && gender === "male") {
+    // Step 4 (index 3) is only for women
+    if (step === 3 && gender === "male") {
       return true;
     }
 
@@ -115,19 +112,19 @@ export function MultiStepForm() {
   const renderStepContent = () => {
     switch (activeStep) {
       case 0:
-        return <Step1BasicInfo />;
+        return <BasicInfo />;
       case 1:
-        return <Step2Symptoms />;
+        return <SymptomsAndFamily />;
       case 2:
-        return <Step3FamilyHistory />;
+        return <Medications />;
       case 3:
-        return <Step4Medications />;
+        return <WomenOnly />;
       case 4:
-        return <Step5WomenOnly />;
+        return <Lifestyle />;
       case 5:
-        return <Step6Lifestyle />;
+        return <Screening />;
       case 6:
-        return <Step7Screening />;
+        return <PlaceholderStep stepNumber={7} />;
       case 7:
         return <PlaceholderStep stepNumber={8} />;
       case 8:

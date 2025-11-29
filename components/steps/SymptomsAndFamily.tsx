@@ -4,7 +4,7 @@ import { useFormContext, Controller } from "react-hook-form";
 import { Stack, Title, Text, Checkbox, Box } from "@mantine/core";
 import { FormData } from "@/types/form";
 
-export function Step3FamilyHistory() {
+export function SymptomsAndFamily() {
   const {
     control,
     formState: { errors },
@@ -14,12 +14,33 @@ export function Step3FamilyHistory() {
     <Stack gap="lg" pt="md">
       <Box>
         <Title order={3} mb="xs">
-          Rodinná anamnéza
+          Příznaky a rodinná anamnéza
         </Title>
         <Text size="sm" c="dimmed">
-          Prosím odpovězte na následující otázku o výskytu nádorů v rodině
+          Prosím odpovězte na následující otázky
         </Text>
       </Box>
+
+      <Controller
+        name="hasRectalBleeding"
+        control={control}
+        render={({ field: { value, onChange, ...field } }) => (
+          <Box>
+            <Checkbox
+              {...field}
+              checked={value || false}
+              onChange={(event) => onChange(event.currentTarget.checked)}
+              label="Měl(a) jsem krvácení stolice"
+              error={errors.hasRectalBleeding?.message}
+            />
+            {errors.hasRectalBleeding && (
+              <Text size="sm" c="red" mt="xs">
+                {errors.hasRectalBleeding.message}
+              </Text>
+            )}
+          </Box>
+        )}
+      />
 
       <Controller
         name="hasFamilyCancerHistory"
