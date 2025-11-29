@@ -758,13 +758,17 @@ export function Step8Appointments() {
                     // Base price for mandatory package
                     let totalPrice = 10000;
 
-                    // Add prices of selected optional appointments
+                    // Add prices of selected optional appointments (excluding free screenings)
                     field.value.forEach((id: number) => {
                       const appointment = appointments.find(
                         (a) => a.id === id && a.type === "optional"
                       );
-                      if (appointment?.price) {
-                        totalPrice += appointment.price;
+                      if (appointment) {
+                        // Check if this is a free screening
+                        const screeningPrice = getScreeningPrice(id, formData);
+                        if (!screeningPrice.isFree && appointment.price) {
+                          totalPrice += appointment.price;
+                        }
                       }
                     });
 
