@@ -24,13 +24,13 @@ import "dayjs/locale/cs";
 import { FormData } from "@/types/form";
 import { transformAppointmentsToScreenings } from "@/utils/appointmentsMapping";
 import { translateExaminationName } from "@/utils/examinationTranslations";
+import appointmentsData from "@/db/appointments.json";
 
 // Set Czech locale for dayjs
 dayjs.locale("cs");
 
 interface ExaminationType {
   id: number;
-  name: string;
   description: string;
 }
 
@@ -185,8 +185,55 @@ export function Step9Appointments() {
 
   // Update form field when booked appointments change
   useEffect(() => {
+    console.log("💾 Ukládám bookedAppointments:", bookedAppointments);
     setValue("bookedAppointments", bookedAppointments);
   }, [bookedAppointments, setValue]);
+
+  // Update appointmentData with full details when booked appointments change
+  useEffect(() => {
+    console.log("🔄 Aktualizace appointmentData...");
+    console.log("  📦 Rezervované termíny (bookedAppointments):", bookedAppointments);
+    console.log("  🗂️ Doporučené sloty (recommendedSlots):", recommendedSlots);
+    
+    const fullAppointmentData = bookedAppointments.map((apt) => {
+      // Find examination name from recommendedSlots
+      let examinationName = "";
+      for (const [name, slots] of Object.entries(recommendedSlots)) {
+        if (slots.some((slot) => slot.examination_type_id === apt.examination_type_id)) {
+          examinationName = name;
+          break;
+        }
+      }
+
+      // Find appointment details from appointments.json
+      const appointmentDetails = appointmentsData.find(
+        (app) => app.id === apt.appointmentTypeId
+      );
+
+      const result = {
+        id: apt.appointmentTypeId,
+        examinationName: translateExaminationName(examinationName),
+        dateTime: apt.dateTime,
+        slotId: apt.slotId,
+        examination_type_id: apt.examination_type_id,
+        minutes: apt.minutes || 30,
+        isManuallySelected: apt.isManuallySelected || false,
+      };
+
+      console.log(`  ✅ Vytvořen záznam pro vyšetření:`, {
+        id: result.id,
+        examinace: result.examinationName,
+        čas: dayjs(result.dateTime).format("D.M.YYYY v HH:mm"),
+        ručně_vybrané: result.isManuallySelected,
+      });
+
+      return result;
+    });
+
+    setValue("appointmentData", fullAppointmentData);
+    console.log("📅 ✨ KOMPLETNÍ DATA ULOŽENA DO appointmentData:", fullAppointmentData);
+    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+  }, [bookedAppointments, recommendedSlots, setValue]);
 
   // Helper functions for appointment management
   const getRequestedAppointments = () => {
@@ -316,13 +363,24 @@ export function Step9Appointments() {
       isManuallySelected: true, // Uživatel ručně vybral
     };
 
+    console.log("🎯 Uživatel vybral slot:", {
+      vyšetření: translateExaminationName(examinationName),
+      čas: dayjs(dateTime).format("D.M.YYYY v HH:mm"),
+      slotId,
+      examination_type_id: examinationTypeId,
+      minuty: minutes,
+      ručně_vybráno: true,
+    });
+
     setBookedAppointments((prev) => {
       // Remove any previous selection for this examination type
       const filtered = prev.filter((apt) => {
         // Check if this appointment belongs to the same examination type
         return apt.examination_type_id !== examinationTypeId;
       });
-      return [...filtered, newSelection];
+      const updated = [...filtered, newSelection];
+      console.log("📋 Aktualizované rezervované termíny:", updated);
+      return updated;
     });
 
     setSelectedSlot(slotId);
@@ -863,50 +921,6 @@ export function Step9Appointments() {
                 <Text c="dimmed" size="sm" ta="center" mt="md">
                   Vyberte vyšetření pro zobrazení dostupných časů
                 </Text>
-              )}
-
-              {selectedDate && selectedDateSlots.length > 0 && (
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr 1fr 1fr",
-                    gap: "8px",
-                    maxHeight: 400,
-                    overflow: "auto",
-                  }}
-                >
-                  {selectedDateSlots.map((slot) => (
-                    <Card
-                      key={slot.id}
-                      withBorder
-                      padding="sm"
-                      style={{
-                        cursor: "pointer",
-                        backgroundColor:
-                          selectedSlot === slot.id
-                            ? "var(--mantine-primary-color-light)"
-                            : "var(--mantine-color-gray-0)",
-                        borderColor:
-                          selectedSlot === slot.id
-                            ? "var(--mantine-primary-color-filled)"
-                            : "var(--mantine-color-gray-3)",
-                        borderWidth: 2,
-                        textAlign: "center",
-                      }}
-                      onClick={() => {
-                        if (selectedSlot === slot.id) {
-                          setSelectedSlot(null);
-                        } else {
-                          handleSlotSelection(slot.id, slot.dateTime);
-                        }
-                      }}
-                    >
-                      <Text fw={selectedSlot === slot.id ? 600 : 500} size="sm">
-                        {dayjs(slot.dateTime).format("HH:mm")}
-                      </Text>
-                    </Card>
-                  ))}
-                </div>
               )}
             </Stack>
           </Group>
