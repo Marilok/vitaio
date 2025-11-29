@@ -4,97 +4,97 @@
     "name": "Vyšetření prostaty",
     "description": "Preventivní vyšetření prostaty včetně PSA testu",
     "type": "mandatory",
-    "url": "https://example.com/prostate-screening"
+    "url": "https://www.mou.cz/centrum-pro-nadory-prostaty/t1311"
   },
   {
     "id": 2,
     "name": "CT plic",
     "description": "Low-dose CT vyšetření plic pro detekci rakoviny",
     "type": "mandatory",
-    "url": "https://example.com/lung-ct"
+    "url": "https://www.mou.cz/program-casneho-zachytu-karcinomu-plic/t1852"
   },
   {
     "id": 3,
     "name": "Gynekologické vyšetření",
     "description": "Komplexní gynekologické vyšetření",
     "type": "mandatory",
-    "url": "https://example.com/gynecology"
+    "url": "https://www.mou.cz/gynekologicke-vysetreni/t1388"
   },
   {
     "id": 4,
     "name": "Mamografie",
     "description": "Screeningové vyšetření prsů",
     "type": "mandatory",
-    "url": "https://example.com/mammography"
+    "url": "https://www.mou.cz/program-screeningu-karcinomu-prsu/t1888"
   },
   {
     "id": 5,
     "name": "Kolonoskopie",
     "description": "Vyšetření tlustého střeva pro prevenci kolorektálního karcinomu",
     "type": "mandatory",
-    "url": "https://example.com/colonoscopy"
+    "url": "https://www.mou.cz/vysetreni-tlusteho-streva-kolonoskopie/t1440"
   },
   {
     "id": 6,
     "name": "Test okultního krvácení stolice",
     "type": "optional",
     "description": "Neinvazivní vyšetření stolice určené k odhalení skrytého krvácení, které může signalizovat polypy či časné stádium kolorektálního karcinomu.",
-     "url": "https://example.com/occult-blood-test"
+     "url": "https://www.mou.cz/diagnostika-okultniho-krvaceni-do-stolice/t1373"
   },
   {
     "id": 7,
     "name": "Sigmoidoskopie",
     "type": "optional",
     "description": "Vyšetření dolní části tlustého střeva sloužící k časnému odhalení zánětů, polypů a prevenci kolorektálního karcinomu.",
-    "url": "https://example.com/sigmoidoscopy"
+    "url": "https://www.mou.cz/gastroenterologicke-oddeleni/t1360"
   },
   {
     "id": 8,
     "name": "Gastroenterolog",
     "description": "Konzultace se specialistou na trávicí systém",
     "type": "optional",
-    "url": "https://example.com/gastroenterologist"
+    "url": "https://www.mou.cz/gastroenterologicke-oddeleni/t1360"
   },
   {
     "id": 9,
     "name": "Gynekolog",
     "description": "Gynekologická konzultace",
     "type": "optional",
-    "url": "https://example.com/gynecologist"
+    "url": "https://www.mou.cz/gynekologicke-vysetreni/t1388"
   },
   {
     "id": 10,
     "name": "Urolog",
     "description": "Urologická konzultace",
     "type": "optional",
-    "url": "https://example.com/urologist"
+    "url": "https://www.mou.cz/oddeleni-urologicke-onkologie/t1354"
   },
   {
     "id": 11,
     "name": "Praktický lékař",
     "description": "Konzultace s praktickým lékařem",
     "type": "optional",
-    "url": "https://example.com/general-practitioner"
+    "url": "https://www.mou.cz/lekari-a-farmaceuti/t1487"
   },
   {
     "id": 12,
     "name": "Onkolog",
     "description": "Onkologická konzultace",
     "type": "optional",
-    "url": "https://example.com/oncologist"
+    "url": "https://www.mou.cz/klinika-komplexni-onkologicke-pece/t1383"
   },
   {
     "id": 13,
     "name": "Radiolog",
     "description": "Radiologická konzultace",
     "type": "optional",
-    "url": "https://example.com/radiologist"
+    "url": "https://www.mou.cz/oddeleni-radiologie/t1362"
   },
   {
     "id": 14,
     "name": "Nutriční poradce",
     "description": "Konzultace s nutričním specialistou",
     "type": "optional",
-    "url": "https://example.com/nutritionist"
+    "url": "https://www.mou.cz/usek-lecebne-vyzivy/t1377"
   }
 ]
