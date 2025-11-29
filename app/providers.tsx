@@ -8,6 +8,7 @@ import { AppDataProvider } from "@/contexts/AppDataContext";
 
 const theme = createTheme({
   /** Your theme customization here */
+  fontFamily: "Arial, sans-serif",
   cursorType: "pointer",
 
   primaryColor: "mou-orange",

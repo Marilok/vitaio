@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm, FormProvider, Path } from "react-hook-form";
 import { Paper, Stack } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useAppData } from "@/contexts/AppDataContext";
@@ -32,7 +32,7 @@ const HEALTH_ASSESSMENT_STEPS = 5;
 const getHealthAssessmentFieldsForStep = (
   step: number,
   formValues?: Partial<FormData>
-): (keyof FormData)[] => {
+): Path<FormData>[] => {
   switch (step) {
     case 0:
       return ["gender", "age"];
@@ -42,7 +42,7 @@ const getHealthAssessmentFieldsForStep = (
       return []; // No required fields in step 3 (medications)
     case 3: {
       // Step 4 - Lifestyle: dynamically add fields based on checkbox state
-      const fields: (keyof FormData)[] = [
+      const fields: Path<FormData>[] = [
         "height",
         "weight",
         "weeklyExerciseMinutes",
@@ -274,7 +274,7 @@ function AppointmentsForm() {
     goToStep,
   } = useMultiStepForm({
     totalSteps: 3, // Step8Appointments, Step9Appointments, and ContactInfo
-    getFieldsForStep: (step: number) => {
+    getFieldsForStep: (step: number): Path<FormData>[] => {
       switch (step) {
         case 0:
           return []; // Step8Appointments - no required fields initially

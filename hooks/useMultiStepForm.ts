@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { UseFormTrigger } from "react-hook-form";
+import { UseFormTrigger, FieldValues, Path } from "react-hook-form";
 
-interface UseMultiStepFormProps<T> {
+interface UseMultiStepFormProps<T extends FieldValues> {
   totalSteps: number;
-  getFieldsForStep: (step: number) => (keyof T)[];
+  getFieldsForStep: (step: number) => Path<T>[];
   trigger: UseFormTrigger<T>;
   shouldSkipStep?: (step: number) => boolean;
 }
 
-export function useMultiStepForm<T>({
+export function useMultiStepForm<T extends FieldValues>({
   totalSteps,
   getFieldsForStep,
   trigger,
@@ -22,14 +22,14 @@ export function useMultiStepForm<T>({
 
   const findNextValidStep = (currentStep: number, forward: boolean): number => {
     let nextStep = forward ? currentStep + 1 : currentStep - 1;
-    
+
     while (nextStep >= 0 && nextStep < totalSteps) {
       if (!shouldSkipStep || !shouldSkipStep(nextStep)) {
         return nextStep;
       }
       nextStep = forward ? nextStep + 1 : nextStep - 1;
     }
-    
+
     return currentStep;
   };
 
@@ -71,5 +71,3 @@ export function useMultiStepForm<T>({
     goToStep,
   };
 }
-
-

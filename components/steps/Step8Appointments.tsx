@@ -310,12 +310,11 @@ export function Step8Appointments() {
                                 ? "var(--mantine-color-orange-4)"
                                 : undefined,
                             borderWidth: 1,
-                            backgroundColor:
-                              priority >= PRIORITY_THRESHOLD_HIGH
+                            backgroundColor: isSelected
+                              ? priority >= PRIORITY_THRESHOLD_HIGH
                                 ? "var(--mantine-color-red-0)"
-                                : priority >= PRIORITY_THRESHOLD_LOW
-                                ? "var(--mantine-color-orange-0)"
-                                : undefined,
+                                : "var(--mantine-color-orange-0)"
+                              : "white",
                             position: "relative",
                             width: "100%",
                             display: "flex",
@@ -461,12 +460,11 @@ export function Step8Appointments() {
                                 ? "var(--mantine-color-orange-4)"
                                 : undefined,
                             borderWidth: 1,
-                            backgroundColor:
-                              priority >= PRIORITY_THRESHOLD_HIGH
+                            backgroundColor: isSelected
+                              ? priority >= PRIORITY_THRESHOLD_HIGH
                                 ? "var(--mantine-color-red-0)"
-                                : priority >= PRIORITY_THRESHOLD_LOW
-                                ? "var(--mantine-color-orange-0)"
-                                : undefined,
+                                : "var(--mantine-color-orange-0)"
+                              : "white",
                             position: "relative",
                             width: "100%",
                             display: "flex",
@@ -612,12 +610,11 @@ export function Step8Appointments() {
                                 ? "var(--mantine-color-orange-4)"
                                 : undefined,
                             borderWidth: 1,
-                            backgroundColor:
-                              priority >= PRIORITY_THRESHOLD_HIGH
+                            backgroundColor: isSelected
+                              ? priority >= PRIORITY_THRESHOLD_HIGH
                                 ? "var(--mantine-color-red-0)"
-                                : priority >= PRIORITY_THRESHOLD_LOW
-                                ? "var(--mantine-color-orange-0)"
-                                : undefined,
+                                : "var(--mantine-color-orange-0)"
+                              : "white",
                             position: "relative",
                             width: "100%",
                             display: "flex",

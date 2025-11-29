@@ -14,12 +14,13 @@ export default function Home() {
   return (
     <Box
       style={{
-        minHeight: "100%",
+        minHeight: "calc(100vh - 80px)", // 80px is header height
         backgroundColor: "var(--mantine-primary-color-filled)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         position: "relative",
+        padding: "2rem 0",
       }}
     >
       <Container size="xl" py="xl">
@@ -74,20 +75,34 @@ export default function Home() {
                     background: "white",
                     color: "var(--mantine-primary-color-filled)",
                     fontSize: "1.1rem",
-                    padding: "1rem 2rem",
+                    padding: "1.25rem 2.5rem",
                     borderRadius: "50px",
                     border: "none",
                     fontWeight: 600,
                     boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2)",
                     transition: "all 0.3s ease",
                   }}
-                  className="hover:scale-105"
+                  styles={{
+                    root: {
+                      "&:hover": {
+                        transform: "scale(1.05)",
+                        boxShadow: "0 15px 40px rgba(0, 0, 0, 0.3)",
+                      },
+                    },
+                  }}
                 >
                   Vytvořit moje doporučení
                 </Button>
               </Anchor>
 
-              <Text size="sm" c={"white"} className="ml-16!">
+              <Text
+                size="sm"
+                c={"white"}
+                style={{
+                  marginLeft: "4rem",
+                  opacity: 0.9,
+                }}
+              >
                 Zabere přibližně 5-10 minut
               </Text>
             </Stack>
@@ -97,7 +112,7 @@ export default function Home() {
             style={{
               position: "relative",
               width: "100%",
-              height: "500px",
+              height: "550px",
             }}
           >
             <Image
@@ -107,8 +122,9 @@ export default function Home() {
               style={{
                 objectFit: "cover",
                 borderRadius: "20px",
-                boxShadow: "0 20px 40px rgba(0, 0, 0, 0.3)",
+                boxShadow: "0 20px 60px rgba(0, 0, 0, 0.4)",
               }}
+              priority
             />
           </Box>
         </Box>

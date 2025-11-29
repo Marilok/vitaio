@@ -29,7 +29,7 @@ export default function ConfirmationPage() {
   return (
     <Box
       style={{
-        minHeight: "100%",
+        minHeight: "calc(100vh - 80px)", // 80px is header height
         backgroundColor: "#4A7C59", // mou-green color
         display: "flex",
         alignItems: "center",
