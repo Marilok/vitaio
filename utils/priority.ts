@@ -1,5 +1,6 @@
 import { FormData } from "@/types/form";
 import { calculateBMI } from "./bmi";
+import { isEligibleForLungCancerScreening } from "./packYears";
 
 interface ScreeningEligibility {
   showProstateScreening: boolean;
@@ -14,7 +15,10 @@ interface ScreeningEligibility {
 export function getScreeningEligibility(
   gender: "male" | "female",
   age: number | undefined,
-  _hasFamilyCancerHistory: boolean | undefined
+  _hasFamilyCancerHistory: boolean | undefined,
+  isSmoker?: boolean,
+  cigarettePacksPerWeek?: number,
+  smokingYears?: number
 ): ScreeningEligibility {
   const patientAge = age || 0;
 
@@ -22,21 +26,25 @@ export function getScreeningEligibility(
   const womenGynecology = gender === "female" && patientAge >= 15; // 15+ let: gynekolog + cytologie čípku (zdarma)
   const womenMammography = gender === "female" && patientAge >= 45; // 45+ let: mamograf 1× za 2 roky (zdarma)
   const womenColorectal = gender === "female" && patientAge >= 50; // 50+ let: TOKS/kolonoskopie (zdarma)
-  const womenLungCancer =
-    gender === "female" && patientAge >= 55 && patientAge <= 74; // 55–74 let: CT plic pokud kuřačka (zdarma)
 
   // Muži kritéria
   const menColorectal = gender === "male" && patientAge >= 50; // 50+ let: TOKS/kolonoskopie (zdarma)
   const menProstate = gender === "male" && patientAge >= 50 && patientAge <= 69; // 50–69 let: PSA screening prostaty (zdarma)
-  const menLungCancer =
-    gender === "male" && patientAge >= 55 && patientAge <= 74; // 55–74 let: CT plic pokud kuřák (zdarma)
+
+  // CT plic - pro kuřáky/bývalé kuřáky s ≥20 balíčkoroky, věk 55-74 let
+  const lungCancerScreening = isEligibleForLungCancerScreening(
+    patientAge,
+    isSmoker,
+    cigarettePacksPerWeek,
+    smokingYears
+  );
 
   // Test okultního krvácení - 50+ let pro oba pohlaví
   const occultBloodTest = patientAge >= 50; // 50-54 let: 1x ročně, 55+ let: 2x ročně (zdarma)
 
   return {
     showProstateScreening: menProstate,
-    showLungCancerScreening: womenLungCancer || menLungCancer,
+    showLungCancerScreening: lungCancerScreening,
     showCervicalCancerScreening: womenGynecology,
     showBreastCancerScreening: womenMammography,
     showColorectalCancerScreening: womenColorectal || menColorectal,
@@ -80,7 +88,10 @@ export function calculatePriorityScore(data: FormData): number {
   const eligibility = getScreeningEligibility(
     data.gender,
     data.age,
-    data.hasFamilyCancerHistory
+    data.hasFamilyCancerHistory,
+    data.isSmoker,
+    data.cigarettePacksPerWeek,
+    data.smokingYears
   );
 
   if (eligibility.showProstateScreening && !data.hadProstateScreening) {
