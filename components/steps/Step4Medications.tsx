@@ -32,17 +32,10 @@ export function Step4Medications() {
       <Controller
         name="medications"
         control={control}
-        rules={{
-          required: "Prosím vyberte alespoň jeden lék nebo nechte prázdné",
-        }}
         render={({ field }) => (
           <MultiSelect
             {...field}
-            label={
-              <>
-                Užívané léky <RequiredIndicator />
-              </>
-            }
+            label="Užívané léky"
             placeholder="Vyberte léky"
             data={medicamentOptions}
             searchable
@@ -55,4 +48,3 @@ export function Step4Medications() {
     </Stack>
   );
 }
-

@@ -1,0 +1,38 @@
+{
+    "colonoscopy": {
+        "order": true,
+        "priority": 10
+    },
+    "geneticConsultation": {
+        "order": true,
+        "priority": 10
+    },
+    "gynecologicalExamination": {
+        "order": true,
+        "priority": 10
+    },
+    "healthyLifestyleCounseling": {
+        "order": true,
+        "priority": 10
+    },
+    "smokingCessationCounseling": {
+        "order": true,
+        "priority": 10
+    },
+    "addictionCounseling": {
+        "order": true,
+        "priority": 10
+    },
+    "physicalActivityCounseling": {
+        "order": true,
+        "priority": 10
+    },
+    "psaTest": {
+        "order": true,
+        "priority": 10
+    },
+    "mammography": {
+        "order": true,
+        "priority": 10
+    }
+}

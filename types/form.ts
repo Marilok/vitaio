@@ -15,8 +15,20 @@ export interface FormData {
   medications: string[];
 
   // Step 5 - Women Only
-  hasGynecologist?: boolean;
+  hasGynecologist?: string; // "yes" | "no"
   bookGynecologyExam?: boolean;
+
+  // Step 6 - Lifestyle
+  weeklyExerciseMinutes: number;
+  weeklyCigarettes?: number;
+  alcoholConsumption: string;
+
+  // Step 7 - Screening
+  hadProstateScreening?: boolean;
+  hadLungCancerScreening?: boolean;
+  hadCervicalCancerScreening?: boolean; // Only for women
+  hadBreastCancerScreening?: boolean; // Only for women
+  hadColorectalCancerScreening?: boolean;
 
   // Add more steps data as needed
 }

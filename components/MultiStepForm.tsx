@@ -7,6 +7,8 @@ import { Step2Symptoms } from "./steps/Step2Symptoms";
 import { Step3FamilyHistory } from "./steps/Step3FamilyHistory";
 import { Step4Medications } from "./steps/Step4Medications";
 import { Step5WomenOnly } from "./steps/Step5WomenOnly";
+import { Step6Lifestyle } from "./steps/Step6Lifestyle";
+import { Step7Screening } from "./steps/Step7Screening";
 import { FormProgress } from "./form/FormProgress";
 import { FormNavigation } from "./form/FormNavigation";
 import { StepContainer } from "./form/StepContainer";
@@ -21,15 +23,22 @@ const TOTAL_STEPS = 10;
 const getFieldsForStep = (step: number): (keyof FormData)[] => {
   switch (step) {
     case 0:
-      return ["gender", "age", "weight", "height"];
+      return ["gender", "age"];
     case 1:
       return []; // No required fields in step 2
     case 2:
       return []; // No required fields in step 3
     case 3:
-      return ["medications"];
+      return []; // No required fields in step 4 (medications optional)
     case 4:
       return ["hasGynecologist"]; // Step 5 - only for women
+    case 5:
+      return [
+        "height",
+        "weight",
+        "weeklyExerciseMinutes",
+        "alcoholConsumption",
+      ]; // Step 6
     // Add more cases for other steps
     default:
       return [];
@@ -48,6 +57,14 @@ export function MultiStepForm() {
       medications: [],
       hasGynecologist: undefined,
       bookGynecologyExam: undefined,
+      weeklyExerciseMinutes: undefined,
+      weeklyCigarettes: undefined,
+      alcoholConsumption: undefined,
+      hadProstateScreening: undefined,
+      hadLungCancerScreening: undefined,
+      hadCervicalCancerScreening: undefined,
+      hadBreastCancerScreening: undefined,
+      hadColorectalCancerScreening: undefined,
     },
   });
 
@@ -103,9 +120,9 @@ export function MultiStepForm() {
       case 4:
         return <Step5WomenOnly />;
       case 5:
-        return <PlaceholderStep stepNumber={6} />;
+        return <Step6Lifestyle />;
       case 6:
-        return <PlaceholderStep stepNumber={7} />;
+        return <Step7Screening />;
       case 7:
         return <PlaceholderStep stepNumber={8} />;
       case 8:
@@ -133,7 +150,7 @@ export function MultiStepForm() {
           isSubmitting,
         }}
       >
-        <Paper shadow="md" p="xl" radius="md">
+        <Paper shadow="md" p="xl" radius="md" miw="740px">
           <Stack gap="xl">
             <FormProgress />
 
