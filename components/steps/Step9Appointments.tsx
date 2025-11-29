@@ -703,81 +703,89 @@ export function Step9Appointments() {
 
             {/* Third Column: Time Slots */}
             <Stack gap="sm" style={{ flex: "1 1 auto", minWidth: 200 }}>
-              <Text fw={500} size="md">
-                {selectedDate &&
-                  `${dayjs(selectedDate).format("D. MMMM YYYY")}`}
-              </Text>
-
-              {selectedDate && selectedDateSlots.length === 0 && (
-                <Text c="dimmed" size="sm">
-                  Pro toto datum nejsou k dispozici žádné sloty
-                </Text>
-              )}
-
-              {selectedDate && selectedDateSlots.length > 0 && (
+              {getCurrentAppointment() ? (
                 <>
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "1fr 1fr",
-                      gap: "8px",
-                      maxHeight: 400,
-                      overflow: "auto",
-                    }}
-                  >
-                  {selectedDateSlots.map((slot) => {
-                    const slotIdString = slot.id.toString();
-                    const currentApt = getCurrentAppointment();
-                    const currentExaminationType = currentApt 
-                      ? (recommendedSlots[currentApt]?.[0]?.examination_type_id || null)
-                      : null;
-                    
-                    // Zkontrolovat, zda je slot v konfliktu s již rezervovanými termíny
-                    const isConflicting = currentExaminationType 
-                      ? isSlotConflictingWithBooked(slot, currentExaminationType)
-                      : false;
-                    
-                    return (
-                      <Card
-                        key={slot.id}
-                        withBorder
-                        padding="sm"
+                  <Text fw={500} size="md">
+                    {selectedDate &&
+                      `${dayjs(selectedDate).format("D. MMMM YYYY")}`}
+                  </Text>
+
+                  {selectedDate && selectedDateSlots.length === 0 && (
+                    <Text c="dimmed" size="sm">
+                      Pro toto datum nejsou k dispozici žádné sloty
+                    </Text>
+                  )}
+
+                  {selectedDate && selectedDateSlots.length > 0 && (
+                    <>
+                      <div
                         style={{
-                          cursor: isConflicting ? "not-allowed" : "pointer",
-                          backgroundColor:
-                            selectedSlot === slotIdString
-                              ? "var(--mantine-primary-color-light)"
-                              : "var(--mantine-color-gray-0)",
-                          borderColor:
-                            selectedSlot === slotIdString
-                              ? "var(--mantine-primary-color-filled)"
-                              : "var(--mantine-color-gray-3)",
-                          borderWidth: 2,
-                          textAlign: "center",
-                          opacity: isConflicting ? 0.4 : 1,
-                        }}
-                        onClick={() => {
-                          if (isConflicting) return; // Zabránit výběru konfliktního slotu
-                          
-                          if (selectedSlot === slotIdString) {
-                            setSelectedSlot(null);
-                          } else if (currentApt) {
-                            handleSlotSelection(slotIdString, slot.timeFrom, currentApt, slot.examination_type_id, slot.minutes);
-                          }
+                          display: "grid",
+                          gridTemplateColumns: "1fr 1fr",
+                          gap: "8px",
+                          maxHeight: 400,
+                          overflow: "auto",
                         }}
                       >
-                        <Text
-                          fw={selectedSlot === slotIdString ? 600 : 500}
-                          size="sm"
-                          c={isConflicting ? "dimmed" : undefined}
-                        >
-                          {dayjs(slot.timeFrom).format("HH:mm")}
-                        </Text>
-                      </Card>
-                    );
-                  })}
-                </div>
+                      {selectedDateSlots.map((slot) => {
+                        const slotIdString = slot.id.toString();
+                        const currentApt = getCurrentAppointment();
+                        const currentExaminationType = currentApt 
+                          ? (recommendedSlots[currentApt]?.[0]?.examination_type_id || null)
+                          : null;
+                        
+                        // Zkontrolovat, zda je slot v konfliktu s již rezervovanými termíny
+                        const isConflicting = currentExaminationType 
+                          ? isSlotConflictingWithBooked(slot, currentExaminationType)
+                          : false;
+                        
+                        return (
+                          <Card
+                            key={slot.id}
+                            withBorder
+                            padding="sm"
+                            style={{
+                              cursor: isConflicting ? "not-allowed" : "pointer",
+                              backgroundColor:
+                                selectedSlot === slotIdString
+                                  ? "var(--mantine-primary-color-light)"
+                                  : "var(--mantine-color-gray-0)",
+                              borderColor:
+                                selectedSlot === slotIdString
+                                  ? "var(--mantine-primary-color-filled)"
+                                  : "var(--mantine-color-gray-3)",
+                              borderWidth: 2,
+                              textAlign: "center",
+                              opacity: isConflicting ? 0.4 : 1,
+                            }}
+                            onClick={() => {
+                              if (isConflicting) return; // Zabránit výběru konfliktního slotu
+                              
+                              if (selectedSlot === slotIdString) {
+                                setSelectedSlot(null);
+                              } else if (currentApt) {
+                                handleSlotSelection(slotIdString, slot.timeFrom, currentApt, slot.examination_type_id, slot.minutes);
+                              }
+                            }}
+                          >
+                            <Text
+                              fw={selectedSlot === slotIdString ? 600 : 500}
+                              size="sm"
+                              c={isConflicting ? "dimmed" : undefined}
+                            >
+                              {dayjs(slot.timeFrom).format("HH:mm")}
+                            </Text>
+                          </Card>
+                        );
+                      })}
+                    </div>
+                    </>
+                  )}
                 </>
+              ) : (
+                <Text c="dimmed" size="sm" ta="center" mt="md">
+                  Vyberte vyšetření pro zobrazení dostupných časů
+                </Text>
               )}
             </Stack>
           </Group>
