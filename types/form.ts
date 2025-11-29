@@ -46,7 +46,8 @@ export interface FormData {
   selectedAppointments: number[];
 
   // Step 8 - Contact Information
-  fullName: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone: string;
 

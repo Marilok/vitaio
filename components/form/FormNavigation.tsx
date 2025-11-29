@@ -1,7 +1,13 @@
 import { Button, Group } from "@mantine/core";
 import { useMultiStepFormContext } from "@/contexts/MultiStepFormContext";
 
-export function FormNavigation() {
+interface FormNavigationProps {
+  isAppointmentForm?: boolean;
+}
+
+export function FormNavigation({
+  isAppointmentForm = false,
+}: FormNavigationProps) {
   const {
     isFirstStep,
     isLastStep,
@@ -24,7 +30,9 @@ export function FormNavigation() {
 
       {isLastStep ? (
         <Button onClick={onSubmit} size="md" loading={isSubmitting}>
-          Odeslat dotazník a doporučit prohlídky
+          {isAppointmentForm
+            ? "Závazně rezervovat"
+            : "Odeslat dotazník a doporučit prohlídky"}
         </Button>
       ) : (
         <Button onClick={nextStep} size="md">

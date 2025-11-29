@@ -9,6 +9,7 @@ import { Lifestyle } from "./steps/Lifestyle";
 import { Screening } from "./steps/Screening";
 import { Step8Appointments } from "./steps/Step8Appointments";
 import { Step9Appointments } from "./steps/Step9Appointments";
+import { ContactInfo } from "./steps/ContactInfo";
 import { FormProgress } from "./form/FormProgress";
 import { FormNavigation } from "./form/FormNavigation";
 import { StepContainer } from "./form/StepContainer";
@@ -201,6 +202,7 @@ function FormEvaluationLoader({ onComplete }: { onComplete: () => void }) {
 
 // Appointments Form Component
 function AppointmentsForm({ formData }: { formData: FormData }) {
+  const router = useRouter();
   const methods = useForm<FormData>({
     defaultValues: formData,
   });
@@ -220,13 +222,15 @@ function AppointmentsForm({ formData }: { formData: FormData }) {
     prevStep,
     goToStep,
   } = useMultiStepForm({
-    totalSteps: 2, // Step8Appointments and Step9Appointments
+    totalSteps: 3, // Step8Appointments, Step9Appointments, and ContactInfo
     getFieldsForStep: (step: number) => {
       switch (step) {
         case 0:
           return []; // Step8Appointments - no required fields initially
         case 1:
           return ["bookedAppointments"]; // Step9Appointments - booking validation
+        case 2:
+          return ["firstName", "lastName", "email", "phone"]; // ContactInfo - contact details validation
         default:
           return [];
       }
@@ -267,6 +271,33 @@ function AppointmentsForm({ formData }: { formData: FormData }) {
 
       const result = await response.json();
       console.log("API answer:", result);
+
+      // Call email confirmation API
+      try {
+        const emailResponse = await fetch("/api/email/confirmation", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: data.email,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            appointments: data.selectedAppointments,
+            bookedAppointments: data.bookedAppointments,
+          }),
+        });
+
+        if (!emailResponse.ok) {
+          console.error("Error sending confirmation email");
+        }
+      } catch (emailError) {
+        console.error("Error calling email confirmation API:", emailError);
+      }
+
+      // Store email for confirmation page and redirect
+      sessionStorage.setItem("confirmationEmail", data.email);
+      router.push("/confirmation");
     } catch (error) {
       console.error("Error sending form:", error);
     }
@@ -278,6 +309,8 @@ function AppointmentsForm({ formData }: { formData: FormData }) {
         return <Step8Appointments />;
       case 1:
         return <Step9Appointments />;
+      case 2:
+        return <ContactInfo />;
       default:
         return null;
     }
@@ -291,7 +324,7 @@ function AppointmentsForm({ formData }: { formData: FormData }) {
           direction,
           isFirstStep,
           isLastStep,
-          totalSteps: 2,
+          totalSteps: 3,
           nextStep,
           prevStep,
           goToStep,
@@ -303,7 +336,7 @@ function AppointmentsForm({ formData }: { formData: FormData }) {
           <Stack gap="xl">
             <FormProgress title="Objednání vyšetření" />
             <StepContainer>{renderStepContent()}</StepContainer>
-            <FormNavigation />
+            <FormNavigation isAppointmentForm />
           </Stack>
         </Paper>
       </MultiStepFormProvider>

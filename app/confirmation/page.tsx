@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Container,
   Title,
@@ -10,19 +14,28 @@ import {
 import { IconArrowRight } from "@tabler/icons-react";
 import Image from "next/image";
 
-interface ConfirmationPageProps {
-  email?: string;
-  appointmentCount?: number;
-}
+export default function ConfirmationPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState<string>(TEXTS.defaultEmail);
+  const [appointmentCount] = useState(1);
 
-export default function ConfirmationPage({
-  email = TEXTS.defaultEmail,
-  appointmentCount = 1,
-}: ConfirmationPageProps) {
+  useEffect(() => {
+    // Get email from sessionStorage
+    const storedEmail = sessionStorage.getItem("confirmationEmail");
+
+    if (storedEmail) {
+      setEmail(storedEmail);
+      // Clear the stored email after retrieving it
+      sessionStorage.removeItem("confirmationEmail");
+    } else {
+      // Redirect back if no email found
+      router.push("/");
+    }
+  }, [router]);
   return (
     <Box
       style={{
-        minHeight: "100vh",
+        minHeight: "100%",
         backgroundColor: "#4A7C59", // mou-green color
         display: "flex",
         alignItems: "center",
