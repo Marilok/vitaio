@@ -351,7 +351,7 @@ function AppointmentsForm() {
             name: `${data.firstName} ${data.lastName}`,
             email: data.email,
             appointments: appointments,
-            location: "VitaIO Health Clinic",
+            location: "MOÚ Brno, Pekařská 53, 656 91 Brno",
           }),
         });
 

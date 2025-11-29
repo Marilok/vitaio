@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
         description: appointment.description || "Health Screening Appointment",
         attendees: [{ name: body.name, email: body.email }],
         status: "CONFIRMED",
-        location: body.location || "MOÚ",
+        location: body.location || "MOÚ, Pekařská 53, 656 91 Brno",
       };
 
       const { error: icsError, value: icsFile } = createEvent(eventData);
