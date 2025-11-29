@@ -607,11 +607,12 @@ export function Step9Appointments() {
     <Stack gap="lg" pt="md">
       <Box>
         <Title order={3} mb="xs">
-          Rezervace termínů
+          🗓️ Rezervace termínů
         </Title>
         <Text size="md" c="dimmed">
-          Můžete upravit automaticky vybrané termíny kliknutím na vyšetření a
-          výběrem jiného času.
+          Na základě závažnosti jsme pro vás automaticky vybrali nejvhodnější
+          termíny vyšetření. Pokud vám nevyhovují, můžete je upravit kliknutím
+          na vyšetření a výběrem jiného času.
         </Text>
       </Box>
 
@@ -623,9 +624,13 @@ export function Step9Appointments() {
 
       {!loading && examinationNames.length > 0 && (
         <>
-          <Group align="start" gap="lg" style={{ width: "100%" }}>
+          <Group
+            align="start"
+            justify="space-between"
+            style={{ width: "100%" }}
+          >
             {/* First Column: Appointment Cards */}
-            <Stack gap="sm" style={{ flex: "0 0 250px" }}>
+            <Stack gap="sm">
               <Text fw={500} size="sm">
                 Termíny k rezervaci:
               </Text>
@@ -780,9 +785,13 @@ export function Step9Appointments() {
                             c={isSelected || isCurrent ? "dimmed" : "dark.3"}
                           >
                             {isSelected && selectedAppointment
-                              ? dayjs(selectedAppointment.dateTime).format(
+                              ? `${dayjs(selectedAppointment.dateTime).format(
                                   "D.M.YYYY v HH:mm"
-                                )
+                                )}${
+                                  selectedAppointment.isManuallySelected
+                                    ? " (zvoleno manuálně)"
+                                    : " (zvoleno automaticky)"
+                                }`
                               : isCurrent
                               ? "Upravit termín"
                               : "Kliknutím upravit"}
@@ -838,10 +847,7 @@ export function Step9Appointments() {
             </Stack>
 
             {/* Third Column: Time Slots */}
-            <Stack
-              gap="sm"
-              style={{ flex: "1 1 auto", minWidth: 200, height: "100%" }}
-            >
+            <Stack gap="sm">
               {getCurrentAppointment() ? (
                 <>
                   <Text fw={500} size="md">
@@ -886,6 +892,7 @@ export function Step9Appointments() {
                               key={slot.id}
                               withBorder
                               padding="sm"
+                              miw={140}
                               style={{
                                 cursor: isConflicting
                                   ? "not-allowed"
