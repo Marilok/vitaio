@@ -10,28 +10,28 @@
     "id": 2,
     "name": "CT plic",
     "description": "Low-dose CT vyšetření plic pro detekci rakoviny",
-    "type": "mandatory",
+    "type": "optional",
     "url": "https://www.mou.cz/program-casneho-zachytu-karcinomu-plic/t1852"
   },
   {
     "id": 3,
     "name": "Gynekologické vyšetření",
     "description": "Komplexní gynekologické vyšetření",
-    "type": "mandatory",
+    "type": "optional",
     "url": "https://www.mou.cz/gynekologicke-vysetreni/t1388"
   },
   {
     "id": 4,
     "name": "Mamografie",
     "description": "Screeningové vyšetření prsů",
-    "type": "mandatory",
+    "type": "optional",
     "url": "https://www.mou.cz/program-screeningu-karcinomu-prsu/t1888"
   },
   {
     "id": 5,
     "name": "Kolonoskopie",
     "description": "Vyšetření tlustého střeva pro prevenci kolorektálního karcinomu",
-    "type": "mandatory",
+    "type": "optional",
     "url": "https://www.mou.cz/vysetreni-tlusteho-streva-kolonoskopie/t1440"
   },
   {
@@ -96,5 +96,90 @@
     "description": "Konzultace s nutričním specialistou",
     "type": "optional",
     "url": "https://www.mou.cz/usek-lecebne-vyzivy/t1377"
+  },
+  {
+    "id": 15,
+    "name": "Konzultace s onkologem",
+    "type": "mandatory"
+  },
+  {
+    "id": 16,
+    "name": "Fyzikální vyšetření",
+    "type": "mandatory"
+  },
+  {
+    "id": 17,
+    "name": "Krevní testy",
+    "type": "mandatory"
+  },
+  {
+    "id": 18,
+    "name": "Test moči",
+    "type": "mandatory"
+  },
+  {
+    "id": 19,
+    "name": "Test okultního krvácení ve stolici",
+    "type": "mandatory"
+  },
+  {
+    "id": 20,
+    "name": "Měření krevního tlaku a pulzu",
+    "type": "mandatory"
+  },
+  {
+    "id": 21,
+    "name": "EKG",
+    "type": "mandatory"
+  },
+  {
+    "id": 22,
+    "name": "RTG hrudníku",
+    "type": "mandatory"
+  },
+  {
+    "id": 23,
+    "name": "Ultrazvuk břicha",
+    "type": "mandatory"
+  },
+  {
+    "id": 24,
+    "name": "Ultrazvuk varlat",
+    "type": "mandatory"
+  },
+  {
+    "id": 25,
+    "name": "Ultrazvuk prsou",
+    "type": "mandatory"
+  },
+  {
+    "id": 26,
+    "name": "InBody analýza",
+    "type": "mandatory"
+  },
+  {
+    "id": 27,
+    "name": "Genetická konzultace",
+    "type": "optional"
+  },
+  {
+    "id": 28,
+    "name": "Poradenství zdravého životního stylu",
+    "type": "optional"
+  },
+  {
+    "id": 29,
+    "name": "Poradenství pro odvykání kouření",
+    "type": "optional"
+  },
+  {
+    "id": 30,
+    "name": "Poradenství pro závislosti",
+    "type": "optional"
+  },
+  {
+    "id": 31,
+    "name": "Poradenství pro fyzickou aktivitu",
+    "type": "optional"
   }
 ]

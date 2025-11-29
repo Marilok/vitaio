@@ -36,10 +36,6 @@ export function Step8Appointments() {
   const age = watch("age");
   const hasFamilyCancerHistory = watch("hasFamilyCancerHistory");
   const hadProstateScreening = watch("hadProstateScreening");
-  const hadLungCancerScreening = watch("hadLungCancerScreening");
-  const hadCervicalCancerScreening = watch("hadCervicalCancerScreening");
-  const hadBreastCancerScreening = watch("hadBreastCancerScreening");
-  const hadColorectalCancerScreening = watch("hadColorectalCancerScreening");
 
   const eligibility = getScreeningEligibility(
     gender,
@@ -54,26 +50,18 @@ export function Step8Appointments() {
       show: eligibility.showProstateScreening,
       recommend: !hadProstateScreening,
     },
-    {
-      id: 2,
-      show: eligibility.showLungCancerScreening,
-      recommend: !hadLungCancerScreening,
-    },
-    {
-      id: 3,
-      show: eligibility.showCervicalCancerScreening,
-      recommend: !hadCervicalCancerScreening,
-    },
-    {
-      id: 4,
-      show: eligibility.showBreastCancerScreening,
-      recommend: !hadBreastCancerScreening,
-    },
-    {
-      id: 5,
-      show: eligibility.showColorectalCancerScreening,
-      recommend: !hadColorectalCancerScreening,
-    },
+    { id: 15, show: true, recommend: true },
+    { id: 16, show: true, recommend: true },
+    { id: 17, show: true, recommend: true },
+    { id: 18, show: true, recommend: true },
+    { id: 19, show: true, recommend: true },
+    { id: 20, show: true, recommend: true },
+    { id: 21, show: true, recommend: true },
+    { id: 22, show: true, recommend: true },
+    { id: 23, show: true, recommend: true },
+    { id: 24, show: true, recommend: true },
+    { id: 25, show: true, recommend: true },
+    { id: 26, show: true, recommend: true },
   ];
 
   // Filter appointments based on eligibility
@@ -109,6 +97,8 @@ export function Step8Appointments() {
     }
   }, [visibleMandatoryAppointments, setValue, watch]);
 
+  console.log("visibleMandatoryAppointments", visibleMandatoryAppointments);
+
   return (
     <Stack gap="lg" pt="md">
       <Box>
@@ -136,83 +126,43 @@ export function Step8Appointments() {
                     Automaticky přidáno
                   </Badge>
                 </Group>
-                <Text size="sm" c="dimmed" mb="md">
-                  Tato vyšetření jsou pro vás doporučena na základě vašeho
-                  zdravotního stavu a nelze je odebrat.
-                </Text>
-                <Grid>
-                  {visibleMandatoryAppointments.map((appointment) => {
-                    const isSelected = true; // Always selected
-
-                    return (
-                      <Grid.Col
-                        key={appointment.id}
-                        span={{ base: 12, sm: 6, md: 4 }}
-                      >
-                        <Card
-                          shadow="sm"
-                          padding="lg"
-                          radius="md"
-                          withBorder
-                          style={{
-                            borderColor: appointment.isRecommended
-                              ? "var(--mantine-color-red-4)"
-                              : "var(--mantine-color-gray-3)",
-                            borderWidth: 1,
-                            backgroundColor: appointment.isRecommended
-                              ? "var(--mantine-color-red-0)"
-                              : "var(--mantine-color-gray-0)",
-                            opacity: 1,
-                          }}
-                        >
-                          <Group
-                            justify="space-between"
-                            align="flex-start"
-                            mb="xs"
-                          >
-                            <Box style={{ flex: 1 }}>
-                              <Group gap="xs" align="center" mb="xs">
-                                <Text fw={500} size="md">
-                                  {appointment.name}
-                                </Text>
-                                <Badge
-                                  size="sm"
-                                  variant="filled"
-                                  color={
-                                    appointment.isRecommended ? "red" : "gray"
-                                  }
-                                >
-                                  {appointment.isRecommended
-                                    ? "Doporučeno"
-                                    : "Povinné"}
-                                </Badge>
-                              </Group>
-                            </Box>
-                            <Checkbox checked={isSelected} disabled size="md" />
-                          </Group>
-                          {appointment.description && (
-                            <Text size="sm" c="dimmed" mb="md">
-                              {appointment.description}
-                            </Text>
-                          )}
-                          {appointment.url && (
-                            <Anchor
-                              href={appointment.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              size="sm"
-                            >
-                              <Group gap="xs" align="center">
-                                <Text size="sm">Dozvědět se více</Text>
-                                <IconExternalLink size={14} />
-                              </Group>
-                            </Anchor>
-                          )}
-                        </Card>
-                      </Grid.Col>
-                    );
-                  })}
-                </Grid>
+                <Card
+                  shadow="sm"
+                  padding="lg"
+                  radius="md"
+                  withBorder
+                  style={{
+                    borderColor: "var(--mantine-color-red-4)",
+                    borderWidth: 1,
+                    backgroundColor: "var(--mantine-color-red-0)",
+                  }}
+                >
+                  <Group justify="space-between" align="flex-start" mb="md">
+                    <Box style={{ flex: 1 }}>
+                      <Group gap="xs" align="center" mb="xs">
+                        <Text fw={500} size="lg">
+                          Základní preventivní balíček
+                        </Text>
+                        <Badge size="sm" variant="filled" color="red">
+                          Povinné
+                        </Badge>
+                      </Group>
+                    </Box>
+                    <Checkbox checked={true} disabled size="md" />
+                  </Group>
+                  <Text size="sm" c="dimmed" mb="sm">
+                    Tato vyšetření jsou pro vás doporučena na základě vašeho
+                    zdravotního stavu a nelze je odebrat.
+                  </Text>
+                  <Text size="sm" fw={500} mb="xs">
+                    Zahrnuje:
+                  </Text>
+                  <Text size="sm" c="dimmed">
+                    {visibleMandatoryAppointments
+                      .map((app) => app.name)
+                      .join(", ")}
+                  </Text>
+                </Card>
               </Box>
             )}
 
