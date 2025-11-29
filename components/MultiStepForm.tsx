@@ -480,9 +480,13 @@ export { AppointmentsForm };
 // Wrapper component that provides context to both form and vectors
 export function MultiStepFormWithVectors() {
   const router = useRouter();
-  const [currentPhase] = useState<"health-assessment" | "loading">(
+  const [currentPhase, setCurrentPhase] = useState<"health-assessment" | "loading">(
     "health-assessment"
   );
+
+  const handleFormSubmission = () => {
+    setCurrentPhase("loading");
+  };
 
   const handleLoadingComplete = () => {
     // Navigate to the booking page
@@ -492,7 +496,7 @@ export function MultiStepFormWithVectors() {
   const renderPhase = () => {
     switch (currentPhase) {
       case "health-assessment":
-        return <HealthAssessmentFormWithVectors />;
+        return <HealthAssessmentFormWithVectors onFormSubmit={handleFormSubmission} />;
       case "loading":
         return <FormEvaluationLoader onComplete={handleLoadingComplete} />;
       default:
@@ -508,7 +512,7 @@ export function MultiStepFormWithVectors() {
 }
 
 // Modified HealthAssessmentForm that includes vectors with shared context
-function HealthAssessmentFormWithVectors() {
+function HealthAssessmentFormWithVectors({ onFormSubmit }: { onFormSubmit: () => void }) {
   const { setHealthAssessmentData } = useAppData();
   const router = useRouter();
 
@@ -571,10 +575,8 @@ function HealthAssessmentFormWithVectors() {
     const priorityScore = calculatePriorityScore(data);
     const finalData = { ...data, priority: priorityScore };
     setHealthAssessmentData(finalData);
-    // Show loading and then redirect
-    setTimeout(() => {
-      router.push("/booking");
-    }, 3000);
+    // Trigger loading state
+    onFormSubmit();
   };
 
   const renderStepContent = () => {

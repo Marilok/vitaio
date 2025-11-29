@@ -169,7 +169,7 @@ export function Medications() {
                       {...freqField}
                       label="Frekvence"
                       placeholder="Jak často"
-                      w={"140"}
+                      maw={"130"}
                       data={frequencyOptions}
                       size="md"
                       error={errors.medications?.[index]?.frequency?.message}
