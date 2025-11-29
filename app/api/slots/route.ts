@@ -1,75 +1,70 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
-export async function GET(request: Request) {
+interface SlotInfo {
+  id: number;
+  timeFrom: string;
+  minutes: number;
+  examination_type_id: number;
+}
+
+export async function GET(request: NextRequest) {
   try {
-    const supabase = await createClient();
     const { searchParams } = new URL(request.url);
     const examinationTypeId = searchParams.get("examination_type_id");
 
-    // Build query conditions with join to examination type table
-    let query = supabase
-      .from("Slot")
-      .select(
-        `
-        *,
-        ExaminationType:examination_type_id (
-          id,
-          name,
-          description
-        )
-      `
-      )
-      .is("booking_id", null)
-      .gt("dateTime", new Date().toISOString());
-
-    // Add examination_type_id filter if provided
-    if (examinationTypeId) {
-      query = query.eq("examination_type_id", parseInt(examinationTypeId));
+    if (!examinationTypeId) {
+      return NextResponse.json(
+        { error: "Chybí povinný parametr: examination_type_id" },
+        { status: 400 }
+      );
     }
 
-    // Fetch available slots with conditions
-    const { data: slots, error } = await query;
+    const supabase = await createClient();
 
-    if (error) {
-      console.error("Error fetching slots:", error);
+    // Načíst všechny volné sloty pro daný examination_type_id
+    const { data: availableSlots, error: slotsError } = await supabase
+      .from("Slot")
+      .select("*")
+      .eq("examination_type_id", parseInt(examinationTypeId))
+      .is("booking_id", null)
+      .order("dateTime", { ascending: true });
+
+    if (slotsError) {
+      console.error("Chyba při načítání slotů:", slotsError);
       return NextResponse.json(
-        { error: "Failed to fetch slots", details: error.message },
+        { error: "Nepodařilo se načíst dostupné termíny" },
         { status: 500 }
       );
     }
 
-    // Log filtered values to console
-    const filterDescription = examinationTypeId
-      ? `booking_id=null, examination_type_id=${examinationTypeId}, future dates`
-      : `booking_id=null, future dates (all examination types)`;
+    if (!availableSlots || availableSlots.length === 0) {
+      return NextResponse.json(
+        { 
+          success: true,
+          slots: [],
+          message: "Pro tento typ vyšetření nejsou dostupné žádné volné termíny" 
+        },
+        { status: 200 }
+      );
+    }
 
-    console.log(`Available slots (${filterDescription}):`, slots);
-    console.log("Total available slots found:", slots?.length || 0);
-
-    // Log each slot individually for detailed view
-    slots?.forEach((slot, index) => {
-      console.log(`Available Slot ${index + 1}:`, {
-        id: slot.id,
-        dateTime: slot.dateTime,
-        examination_type_id: slot.examination_type_id,
-        examination_type_name: slot.ExaminationType?.name,
-        examination_type_description: slot.ExaminationType?.description,
-        booking_id: slot.booking_id,
-        ...slot,
-      });
-    });
+    // Formátovat sloty do požadovaného formátu
+    const formattedSlots: SlotInfo[] = availableSlots.map((slot: any) => ({
+      id: slot.id,
+      timeFrom: slot.dateTime,
+      minutes: slot.minutes,
+      examination_type_id: slot.examination_type_id,
+    }));
 
     return NextResponse.json({
       success: true,
-      data: slots,
-      count: slots?.length || 0,
+      slots: formattedSlots,
+      total: formattedSlots.length,
+      message: "Sloty byly úspěšně načteny",
     });
   } catch (error) {
-    console.error("Unexpected error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    console.error("API Error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
