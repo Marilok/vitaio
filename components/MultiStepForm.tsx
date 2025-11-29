@@ -17,6 +17,7 @@ import { useMultiStepForm } from "@/hooks/useMultiStepForm";
 import { MultiStepFormProvider } from "@/contexts/MultiStepFormContext";
 import { FormData } from "@/types/form";
 import { calculatePriorityScore } from "@/utils/priority";
+import { transformAppointmentsToScreenings } from "@/utils/appointmentsMapping";
 
 const TOTAL_STEPS = 10;
 
@@ -127,9 +128,18 @@ export function MultiStepForm() {
   const onSubmit = (data: FormData) => {
     const priorityScore = calculatePriorityScore(data);
     const finalData = { ...data, priority: priorityScore };
+
+    // Transform selected appointments to screenings.json format
+    const screeningsData = transformAppointmentsToScreenings(
+      data.selectedAppointments
+    );
+
     console.log("Form submitted:", finalData);
     console.log("Priority Score:", priorityScore);
-    console.log("Selected Appointments:", data.selectedAppointments);
+    console.log(
+      "Selected Appointments (screenings.json format):",
+      screeningsData
+    );
     console.log(JSON.stringify(finalData, null, 2));
   };
 
