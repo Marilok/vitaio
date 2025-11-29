@@ -20,11 +20,7 @@ export function FormNavigation({
   return (
     <Group justify={isFirstStep ? "flex-end" : "space-between"} mt="xl">
       {!isFirstStep && (
-        <Button
-          variant="default"
-          onClick={prevStep}
-          size="md"
-        >
+        <Button variant="default" onClick={prevStep} size="md">
           Zpět
         </Button>
       )}
