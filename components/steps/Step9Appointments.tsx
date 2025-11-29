@@ -64,6 +64,7 @@ interface SelectedAppointment {
   slotId: string;
   dateTime: string;
   minutes?: number;
+  isManuallySelected?: boolean; // true = uživatel ručně upravil, false = automaticky předvybrané
 }
 
 interface ScreeningItem {
@@ -139,21 +140,19 @@ export function Step9Appointments() {
 
         // Automatically select the first recommended slot for each examination
         const autoBookedAppointments: SelectedAppointment[] = [];
-
-        Object.entries(data.availableSlots).forEach(
-          ([examinationName, slots]) => {
-            if (slots.length > 0) {
-              const firstSlot = slots[0];
-              autoBookedAppointments.push({
-                appointmentTypeId: firstSlot.id, // Using slot ID as appointment type ID
-                examination_type_id: firstSlot.examination_type_id,
-                slotId: firstSlot.id.toString(),
-                dateTime: firstSlot.timeFrom,
-                minutes: firstSlot.minutes,
-              });
-            }
+        
+        Object.entries(data.availableSlots).forEach(([examinationName, slots]) => {
+          if (slots.length > 0) {
+            const firstSlot = slots[0];
+            autoBookedAppointments.push({
+              appointmentTypeId: firstSlot.id, // Using slot ID as appointment type ID
+              examination_type_id: firstSlot.examination_type_id,
+              slotId: firstSlot.id.toString(),
+              dateTime: firstSlot.timeFrom,
+              minutes: firstSlot.minutes,
+            });
           }
-        );
+        });
 
         setBookedAppointments(autoBookedAppointments);
 
@@ -313,6 +312,7 @@ export function Step9Appointments() {
       slotId,
       dateTime,
       minutes,
+      isManuallySelected: true, // Uživatel ručně vybral
     };
 
     setBookedAppointments((prev) => {
@@ -569,18 +569,45 @@ export function Step9Appointments() {
                       : null;
 
                   // Check if this examination type has a booked appointment
-                  const isSelected =
-                    examinationTypeId !== null &&
-                    bookedAppointments.some(
-                      (apt) => apt.examination_type_id === examinationTypeId
-                    );
-
+                  const isSelected = examinationTypeId !== null && bookedAppointments.some(
+                    (apt) => apt.examination_type_id === examinationTypeId
+                  );
+                  
                   const isCurrent = getCurrentAppointment() === appointmentName;
                   const examinationType =
                     getExaminationTypeDetails(appointmentName);
-                  const selectedAppointment = bookedAppointments.find(
-                    (apt) => apt.examination_type_id === examinationTypeId
-                  );
+                  
+                  // Determine colors based on state
+                  // isCurrent (editing) = yellow #ffd600
+                  // isManuallySelected = green #008638
+                  // auto-selected = blue #53c0d7
+                  const isManuallySelected = selectedAppointment?.isManuallySelected === true;
+                  
+                  let backgroundColor, borderColor, circleColor;
+                  
+                  if (isCurrent) {
+                    // Právě upravuje - žlutá
+                    backgroundColor = "#fff9e6"; // Light yellow
+                    borderColor = "#ffd600";
+                    circleColor = "#ffd600";
+                  } else if (isSelected) {
+                    if (isManuallySelected) {
+                      // Ručně upravené - zelená
+                      backgroundColor = "#e6f5ec"; // Light green
+                      borderColor = "#008638";
+                      circleColor = "#008638";
+                    } else {
+                      // Automaticky předvybrané - modrá
+                      backgroundColor = "#e6f7fa"; // Light blue
+                      borderColor = "#53c0d7";
+                      circleColor = "#53c0d7";
+                    }
+                  } else {
+                    // Nevybrané - šedá
+                    backgroundColor = "var(--mantine-color-gray-1)";
+                    borderColor = "var(--mantine-color-gray-3)";
+                    circleColor = "var(--mantine-color-gray-4)";
+                  }
 
                   return (
                     <Card
@@ -590,16 +617,8 @@ export function Step9Appointments() {
                       radius="sm"
                       style={{
                         opacity: isSelected || isCurrent ? 1 : 0.6,
-                        backgroundColor: isCurrent
-                          ? "var(--mantine-color-blue-1)"
-                          : isSelected
-                          ? "var(--mantine-color-green-1)"
-                          : "var(--mantine-color-gray-1)",
-                        borderColor: isCurrent
-                          ? "var(--mantine-color-blue-4)"
-                          : isSelected
-                          ? "var(--mantine-color-green-4)"
-                          : "var(--mantine-color-gray-3)",
+                        backgroundColor,
+                        borderColor,
                         cursor: "pointer",
                       }}
                       onClick={() => {
@@ -657,11 +676,7 @@ export function Step9Appointments() {
                             width: 24,
                             height: 24,
                             borderRadius: "50%",
-                            backgroundColor: isCurrent
-                              ? "var(--mantine-color-blue-6)"
-                              : isSelected
-                              ? "var(--mantine-color-green-6)"
-                              : "var(--mantine-color-gray-4)",
+                            backgroundColor: circleColor,
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
