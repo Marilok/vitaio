@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormContext, Controller } from "react-hook-form";
-import React from "react";
+import React, { useState } from "react";
 import {
   Stack,
   Title,
@@ -13,8 +13,11 @@ import {
   Anchor,
   Box,
   Badge,
+  Textarea,
+  Button,
+  Alert,
 } from "@mantine/core";
-import { IconExternalLink } from "@tabler/icons-react";
+import { IconBrain, IconExternalLink, IconSearch } from "@tabler/icons-react";
 import { FormData } from "@/types/form";
 import appointmentsData from "@/db/appointments.json";
 import { getScreeningEligibility } from "@/utils/priority";
@@ -73,12 +76,60 @@ function getAppointmentPriority(
   return 0;
 }
 
+interface QuickSearchResult {
+  query: string;
+  results: {
+    id: number;
+    name: string;
+    description: string;
+    price: number;
+    url: string;
+  }[];
+  ai_analysis: string;
+}
+
 export function Step8Appointments() {
   const { control, watch, setValue } = useFormContext<FormData>();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchResults, setSearchResults] = useState<QuickSearchResult | null>(
+    null
+  );
+  const [searchError, setSearchError] = useState<string | null>(null);
 
   const formData = watch(); // Get all form data for priority calculation
   const gender = watch("gender");
   const age = watch("age");
+
+  const quickSearch = async () => {
+    if (!searchQuery.trim()) return;
+
+    setIsSearching(true);
+    setSearchError(null);
+    setSearchResults(null);
+
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/quick-search?query=${encodeURIComponent(
+          searchQuery
+        )}&limit=5`
+      );
+
+      if (!response.ok) {
+        throw new Error("Chyba při vyhledávání");
+      }
+
+      const results = await response.json();
+      setSearchResults(results);
+    } catch (error) {
+      console.error("Error during quick search:", error);
+      setSearchError(
+        "Nepodařilo se vyhledat vyšetření. Zkuste to prosím znovu."
+      );
+    } finally {
+      setIsSearching(false);
+    }
+  };
   const hasFamilyCancerHistory = watch("hasFamilyCancerHistory");
   const hadProstateScreening = watch("hadProstateScreening");
   const isSmoker = watch("isSmoker");
@@ -192,6 +243,67 @@ export function Step8Appointments() {
 
   return (
     <Stack gap="lg" pt="md">
+      {/* Quick Search Section */}
+      <Box>
+        <Title order={3} mb="xs">
+          🔍 Mám konkrétní zdravotní problém
+        </Title>
+        <Text size="sm" c="dimmed" mb="md">
+          Popište svůj zdravotní problém a my vám doporučíme vhodná vyšetření.
+        </Text>
+
+        <Stack gap="md">
+          <Textarea
+            label="Můj problém"
+            placeholder="Vložte lékařskou zprávu, nebo vyhledejte pomocí dotazu"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.currentTarget.value)}
+            minRows={3}
+            maxRows={5}
+            size="md"
+          />
+
+          <Group>
+            <Button
+              onClick={quickSearch}
+              loading={isSearching}
+              leftSection={<IconSearch size={16} />}
+              size="md"
+              variant="filled"
+              color="orange"
+              disabled={!searchQuery.trim()}
+            >
+              Vyhledat doporučená vyšetření
+            </Button>
+          </Group>
+
+          {searchError && (
+            <Alert color="red" title="Chyba">
+              {searchError}
+            </Alert>
+          )}
+
+          {searchResults !== null && (
+            <Card withBorder padding="md" radius="md">
+              <Text fw={500} size="md" mb="sm">
+                <IconBrain size={16} /> Výsledky AI analýzy:
+              </Text>
+              <Box
+                component="pre"
+                style={{
+                  whiteSpace: "pre-wrap",
+                  fontSize: "0.875rem",
+                  color: "var(--mantine-color-dimmed)",
+                  margin: 0,
+                }}
+              >
+                {searchResults.ai_analysis}
+              </Box>
+            </Card>
+          )}
+        </Stack>
+      </Box>
+
       <Box>
         <Title order={3} mb="xs">
           🧑‍⚕️ Doporučené vyšetření pro mě
@@ -212,7 +324,7 @@ export function Step8Appointments() {
               <Box>
                 <Group gap="xs" mb="md">
                   <Title order={4}>Povinná vyšetření</Title>
-                  <Badge color="red" variant="light" size="md">
+                  <Badge color="orange" variant="light" size="md">
                     Automaticky přidáno
                   </Badge>
                 </Group>
@@ -222,9 +334,9 @@ export function Step8Appointments() {
                   radius="md"
                   withBorder
                   style={{
-                    borderColor: "var(--mantine-color-red-4)",
+                    borderColor: "var(--mantine-color-orange-4)",
                     borderWidth: 1,
-                    backgroundColor: "var(--mantine-color-red-0)",
+                    backgroundColor: "var(--mantine-color-orange-0)",
                   }}
                 >
                   <Group justify="space-between" align="flex-start" mb="0">

@@ -144,11 +144,6 @@
     "type": "mandatory"
   },
   {
-    "id": 19,
-    "name": "Test okultního krvácení ve stolici",
-    "type": "mandatory"
-  },
-  {
     "id": 20,
     "name": "Měření krevního tlaku a pulzu",
     "type": "mandatory"
