@@ -442,7 +442,6 @@ function AppointmentsForm() {
           style={{
             position: "relative",
             width: "100%",
-            minHeight: "100%",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -480,9 +479,9 @@ export { AppointmentsForm };
 // Wrapper component that provides context to both form and vectors
 export function MultiStepFormWithVectors() {
   const router = useRouter();
-  const [currentPhase, setCurrentPhase] = useState<"health-assessment" | "loading">(
-    "health-assessment"
-  );
+  const [currentPhase, setCurrentPhase] = useState<
+    "health-assessment" | "loading"
+  >("health-assessment");
 
   const handleFormSubmission = () => {
     setCurrentPhase("loading");
@@ -496,7 +495,11 @@ export function MultiStepFormWithVectors() {
   const renderPhase = () => {
     switch (currentPhase) {
       case "health-assessment":
-        return <HealthAssessmentFormWithVectors onFormSubmit={handleFormSubmission} />;
+        return (
+          <HealthAssessmentFormWithVectors
+            onFormSubmit={handleFormSubmission}
+          />
+        );
       case "loading":
         return <FormEvaluationLoader onComplete={handleLoadingComplete} />;
       default:
@@ -505,14 +508,25 @@ export function MultiStepFormWithVectors() {
   };
 
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%" }}>
+    <div style={{ 
+      position: "relative", 
+      width: "100%", 
+      minHeight: "calc(100vh - 80px)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center"
+    }}>
       {renderPhase()}
     </div>
   );
 }
 
 // Modified HealthAssessmentForm that includes vectors with shared context
-function HealthAssessmentFormWithVectors({ onFormSubmit }: { onFormSubmit: () => void }) {
+function HealthAssessmentFormWithVectors({
+  onFormSubmit,
+}: {
+  onFormSubmit: () => void;
+}) {
   const { setHealthAssessmentData } = useAppData();
   const router = useRouter();
 
@@ -616,7 +630,6 @@ function HealthAssessmentFormWithVectors({ onFormSubmit }: { onFormSubmit: () =>
           style={{
             position: "relative",
             width: "100%",
-            minHeight: "100%",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",

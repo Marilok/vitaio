@@ -6,6 +6,7 @@ export default function AssessmentPage() {
     <Container
       style={{
         minWidth: "100%",
+        minHeight: "calc(100vh - 80px)", // Account for header height
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
