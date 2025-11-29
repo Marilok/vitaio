@@ -77,7 +77,7 @@
     "type": "optional",
     "category": "consultation",
     "url": "https://www.mou.cz/gynekologicke-vysetreni/t1388",
-    "price": 0
+    "price": 1500
   },
   {
     "id": 10,
@@ -86,7 +86,7 @@
     "type": "optional",
     "category": "consultation",
     "url": "https://www.mou.cz/oddeleni-urologicke-onkologie/t1354",
-    "price": 0
+    "price": 2000
   },
   {
     "id": 11,
@@ -134,19 +134,19 @@
     "id": 16,
     "name": "Fyzikální vyšetření",
     "type": "mandatory",
-    "price": 0
+    "price": 1500
   },
   {
     "id": 17,
     "name": "Krevní testy",
     "type": "mandatory",
-    "price": 0
+    "price": 950
   },
   {
     "id": 18,
     "name": "Test moči",
     "type": "mandatory",
-    "price": 0
+    "price": 100
   },
   {
     "id": 19,
@@ -158,7 +158,7 @@
     "id": 20,
     "name": "Měření krevního tlaku a pulzu",
     "type": "mandatory",
-    "price": 0
+    "price": 100
   },
   {
     "id": 21,
@@ -210,7 +210,7 @@
     "description": "Výživa, pohyb, prevence.",
     "type": "optional",
     "category": "counseling",
-    "price": 0
+    "price": 1500
   },
   {
     "id": 29,
@@ -218,7 +218,7 @@
     "description": "Individuální program pro ukončení kouření.",
     "type": "optional",
     "category": "counseling",
-    "price": 0
+    "price": 350
   },
   {
     "id": 30,
@@ -226,7 +226,7 @@
     "description": "Odborná pomoc při závislostech.",
     "type": "optional",
     "category": "counseling",
-    "price": 0
+    "price": 1500
   },
   {
     "id": 31,
@@ -234,6 +234,6 @@
     "description": "Nastavení cvičebního plánu.",
     "type": "optional",
     "category": "counseling",
-    "price": 0
+    "price": 800
   }
 ]
