@@ -1,107 +1,90 @@
 {
-    "oncologistConsultation": {
-        "order": true,
-        "mandatory": true,
-        "priority": 1
+    "mandatory": {
+        "oncologistConsultation": {
+            "order": true,
+            "priority": 1
+        },
+        "physicalExamination": {
+            "order": true,
+            "priority": 2
+        },
+        "bloodTests": {
+            "order": true,
+            "priority": 3
+        },
+        "urineTest": {
+            "order": true,
+            "priority": 4
+        },
+        "occultBloodTest": {
+            "order": true,
+            "priority": 5
+        },
+        "bloodPressureAndPulseMeasurement": {
+            "order": true,
+            "priority": 6
+        },
+        "ecg": {
+            "order": true,
+            "priority": 7
+        },
+        "chestXray": {
+            "order": true,
+            "priority": 8
+        },
+        "abdominalUltrasound": {
+            "order": true,
+            "priority": 9
+        },
+        "testicularUltrasound": {
+            "order": true,
+            "priority": 10
+        },
+        "breastUltrasound": {
+            "order": true,
+            "priority": 11
+        },
+        "inBodyAnalysis": {
+            "order": true,
+            "priority": 12
+        },
+        "psaTest": {
+            "order": true,
+            "priority": 20
+        }
     },
-    "physicalExamination": {
-        "order": true,
-        "mandatory": true,
-        "priority": 2
-    },
-    "bloodTests": {
-        "order": true,
-        "mandatory": true,
-        "priority": 3
-    },
-    "urineTest": {
-        "order": true,
-        "mandatory": true,
-        "priority": 4
-    },
-    "occultBloodTest": {
-        "order": true,
-        "mandatory": true,
-        "priority": 5
-    },
-    "bloodPressureAndPulseMeasurement": {
-        "order": true,
-        "mandatory": true,
-        "priority": 6
-    },
-    "ecg": {
-        "order": true,
-        "mandatory": true,
-        "priority": 7
-    },
-    "chestXray": {
-        "order": true,
-        "mandatory": true,
-        "priority": 8
-    },
-    "abdominalUltrasound": {
-        "order": true,
-        "mandatory": true,
-        "priority": 9
-    },
-    "testicularUltrasound": {
-        "order": true,
-        "mandatory": true,
-        "priority": 10
-    },
-    "breastUltrasound": {
-        "order": true,
-        "mandatory": true,
-        "priority": 11
-    },
-    "inBodyAnalysis": {
-        "order": true,
-        "mandatory": true,
-        "priority": 12
-    },
-    "colonoscopy": {
-        "order": true,
-        "mandatory": false,
-        "priority": 13
-    },
-    "geneticConsultation": {
-        "order": true,
-        "mandatory": false,
-        "priority": 14
-    },
-    "gynecologicalExamination": {
-        "order": true,
-        "mandatory": false,
-        "priority": 15
-    },
-    "healthyLifestyleCounseling": {
-        "order": true,
-        "mandatory": false,
-        "priority": 16
-    },
-    "smokingCessationCounseling": {
-        "order": true,
-        "mandatory": false,
-        "priority": 17
-    },
-    "addictionCounseling": {
-        "order": true,
-        "mandatory": false,
-        "priority": 18
-    },
-    "physicalActivityCounseling": {
-        "order": true,
-        "mandatory": false,
-        "priority": 19
-    },
-    "psaTest": {
-        "order": true,
-        "mandatory": false,
-        "priority": 20
-    },
-    "mammography": {
-        "order": true,
-        "mandatory": false,
-        "priority": 21
+    "optional": {
+        "colonoscopy": {
+            "order": true,
+            "priority": 13
+        },
+        "geneticConsultation": {
+            "order": true,
+            "priority": 14
+        },
+        "gynecologicalExamination": {
+            "order": true,
+            "priority": 15
+        },
+        "healthyLifestyleCounseling": {
+            "order": true,
+            "priority": 16
+        },
+        "smokingCessationCounseling": {
+            "order": true,
+            "priority": 17
+        },
+        "addictionCounseling": {
+            "order": true,
+            "priority": 18
+        },
+        "physicalActivityCounseling": {
+            "order": true,
+            "priority": 19
+        },
+        "mammography": {
+            "order": true,  
+            "priority": 21
+        }
     }
 }

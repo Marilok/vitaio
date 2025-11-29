@@ -32,18 +32,7 @@ const getFieldsForStep = (step: number): (keyof FormData)[] => {
     case 3:
       return ["hasGynecologist"]; // Step 4 - only for women
     case 4:
-      return [
-        "height",
-        "weight",
-        "weeklyExerciseMinutes",
-        "alcoholConsumption",
-      ]; // Step 5
-    case 5:
-      return []; // Step 6 - Screening (no required fields)
-    case 6:
-      return []; // Step 7 - Placeholder
-    case 7:
-      return []; // Step 8 - Appointments (no required fields)
+      return ["height", "weight", "weeklyExerciseMinutes"]; // Step 5
     // Add more cases for other steps
     default:
       return [];
@@ -63,6 +52,12 @@ export function MultiStepForm() {
       hasGynecologist: undefined,
       bookGynecologyExam: undefined,
       weeklyExerciseMinutes: undefined,
+      isSmoker: undefined,
+      cigarettePacksPerWeek: undefined,
+      smokingYears: undefined,
+      drinksAlcohol: undefined,
+      beersPerWeek: undefined,
+      drinkingYears: undefined,
       weeklyCigarettes: undefined,
       alcoholConsumption: undefined,
       hadProstateScreening: undefined,
