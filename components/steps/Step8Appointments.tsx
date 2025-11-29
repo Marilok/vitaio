@@ -18,6 +18,10 @@ import { IconExternalLink } from "@tabler/icons-react";
 import { FormData } from "@/types/form";
 import appointmentsData from "@/db/appointments.json";
 import { getScreeningEligibility } from "@/utils/priority";
+import {
+  APPOINTMENT_TO_SCREENING_MAP,
+  transformAppointmentsToScreenings,
+} from "@/utils/appointmentsMapping";
 
 interface AppointmentData {
   id: number;
@@ -29,9 +33,44 @@ interface AppointmentData {
 
 const appointments: AppointmentData[] = appointmentsData as AppointmentData[];
 
+// Priority thresholds for appointment recommendations
+const PRIORITY_THRESHOLD_HIGH = 20; // "Silně doporučeno"
+const PRIORITY_THRESHOLD_LOW = 10; // "Doporučeno"
+
+/**
+ * Calculate priority for a specific appointment based on form data
+ */
+function getAppointmentPriority(
+  appointmentId: number,
+  formData: FormData
+): number {
+  // Get all screenings with priorities
+  const screenings = transformAppointmentsToScreenings(
+    [appointmentId],
+    formData
+  );
+
+  // Map appointment ID to screening key
+  const screeningKey = APPOINTMENT_TO_SCREENING_MAP[appointmentId];
+
+  if (!screeningKey) return 0;
+
+  // Check in mandatory first, then optional
+  if (screenings.mandatory[screeningKey]) {
+    return screenings.mandatory[screeningKey].priority;
+  }
+
+  if (screenings.optional[screeningKey]) {
+    return screenings.optional[screeningKey].priority;
+  }
+
+  return 0;
+}
+
 export function Step8Appointments() {
   const { control, watch, setValue } = useFormContext<FormData>();
 
+  const formData = watch(); // Get all form data for priority calculation
   const gender = watch("gender");
   const age = watch("age");
   const hasFamilyCancerHistory = watch("hasFamilyCancerHistory");
@@ -77,9 +116,13 @@ export function Step8Appointments() {
         ?.recommend,
     }));
 
-  const optionalAppointments = appointments.filter(
-    (app) => app.type === "optional"
-  );
+  const optionalAppointments = appointments
+    .filter((app) => app.type === "optional")
+    .map((app) => ({
+      ...app,
+      priority: getAppointmentPriority(app.id, formData),
+    }))
+    .sort((a, b) => b.priority - a.priority); // Sort by priority descending (highest first)
 
   // Auto-select all visible mandatory appointments on mount
   React.useEffect(() => {
@@ -177,6 +220,23 @@ export function Step8Appointments() {
               <Grid>
                 {optionalAppointments.map((appointment) => {
                   const isSelected = field.value.includes(appointment.id);
+                  const priority = appointment.priority;
+
+                  // Determine badge based on priority
+                  let priorityBadge = null;
+                  if (priority >= PRIORITY_THRESHOLD_HIGH) {
+                    priorityBadge = (
+                      <Badge size="sm" variant="filled" color="red">
+                        Silně doporučeno
+                      </Badge>
+                    );
+                  } else if (priority >= PRIORITY_THRESHOLD_LOW) {
+                    priorityBadge = (
+                      <Badge size="sm" variant="filled" color="orange">
+                        Doporučeno
+                      </Badge>
+                    );
+                  }
 
                   return (
                     <Grid.Col
@@ -191,13 +251,19 @@ export function Step8Appointments() {
                         style={{
                           cursor: "pointer",
                           transition: "all 0.2s ease",
-                          borderColor: isSelected
-                            ? "var(--mantine-primary-color-filled)"
-                            : undefined,
+                          borderColor:
+                            priority >= PRIORITY_THRESHOLD_HIGH
+                              ? "var(--mantine-color-red-4)"
+                              : priority >= PRIORITY_THRESHOLD_LOW
+                              ? "var(--mantine-color-orange-4)"
+                              : undefined,
                           borderWidth: 1,
-                          backgroundColor: isSelected
-                            ? "var(--mantine-primary-color-light)"
-                            : undefined,
+                          backgroundColor:
+                            priority >= PRIORITY_THRESHOLD_HIGH
+                              ? "var(--mantine-color-red-0)"
+                              : priority >= PRIORITY_THRESHOLD_LOW
+                              ? "var(--mantine-color-orange-0)"
+                              : undefined,
                         }}
                         onClick={() => {
                           const newValue = isSelected
@@ -218,6 +284,7 @@ export function Step8Appointments() {
                               <Text fw={500} size="md">
                                 {appointment.name}
                               </Text>
+                              {priorityBadge}
                             </Group>
                           </Box>
                           <Checkbox
