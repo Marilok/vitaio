@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ColorSchemeScript } from "@mantine/core";
 import { Providers } from "./providers";
+import { Header } from "@/components/Header";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -18,7 +19,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`antialiased`}>
         <ColorSchemeScript defaultColorScheme="light" />
-        <Providers>{children}</Providers>
+        <Providers>
+          <Header />
+          {children}
+        </Providers>
       </body>
     </html>
   );

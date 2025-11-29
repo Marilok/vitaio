@@ -135,6 +135,20 @@ export function Step8Appointments() {
 
   const optionalAppointments = appointments
     .filter((app) => app.type === "optional")
+    .filter((app) => {
+      // Apply eligibility filtering based on screening criteria
+      // IDs 2-5 are screening appointments that have specific eligibility criteria
+      if (app.id === 2) return true; // CT plic - always available
+      if (app.id === 3) return eligibility.showCervicalCancerScreening; // Gynekologické vyšetření - only for eligible patients
+      if (app.id === 4) return eligibility.showBreastCancerScreening; // Mamografie - only for eligible patients
+      if (app.id === 5) return eligibility.showColorectalCancerScreening; // Kolonoskopie - only for eligible patients
+
+      // ID 9 - Gynekologická konzultace - only for women
+      if (app.id === 9) return eligibility.showGynecologicalConsultation;
+
+      // Other IDs (consultations and counseling) are always available
+      return true;
+    })
     .map((app) => ({
       ...app,
       priority: getAppointmentPriority(app.id, formData),
@@ -273,6 +287,7 @@ export function Step8Appointments() {
                       <Grid.Col
                         key={appointment.id}
                         span={{ base: 12, sm: 6, md: 4 }}
+                        style={{ display: "flex" }}
                       >
                         <Card
                           shadow="sm"
@@ -296,6 +311,9 @@ export function Step8Appointments() {
                                 ? "var(--mantine-color-orange-0)"
                                 : undefined,
                             position: "relative",
+                            width: "100%",
+                            display: "flex",
+                            flexDirection: "column",
                           }}
                           onClick={() => {
                             const newValue = isSelected
@@ -397,6 +415,7 @@ export function Step8Appointments() {
                       <Grid.Col
                         key={appointment.id}
                         span={{ base: 12, sm: 6, md: 4 }}
+                        style={{ display: "flex" }}
                       >
                         <Card
                           shadow="sm"
@@ -420,6 +439,9 @@ export function Step8Appointments() {
                                 ? "var(--mantine-color-orange-0)"
                                 : undefined,
                             position: "relative",
+                            width: "100%",
+                            display: "flex",
+                            flexDirection: "column",
                           }}
                           onClick={() => {
                             const newValue = isSelected
@@ -521,6 +543,7 @@ export function Step8Appointments() {
                       <Grid.Col
                         key={appointment.id}
                         span={{ base: 12, sm: 6, md: 4 }}
+                        style={{ display: "flex" }}
                       >
                         <Card
                           shadow="sm"
@@ -544,6 +567,9 @@ export function Step8Appointments() {
                                 ? "var(--mantine-color-orange-0)"
                                 : undefined,
                             position: "relative",
+                            width: "100%",
+                            display: "flex",
+                            flexDirection: "column",
                           }}
                           onClick={() => {
                             const newValue = isSelected

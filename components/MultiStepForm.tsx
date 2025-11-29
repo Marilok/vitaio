@@ -182,7 +182,7 @@ function FormEvaluationLoader({ onComplete }: { onComplete: () => void }) {
   useEffect(() => {
     const timer = setTimeout(() => {
       onComplete();
-    }, 5000);
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, [onComplete]);

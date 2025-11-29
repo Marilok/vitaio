@@ -7,6 +7,7 @@ interface ScreeningEligibility {
   showCervicalCancerScreening: boolean;
   showBreastCancerScreening: boolean;
   showColorectalCancerScreening: boolean;
+  showGynecologicalConsultation: boolean;
 }
 
 export function getScreeningEligibility(
@@ -25,6 +26,7 @@ export function getScreeningEligibility(
     showBreastCancerScreening:
       gender === "female" && (patientAge >= 45 || hasFamilyHistory),
     showColorectalCancerScreening: patientAge >= 45 && patientAge <= 74,
+    showGynecologicalConsultation: gender === "female",
   };
 }
 
@@ -37,7 +39,7 @@ export function calculatePriorityScore(data: FormData): number {
   }
 
   // +5 if taking Aspirin (medication ID: 3)
-  if (data.medications?.includes("3")) {
+  if (data.medications?.some((med) => med.id === "3")) {
     priority += 5;
   }
 
@@ -90,4 +92,3 @@ export function calculatePriorityScore(data: FormData): number {
 
   return priority;
 }
-

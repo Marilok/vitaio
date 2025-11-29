@@ -1,24 +1,76 @@
 "use client";
 
 import { useFormContext, Controller } from "react-hook-form";
-import { Stack, Title, Text, TextInput, Box, Group } from "@mantine/core";
+import {
+  Stack,
+  Title,
+  Text,
+  TextInput,
+  Box,
+  Group,
+  Card,
+  Divider,
+  Table,
+} from "@mantine/core";
 import { IconUser, IconMail, IconPhone } from "@tabler/icons-react";
 import { FormData } from "@/types/form";
 import { RequiredIndicator } from "../form/RequiredIndicator";
+import appointmentsData from "@/db/appointments.json";
+
+interface AppointmentData {
+  id: number;
+  name: string;
+  description?: string;
+  type: string;
+  url?: string;
+  price?: number;
+  category?: string;
+}
+
+const appointments: AppointmentData[] = appointmentsData as AppointmentData[];
 
 export function ContactInfo() {
   const {
     control,
     formState: { errors },
+    watch,
   } = useFormContext<FormData>();
 
+  const selectedAppointments = watch("selectedAppointments") || [];
+  const gender = watch("gender");
+
+  // Get mandatory appointments based on gender
+  const mandatoryAppointments = appointments.filter((app) => {
+    if (app.type !== "mandatory") return false;
+
+    // Filter gender-specific mandatory appointments
+    if (app.id === 1 && gender !== "male") return false; // PSA Test
+    if (app.id === 24 && gender !== "female") return false; // Breast Ultrasound
+    if (app.id === 23 && gender !== "male") return false; // Testicular Ultrasound
+
+    return true;
+  });
+
+  // Get selected optional appointments
+  const optionalAppointments = appointments.filter(
+    (app) => app.type === "optional" && selectedAppointments.includes(app.id)
+  );
+
+  // Calculate total price
+  const mandatoryPackagePrice = 10000;
+  const optionalPrice = optionalAppointments.reduce(
+    (sum, app) => sum + (app.price || 0),
+    0
+  );
+  const totalPrice = mandatoryPackagePrice + optionalPrice;
+
   return (
-    <Stack gap="lg" pt="md">
+    <Stack gap="md" pt="md">
       <Box>
         <Title order={3} mb="xs">
           📞 Kontaktní údaje
         </Title>
-        <Text size="md" c="dimmed" mb="lg">
+        <Text size="md" c="dimmed">
           Vyplňte prosím vaše kontaktní údaje pro potvrzení objednávky.
         </Text>
       </Box>
@@ -132,6 +184,77 @@ export function ContactInfo() {
           )}
         />
       </Group>
+
+      {/* Summary of Selected Appointments */}
+      <Card
+        mt="lg"
+        shadow="md"
+        padding="lg"
+        radius="md"
+        withBorder
+        style={{
+          borderColor: "var(--mantine-color-orange-6)",
+          borderWidth: 2,
+          backgroundColor: "var(--mantine-color-orange-0)",
+        }}
+      >
+        <Title order={4} mb="md">
+          📋 Souhrn objednávky
+        </Title>
+
+        <Table
+          striped
+          highlightOnHover
+          withTableBorder
+          withColumnBorders
+          style={{ backgroundColor: "white" }}
+        >
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Vyšetření</Table.Th>
+              <Table.Th style={{ textAlign: "right", width: "120px" }}>
+                Cena
+              </Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {/* Mandatory Package */}
+            <Table.Tr>
+              <Table.Td>
+                <Text fw={600}>Základní preventivní balíček</Text>
+                <Text size="xs" c="dimmed">
+                  {mandatoryAppointments.map((app) => app.name).join(", ")}
+                </Text>
+              </Table.Td>
+              <Table.Td style={{ textAlign: "right" }}>
+                <Text fw={600}>10 000 Kč</Text>
+              </Table.Td>
+            </Table.Tr>
+
+            {/* Optional Appointments */}
+            {optionalAppointments.map((app) => (
+              <Table.Tr key={app.id}>
+                <Table.Td>{app.name}</Table.Td>
+                <Table.Td style={{ textAlign: "right" }}>
+                  {(app.price || 0).toLocaleString("cs-CZ")} Kč
+                </Table.Td>
+              </Table.Tr>
+            ))}
+          </Table.Tbody>
+        </Table>
+
+        <Divider my="md" />
+
+        {/* Total Price */}
+        <Group justify="space-between" align="center">
+          <Text size="xl" fw={700}>
+            Celková cena
+          </Text>
+          <Text size="2rem" fw={700} c="orange">
+            {totalPrice.toLocaleString("cs-CZ")} Kč
+          </Text>
+        </Group>
+      </Card>
     </Stack>
   );
 }
