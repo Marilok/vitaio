@@ -629,14 +629,25 @@ export function Step8Appointments() {
                     Celková cena vyšetření
                   </Text>
                   <Text size="sm" c="dimmed">
-                    Základní preventivní balíček a{" "}
-                    {
-                      field.value.filter((id: number) => {
-                        const app = appointments.find((a) => a.id === id);
-                        return app?.type === "optional";
-                      }).length
-                    }{" "}
-                    vybraných vyšetření
+                    Základní preventivní balíček
+                    {field.value.filter((id: number) => {
+                      const app = appointments.find((a) => a.id === id);
+                      return app?.type === "optional";
+                    }).length > 0 && (
+                      <>
+                        {" + "}
+                        {field.value
+                          .filter((id: number) => {
+                            const app = appointments.find((a) => a.id === id);
+                            return app?.type === "optional";
+                          })
+                          .map((id: number) => {
+                            const app = appointments.find((a) => a.id === id);
+                            return app?.name;
+                          })
+                          .join(", ")}
+                      </>
+                    )}
                   </Text>
                 </Box>
                 <Text size="2rem" fw={700} c="orange">
