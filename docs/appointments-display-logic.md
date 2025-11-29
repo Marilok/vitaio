@@ -239,3 +239,4 @@ Render with Visual Distinction
 6. **Reference**: Kompletní screening kritéria viz `screening-eligibility.md`
 
 
+

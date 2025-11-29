@@ -35,7 +35,7 @@ const appointments: AppointmentData[] = appointmentsData as AppointmentData[];
 
 // Priority thresholds for appointment recommendations
 const PRIORITY_THRESHOLD_HIGH = 20; // "Silně doporučeno"
-const PRIORITY_THRESHOLD_LOW = 10; // "Doporučeno"
+const PRIORITY_THRESHOLD_LOW = 5; // "Doporučeno"
 
 /**
  * Calculate priority for a specific appointment based on form data
@@ -280,16 +280,7 @@ export function Step8Appointments() {
                           field.onChange(newValue);
                         }}
                       >
-                        <Box
-                          style={{
-                            position: "absolute",
-                            top: -12,
-                            left: 8,
-                            zIndex: 50,
-                          }}
-                        >
-                          {priorityBadge}
-                        </Box>
+                        <Box>{priorityBadge}</Box>
                         <Group
                           justify="space-between"
                           align="flex-start"
