@@ -1,12 +1,72 @@
 [
-  { "id": 1, "name": "Kolonoskopie" },
-  { "id": 2, "name": "Genetická konzultace" },
-  { "id": 3, "name": "Gynekologické vyšetření" },
-  { "id": 4, "name": "Poradna zdravý životní styl" },
-  { "id": 5, "name": "Poradna odvykání kouření" },
-  { "id": 6, "name": "Poradna adiktologa" },
-  { "id": 7, "name": "Pohybová poradna" },
-  { "id": 8, "name": "PSA vyšetření" },
-  { "id": 9, "name": "Mamograf" },
-  { "id": 10, "name": "Odběr krve" }
+  {
+    "id": 1,
+    "name": "Kolonoskopie",
+    "description": "Preventivní vyšetření tlustého střeva pro včasné odhalení nádorových změn",
+    "type": "examination",
+    "url": "https://www.mou.cz/program-casneho-zachytu-karcinomu-tlusteho-streva-a-konecniku/t1884"
+  },
+  {
+    "id": 2,
+    "name": "Genetická konzultace",
+    "description": "Konzultace s genetikem pro posouzení dědičných rizik onemocnění",
+    "type": "consultation",
+    "url": "https://www.mou.cz/vse-o-prevenci/t1309"
+  },
+  {
+    "id": 3,
+    "name": "Gynekologické vyšetření",
+    "description": "Preventivní gynekologická prohlídka včetně cytologického vyšetření",
+    "type": "examination",
+    "url": "https://www.mou.cz/screeningove-programy/t1853"
+  },
+  {
+    "id": 4,
+    "name": "Poradna zdravý životní styl",
+    "description": "Konzultace o zdravých stravovacích návycích a životním stylu",
+    "type": "consultation",
+    "url": "https://www.mou.cz/jak-predchazet-br-rakovine/t1291"
+  },
+  {
+    "id": 5,
+    "name": "Poradna odvykání kouření",
+    "description": "Odborná pomoc a podpora při odvykání kouření",
+    "type": "consultation",
+    "url": "https://www.mou.cz/vse-o-prevenci/t1309"
+  },
+  {
+    "id": 6,
+    "name": "Poradna adiktologa",
+    "description": "Konzultace s odborníkem na závislosti a jejich léčbu",
+    "type": "consultation",
+    "url": "https://www.mou.cz/vse-o-prevenci/t1309"
+  },
+  {
+    "id": 7,
+    "name": "Pohybová poradna",
+    "description": "Individuální plán pohybové aktivity přizpůsobený vašemu zdravotnímu stavu",
+    "type": "consultation",
+    "url": "https://www.mou.cz/jak-predchazet-br-rakovine/t1291"
+  },
+  {
+    "id": 8,
+    "name": "PSA vyšetření",
+    "description": "Krevní test pro včasné odhalení onemocnění prostaty",
+    "type": "examination",
+    "url": "https://www.mou.cz/program-casneho-zachytu-karcinomu-prostaty/t2011"
+  },
+  {
+    "id": 9,
+    "name": "Mamograf",
+    "description": "Rentgenové vyšetření prsu pro včasné odhalení nádorových změn",
+    "type": "examination",
+    "url": "https://www.mou.cz/program-screeningu-karcinomu-prsu/t1888"
+  },
+  {
+    "id": 10,
+    "name": "Odběr krve",
+    "description": "Základní laboratorní vyšetření krve pro posouzení celkového zdravotního stavu",
+    "type": "examination",
+    "url": "https://www.mou.cz/screeningove-programy/t1853"
+  }
 ]

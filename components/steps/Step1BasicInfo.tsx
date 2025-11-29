@@ -24,11 +24,8 @@ export function Step1BasicInfo() {
     <Stack gap="lg" pt="md">
       <Box>
         <Title order={3} mb="xs">
-          Základní informace
+          Základní informace o mě
         </Title>
-        <Text size="sm" c="dimmed">
-          Prosím vyplňte vaše základní údaje
-        </Text>
       </Box>
 
       <Controller
@@ -37,10 +34,11 @@ export function Step1BasicInfo() {
         rules={{ required: "Pohlaví je povinné" }}
         render={({ field }) => (
           <Box>
-            <Text size="sm" fw={500} mb="xs">
-              Pohlaví <RequiredIndicator />
+            <Text size="lg" fw={500} mb="xs">
+              Jsem.. <RequiredIndicator />
             </Text>
             <SegmentedControl
+              size="lg"
               {...field}
               fullWidth
               color={
@@ -93,12 +91,11 @@ export function Step1BasicInfo() {
         }}
         render={({ field }) => (
           <NumberInput
+            size="lg"
             {...field}
-            label={
-              <Fragment>
-                Věk <RequiredIndicator />
-              </Fragment>
-            }
+            required
+            label="
+            Mám"
             min={1}
             max={120}
             error={errors.age?.message}

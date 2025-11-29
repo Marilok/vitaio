@@ -5,7 +5,12 @@ import { Notifications } from "@mantine/notifications";
 
 const theme = createTheme({
   /** Your theme customization here */
+  fonts: {
+    body: "Arial, sans-serif",
+    // headings: { fontFamily: "Matter, sans-serif" },
+  },
   primaryColor: "mou-orange",
+  secondaryColor: "mou-blue",
   colors: {
     "mou-orange": colorsTuple("#f04600"),
     "mou-blue": colorsTuple("#007fc8"),
