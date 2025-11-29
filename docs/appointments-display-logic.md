@@ -238,3 +238,4 @@ Render with Visual Distinction
 5. **Optional vždy dostupné**: Uživatel může vybrat jakékoliv další vyšetření
 6. **Reference**: Kompletní screening kritéria viz `screening-eligibility.md`
 
+

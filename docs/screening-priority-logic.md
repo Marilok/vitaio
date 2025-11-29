@@ -448,3 +448,4 @@ Možná vylepšení prioritizační logiky:
 - **Appointments Display**: `docs/appointments-display-logic.md`
 - **BMI Calculation**: `utils/bmi.ts`
 - **Form Data Types**: `types/form.ts`
+
