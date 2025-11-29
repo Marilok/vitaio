@@ -11,6 +11,7 @@
     "name": "CT plic",
     "description": "Low-dose CT vyšetření plic pro detekci rakoviny",
     "type": "optional",
+    "category": "examination",
     "url": "https://www.mou.cz/program-casneho-zachytu-karcinomu-plic/t1852"
   },
   {
@@ -19,6 +20,7 @@
     "description": "Komplexní gynekologické vyšetření",
     "price": 2500,
     "type": "optional",
+    "category": "examination",
     "url": "https://www.mou.cz/gynekologicke-vysetreni/t1388"
   },
   {
@@ -27,6 +29,7 @@
     "description": "Screeningové vyšetření prsů",
     "price": 1000,
     "type": "optional",
+    "category": "examination",
     "url": "https://www.mou.cz/program-screeningu-karcinomu-prsu/t1888"
   },
   {
@@ -35,12 +38,14 @@
     "description": "Vyšetření tlustého střeva pro prevenci kolorektálního karcinomu",
     "price": 4150,
     "type": "optional",
+    "category": "examination",
     "url": "https://www.mou.cz/vysetreni-tlusteho-streva-kolonoskopie/t1440"
   },
   {
     "id": 6,
     "name": "Test okultního krvácení stolice",
     "type": "optional",
+    "category": "examination",
     "description": "Neinvazivní vyšetření stolice určené k odhalení skrytého krvácení, které může signalizovat polypy či časné stádium kolorektálního karcinomu.",
      "url": "https://www.mou.cz/diagnostika-okultniho-krvaceni-do-stolice/t1373"
   },
@@ -48,6 +53,7 @@
     "id": 7,
     "name": "Sigmoidoskopie",
     "type": "optional",
+    "category": "examination",
     "description": "Vyšetření dolní části tlustého střeva sloužící k časnému odhalení zánětů, polypů a prevenci kolorektálního karcinomu.",
     "url": "https://www.mou.cz/gastroenterologicke-oddeleni/t1360"
   },
@@ -57,6 +63,7 @@
     "description": "Vyšetření trávicího systému pro prevenci onemocnění jícnu, žaludku, střev a jater. Vhodné při trávicích potížích.",
     "price": 2550,
     "type": "optional",
+    "category": "consultation",
     "url": "https://www.mou.cz/gastroenterologicke-oddeleni/t1360"
   },
   {
@@ -64,6 +71,7 @@
     "name": "Gynekologická konzultace",
     "description": "Preventivní prohlídka, ultrazvuk a screening cervikálního karcinomu. Doporučeno pro všechny ženy.",
     "type": "optional",
+    "category": "consultation",
     "url": "https://www.mou.cz/gynekologicke-vysetreni/t1388"
   },
   {
@@ -71,6 +79,7 @@
     "name": "Urologická konzultace",
     "description": "Vyšetření močového systému a prevence nádorů prostaty a varlat. Vhodné pro muže nad 45 let.",
     "type": "optional",
+    "category": "consultation",
     "url": "https://www.mou.cz/oddeleni-urologicke-onkologie/t1354"
   },
   {
@@ -78,6 +87,7 @@
     "name": "Konzultace s praktickým lékařem",
     "description": "Preventivní vyšetření s posouzením celkového zdravotního stavu. Základ komplexní péče.",
     "type": "optional",
+    "category": "consultation",
     "url": "https://www.mou.cz/lekari-a-farmaceuti/t1487"
   },
   {
@@ -85,6 +95,7 @@
     "name": "Onkologická konzultace",
     "description": "Posouzení rizika nádorových onemocnění a individuální screeningový plán. Doporučeno při rodinné zátěži.",
     "type": "optional",
+    "category": "consultation",
     "url": "https://www.mou.cz/klinika-komplexni-onkologicke-pece/t1383"
   },
   {
@@ -93,6 +104,7 @@
     "description": "Vyhodnocení zobrazovacích vyšetření (RTG, CT, MRI). Vhodné pro upřesnění nejasných nálezů.",
     "price": 2000,
     "type": "optional",
+    "category": "consultation",
     "url": "https://www.mou.cz/oddeleni-radiologie/t1362"
   },
   {
@@ -100,6 +112,7 @@
     "name": "Nutriční konzultace",
     "description": "Individuální plán stravy pro prevenci nadváhy a diabetu. Zahrnuje analýzu stravovacích návyků.",
     "type": "optional",
+    "category": "consultation",
     "url": "https://www.mou.cz/usek-lecebne-vyzivy/t1377"
   },
   {
@@ -167,30 +180,35 @@
     "name": "Genetická konzultace",
     "description": "Odborná konzultace pro posouzení dědičného rizika nádorových onemocnění v rodině",
     "price": 5500,
-    "type": "optional"
+    "type": "optional",
+    "category": "consultation"
   },
   {
     "id": 28,
     "name": "Poradenství zdravého životního stylu",
     "description": "Komplexní poradenství zaměřené na správnou výživu, pohybovou aktivitu a prevenci civilizačních onemocnění",
-    "type": "optional"
+    "type": "optional",
+    "category": "counseling"
   },
   {
     "id": 29,
     "name": "Poradenství pro odvykání kouření",
     "description": "Individuální program pro ukončení kouření s podporou odborníka a důkazem založených metod",
-    "type": "optional"
+    "type": "optional",
+    "category": "counseling"
   },
   {
     "id": 30,
     "name": "Poradenství pro závislosti",
     "description": "Odborná pomoc při řešení alkoholové nebo jiné závislosti s možností dlouhodobé podpory",
-    "type": "optional"
+    "type": "optional",
+    "category": "counseling"
   },
   {
     "id": 31,
     "name": "Poradenství pro fyzickou aktivitu",
     "description": "Nastavení individuálního cvičebního plánu s ohledem na váš zdravotní stav a cíle",
-    "type": "optional"
+    "type": "optional",
+    "category": "counseling"
   }
 ]
