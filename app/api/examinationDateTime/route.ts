@@ -227,7 +227,7 @@ export async function POST(request: NextRequest) {
       examTypeNameToId.set(examType.name, examType.id);
     }
 
-    // 5. Pro každé vyšetření najít 3 dostupné sloty BEZ časového překrývání
+    // 5. Pro každé vyšetření najít 1 doporučený slot BEZ časového překrývání
     const result: Record<string, SlotInfo[]> = {};
     const allSelectedSlots: Slot[] = []; // Sleduje všechny již vybrané sloty
 
@@ -248,8 +248,8 @@ export async function POST(request: NextRequest) {
       const nonOverlappingSlots: SlotInfo[] = [];
 
       for (const candidateSlot of candidateSlots) {
-        // Pokud už máme 3 sloty, přestaň hledat
-        if (nonOverlappingSlots.length >= 3) break;
+        // Pokud už máme doporučený slot, přestaň hledat
+        if (nonOverlappingSlots.length >= 1) break;
 
         // Kontrola, zda se tento slot nepřekrývá s již vybranými sloty
         const overlaps = allSelectedSlots.some(selectedSlot => 
