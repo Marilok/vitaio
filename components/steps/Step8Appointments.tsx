@@ -82,7 +82,7 @@ export function Step8Appointments({
                               : isRecommended
                               ? "var(--mantine-color-mou-blue-3)"
                               : undefined,
-                            borderWidth: isSelected ? 2 : isRecommended ? 2 : 1,
+                            borderWidth: 1,
                             backgroundColor: isSelected
                               ? "var(--mantine-primary-color-light)"
                               : isRecommended && !isSelected
@@ -183,7 +183,7 @@ export function Step8Appointments({
                               : isRecommended
                               ? "var(--mantine-color-mou-blue-3)"
                               : undefined,
-                            borderWidth: isSelected ? 2 : isRecommended ? 2 : 1,
+                            borderWidth: 1,
                             backgroundColor: isSelected
                               ? "var(--mantine-primary-color-light)"
                               : isRecommended && !isSelected
