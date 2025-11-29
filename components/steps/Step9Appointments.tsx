@@ -325,7 +325,7 @@ export function Step9Appointments() {
       <Stack gap="lg" pt="md">
         <Box>
           <Title order={3} mb="xs">
-            Rezervace termínů
+            🗓️ Rezervace termínů
           </Title>
           <Text size="md" c="dimmed">
             Nejprve vyberte termíny v předchozím kroku.
@@ -511,7 +511,7 @@ export function Step9Appointments() {
                 <div
                   style={{
                     display: "grid",
-                    gridTemplateColumns: "1fr 1fr",
+                    gridTemplateColumns: "1fr 1fr 1fr 1fr",
                     gap: "8px",
                     maxHeight: 400,
                     overflow: "auto",

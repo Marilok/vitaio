@@ -162,7 +162,7 @@ export function Step8Appointments() {
     <Stack gap="lg" pt="md">
       <Box>
         <Title order={3} mb="xs">
-          Doporučené vyšetření pro mě
+          🧑‍⚕️ Doporučené vyšetření pro mě
         </Title>
         <Text size="md" c="dimmed" mb="lg">
           Na základě vyplněných informací jsme navrhli následující vyšetření.
