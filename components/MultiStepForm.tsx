@@ -63,6 +63,8 @@ const getFieldsForStep = (
 
 export function MultiStepForm() {
   const methods = useForm<FormData>({
+    mode: "onChange",
+    reValidateMode: "onBlur",
     defaultValues: {
       gender: "male",
       age: undefined,
