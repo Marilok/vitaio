@@ -12,14 +12,14 @@ import { Step9Appointments } from "./steps/Step9Appointments";
 import { FormProgress } from "./form/FormProgress";
 import { FormNavigation } from "./form/FormNavigation";
 import { StepContainer } from "./form/StepContainer";
-import { PlaceholderStep } from "./form/PlaceholderStep";
+
 import { useMultiStepForm } from "@/hooks/useMultiStepForm";
 import { MultiStepFormProvider } from "@/contexts/MultiStepFormContext";
 import { FormData } from "@/types/form";
 import { calculatePriorityScore } from "@/utils/priority";
 import { transformAppointmentsToScreenings } from "@/utils/appointmentsMapping";
 
-const TOTAL_STEPS = 9;
+const TOTAL_STEPS = 7;
 
 // Define which fields to validate for each step
 const getFieldsForStep = (
@@ -53,8 +53,8 @@ const getFieldsForStep = (
 
       return fields;
     }
-    case 7:
-      return ["bookedAppointments"]; // Step 8 - Appointment booking validation
+    case 5:
+      return ["bookedAppointments"]; // Step 6 - Appointment booking validation
     default:
       return [];
   }
@@ -168,13 +168,9 @@ export function MultiStepForm() {
       case 4:
         return <Screening />;
       case 5:
-        return <PlaceholderStep stepNumber={6} />;
-      case 6:
         return <Step8Appointments />;
-      case 7:
+      case 6:
         return <Step9Appointments />;
-      case 8:
-        return <PlaceholderStep stepNumber={9} />;
       default:
         return null;
     }

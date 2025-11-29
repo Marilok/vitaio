@@ -146,11 +146,10 @@ export function Step8Appointments() {
     <Stack gap="lg" pt="md">
       <Box>
         <Title order={3} mb="xs">
-          Doporučené termíny
+          Doporučené vyšetření pro mě
         </Title>
         <Text size="md" c="dimmed" mb="lg">
-          Vyberte termíny, které byste chtěli rezervovat na základě vašeho
-          zdravotního posouzení.
+          Na základě vyplněných informací jsme navrhli následující vyšetření.
         </Text>
       </Box>
 
@@ -180,7 +179,7 @@ export function Step8Appointments() {
                     backgroundColor: "var(--mantine-color-red-0)",
                   }}
                 >
-                  <Group justify="space-between" align="flex-start" mb="md">
+                  <Group justify="space-between" align="flex-start" mb="0">
                     <Box style={{ flex: 1 }}>
                       <Group gap="xs" align="center" mb="xs">
                         <Text fw={500} size="lg">
@@ -236,6 +235,12 @@ export function Step8Appointments() {
                         Doporučeno
                       </Badge>
                     );
+                  } else {
+                    priorityBadge = (
+                      <Badge size="sm" variant="light" color="mou-blue">
+                        /Volitelné
+                      </Badge>
+                    );
                   }
 
                   return (
@@ -264,6 +269,7 @@ export function Step8Appointments() {
                               : priority >= PRIORITY_THRESHOLD_LOW
                               ? "var(--mantine-color-orange-0)"
                               : undefined,
+                          position: "relative",
                         }}
                         onClick={() => {
                           const newValue = isSelected
@@ -274,18 +280,25 @@ export function Step8Appointments() {
                           field.onChange(newValue);
                         }}
                       >
+                        <Box
+                          style={{
+                            position: "absolute",
+                            top: -12,
+                            left: 8,
+                            zIndex: 50,
+                          }}
+                        >
+                          {priorityBadge}
+                        </Box>
                         <Group
                           justify="space-between"
                           align="flex-start"
                           mb="xs"
                         >
                           <Box style={{ flex: 1 }}>
-                            <Group gap="xs" align="center" mb="xs">
-                              <Text fw={500} size="md">
-                                {appointment.name}
-                              </Text>
-                              {priorityBadge}
-                            </Group>
+                            <Text fw={500} size="md" mb="xs">
+                              {appointment.name}
+                            </Text>
                           </Box>
                           <Checkbox
                             checked={isSelected}

@@ -34,7 +34,9 @@ export function SymptomsAndFamily() {
               checked={value || false}
               size="md"
               onChange={(event) => onChange(event.currentTarget.checked)}
-              label="Měl(a) jsem někdy krvácení stolice"
+              label={`${
+                gender === "female" ? "Měla" : "Měl"
+              } jsem někdy krvácení stolice`}
               error={errors.hasRectalBleeding?.message}
             />
             {errors.hasRectalBleeding && (
