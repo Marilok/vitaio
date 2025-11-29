@@ -5,9 +5,9 @@ import { Header } from "@/components/Header";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Objednání na prevenci | MOU",
+  title: "Preventee | MOU",
   description:
-    "Next.js app with TypeScript, Tailwind, Mantine, React Hook Form, and Supabase",
+    "Přes Preventee získáte personalizovaný návrh preventivních vyšetření a objednáte se jednoduše, rychle a online.",
 };
 
 export default function RootLayout({
