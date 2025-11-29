@@ -19,6 +19,8 @@ const MultiStepFormContext = createContext<
   MultiStepFormContextValue | undefined
 >(undefined);
 
+export { MultiStepFormContext };
+
 export function MultiStepFormProvider({
   children,
   value,

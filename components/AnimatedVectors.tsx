@@ -1,9 +1,8 @@
-'use client';
+"use client";
 
-import { useContext, useEffect, useState } from 'react';
-import Image from 'next/image';
-import { Transition } from '@mantine/core';
-import { MultiStepFormContext } from '@/contexts/MultiStepFormContext';
+import { useContext, useEffect, useState } from "react";
+import Image from "next/image";
+import { MultiStepFormContext } from "@/contexts/MultiStepFormContext";
 
 interface VectorPosition {
   top?: number;
@@ -54,31 +53,28 @@ const STEP_POSITIONS: VectorState[] = [
 
 export function AnimatedVectors() {
   const context = useContext(MultiStepFormContext);
-  const [currentPositions, setCurrentPositions] = useState<VectorState>(STEP_POSITIONS[0]);
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [currentPositions, setCurrentPositions] = useState<VectorState>(
+    STEP_POSITIONS[0]
+  );
+
+  // Get activeStep from context if available, otherwise default to 0
+  const activeStep = context?.activeStep ?? 0;
 
   useEffect(() => {
-    if (!context) return;
-
-    const { activeStep } = context;
     const targetPositions = STEP_POSITIONS[activeStep] || STEP_POSITIONS[0];
-    
-    // Trigger transition
-    setIsTransitioning(true);
-    
+
     // Small delay to ensure smooth transition
     const timer = setTimeout(() => {
       setCurrentPositions(targetPositions);
-      setTimeout(() => setIsTransitioning(false), 350); // Slightly longer than transition duration
     }, 50);
 
     return () => clearTimeout(timer);
-  }, [context?.activeStep]);
+  }, [activeStep]);
 
   const createVectorStyle = (position: VectorPosition) => ({
     zIndex: -1,
-    position: 'absolute' as const,
-    transition: 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
+    position: "absolute" as const,
+    transition: "all 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
     ...position,
   });
 
