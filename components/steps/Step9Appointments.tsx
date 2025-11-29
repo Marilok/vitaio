@@ -118,6 +118,8 @@ export function Step9Appointments() {
           formData
         );
 
+        console.log(screeningsData, 'screeningsData');
+
         // Call the examinationDateTime API
         const response = await fetch("/api/examinationDateTime", {
           method: "POST",
@@ -131,12 +133,58 @@ export function Step9Appointments() {
 
         const data: ExaminationDateTimeResponse = await response.json();
 
+        console.log(data);
+
         if (!response.ok) {
           throw new Error(data.error || "Failed to fetch recommended slots");
         }
 
         setRecommendedSlots(data.availableSlots);
-        setExaminationNames(Object.keys(data.availableSlots));
+        
+        // Get all examination names from screenings (both mandatory and optional with order=true)
+        // This ensures we show ALL selected examinations, even those without available slots
+        const allExaminationNames: string[] = [];
+        
+        // Add mandatory examinations that have order=true
+        Object.entries(screeningsData.mandatory).forEach(([key, value]) => {
+          if (value.order) {
+            allExaminationNames.push(key);
+          }
+        });
+        
+        // Add optional examinations that have order=true
+        Object.entries(screeningsData.optional).forEach(([key, value]) => {
+          if (value.order) {
+            allExaminationNames.push(key);
+          }
+        });
+        
+        // Sort examinations by earliest available time
+        // Examinations with available slots first (sorted by time), then those without slots
+        allExaminationNames.sort((a, b) => {
+          const slotsA = data.availableSlots[a];
+          const slotsB = data.availableSlots[b];
+          
+          // If both have slots, sort by earliest time
+          if (slotsA && slotsA.length > 0 && slotsB && slotsB.length > 0) {
+            const timeA = new Date(slotsA[0].timeFrom).getTime();
+            const timeB = new Date(slotsB[0].timeFrom).getTime();
+            return timeA - timeB;
+          }
+          
+          // If only A has slots, it comes first
+          if (slotsA && slotsA.length > 0) return -1;
+          
+          // If only B has slots, it comes first
+          if (slotsB && slotsB.length > 0) return 1;
+          
+          // If neither has slots, maintain original order
+          return 0;
+        });
+        
+        console.log('allExaminationNames (sorted by time):', allExaminationNames);
+        
+        setExaminationNames(allExaminationNames);
 
         // Automatically select the first recommended slot for each examination
         const autoBookedAppointments: SelectedAppointment[] = [];
