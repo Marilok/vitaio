@@ -29,6 +29,7 @@ interface AppointmentData {
   description?: string;
   type: string;
   url?: string;
+  price?: number;
 }
 
 const appointments: AppointmentData[] = appointmentsData as AppointmentData[];
@@ -204,6 +205,9 @@ export function Step8Appointments() {
                           Povinné
                         </Badge>
                       </Group>
+                      <Text size="xl" fw={600} c="blue" mb="sm">
+                        10 000 Kč
+                      </Text>
                     </Box>
                     <Checkbox checked={true} disabled size="md" />
                   </Group>
@@ -305,6 +309,11 @@ export function Step8Appointments() {
                             <Text fw={500} size="md" mb="xs">
                               {appointment.name}
                             </Text>
+                            {appointment.price && (
+                              <Text size="lg" fw={600} c="blue">
+                                {appointment.price.toLocaleString("cs-CZ")} Kč
+                              </Text>
+                            )}
                           </Box>
                           <Checkbox
                             checked={isSelected}
@@ -345,6 +354,56 @@ export function Step8Appointments() {
                 })}
               </Grid>
             </Box>
+
+            {/* Total Price Section */}
+            <Card
+              shadow="md"
+              padding="lg"
+              radius="md"
+              withBorder
+              style={{
+                borderColor: "var(--mantine-color-orange-6)",
+                borderWidth: 2,
+                backgroundColor: "var(--mantine-color-orange-0)",
+              }}
+            >
+              <Group justify="space-between" align="center">
+                <Box>
+                  <Text size="xl" fw={600} mb="xs">
+                    Celková cena vyšetření
+                  </Text>
+                  <Text size="sm" c="dimmed">
+                    Základní preventivní balíček a{" "}
+                    {
+                      field.value.filter((id: number) => {
+                        const app = appointments.find((a) => a.id === id);
+                        return app?.type === "optional";
+                      }).length
+                    }{" "}
+                    vybraných vyšetření
+                  </Text>
+                </Box>
+                <Text size="2rem" fw={700} c="orange">
+                  {(() => {
+                    // Base price for mandatory package
+                    let totalPrice = 10000;
+
+                    // Add prices of selected optional appointments
+                    field.value.forEach((id: number) => {
+                      const appointment = appointments.find(
+                        (a) => a.id === id && a.type === "optional"
+                      );
+                      if (appointment?.price) {
+                        totalPrice += appointment.price;
+                      }
+                    });
+
+                    return totalPrice.toLocaleString("cs-CZ");
+                  })()}{" "}
+                  Kč
+                </Text>
+              </Group>
+            </Card>
           </Stack>
         )}
       />

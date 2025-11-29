@@ -17,6 +17,7 @@
     "id": 3,
     "name": "Gynekologické vyšetření",
     "description": "Komplexní gynekologické vyšetření",
+    "price": 2500,
     "type": "optional",
     "url": "https://www.mou.cz/gynekologicke-vysetreni/t1388"
   },
@@ -24,6 +25,7 @@
     "id": 4,
     "name": "Mamografie",
     "description": "Screeningové vyšetření prsů",
+    "price": 1000,
     "type": "optional",
     "url": "https://www.mou.cz/program-screeningu-karcinomu-prsu/t1888"
   },
@@ -31,6 +33,7 @@
     "id": 5,
     "name": "Kolonoskopie",
     "description": "Vyšetření tlustého střeva pro prevenci kolorektálního karcinomu",
+    "price": 4150,
     "type": "optional",
     "url": "https://www.mou.cz/vysetreni-tlusteho-streva-kolonoskopie/t1440"
   },
@@ -52,6 +55,7 @@
     "id": 8,
     "name": "Gastroenterologická konzultace",
     "description": "Vyšetření trávicího systému pro prevenci onemocnění jícnu, žaludku, střev a jater. Vhodné při trávicích potížích.",
+    "price": 2550,
     "type": "optional",
     "url": "https://www.mou.cz/gastroenterologicke-oddeleni/t1360"
   },
@@ -87,6 +91,7 @@
     "id": 13,
     "name": "Radiologická konzultace",
     "description": "Vyhodnocení zobrazovacích vyšetření (RTG, CT, MRI). Vhodné pro upřesnění nejasných nálezů.",
+    "price": 2000,
     "type": "optional",
     "url": "https://www.mou.cz/oddeleni-radiologie/t1362"
   },
@@ -161,6 +166,7 @@
     "id": 27,
     "name": "Genetická konzultace",
     "description": "Odborná konzultace pro posouzení dědičného rizika nádorových onemocnění v rodině",
+    "price": 5500,
     "type": "optional"
   },
   {
