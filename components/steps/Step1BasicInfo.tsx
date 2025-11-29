@@ -85,9 +85,10 @@ export function Step1BasicInfo() {
         name="age"
         control={control}
         rules={{
-          required: "Věk je povinný",
-          min: { value: 1, message: "Věk musí být alespoň 1" },
-          max: { value: 120, message: "Věk musí být menší než 120" },
+          required:
+            "Vyplňte prosím svůj věk, abychom mohli nabídnout relevantní doporučení",
+          min: { value: 1, message: "Musíte být starý alespoň 1 rok" },
+          max: { value: 130, message: "Musíte být mladší než 130 let" },
         }}
         render={({ field }) => (
           <NumberInput
