@@ -4,8 +4,7 @@
     "name": "Vyšetření prostaty",
     "description": "Preventivní vyšetření prostaty včetně PSA testu",
     "type": "mandatory",
-    "url": "https://www.mou.cz/centrum-pro-nadory-prostaty/t1311",
-    "price": 400
+    "url": "https://www.mou.cz/centrum-pro-nadory-prostaty/t1311"
   },
   {
     "id": 2,
@@ -127,74 +126,62 @@
   {
     "id": 15,
     "name": "Konzultace s onkologem",
-    "type": "mandatory",
-    "price": 2650
+    "type": "mandatory"
   },
   {
     "id": 16,
     "name": "Fyzikální vyšetření",
-    "type": "mandatory",
-    "price": 1500
+    "type": "mandatory"
   },
   {
     "id": 17,
     "name": "Krevní testy",
-    "type": "mandatory",
-    "price": 950
+    "type": "mandatory"
   },
   {
     "id": 18,
     "name": "Test moči",
-    "type": "mandatory",
-    "price": 100
+    "type": "mandatory"
   },
   {
     "id": 19,
     "name": "Test okultního krvácení ve stolici",
-    "type": "mandatory",
-    "price": 200
+    "type": "mandatory"
   },
   {
     "id": 20,
     "name": "Měření krevního tlaku a pulzu",
-    "type": "mandatory",
-    "price": 100
+    "type": "mandatory"
   },
   {
     "id": 21,
     "name": "EKG",
-    "type": "mandatory",
-    "price": 300
+    "type": "mandatory"
   },
   {
     "id": 22,
     "name": "RTG hrudníku",
-    "type": "mandatory",
-    "price": 450
+    "type": "mandatory"
   },
   {
     "id": 23,
     "name": "Ultrazvuk břicha",
-    "type": "mandatory",
-    "price": 1000
+    "type": "mandatory"
   },
   {
     "id": 24,
     "name": "Ultrazvuk varlat",
-    "type": "mandatory",
-    "price": 1000
+    "type": "mandatory"
   },
   {
     "id": 25,
     "name": "Ultrazvuk plic",
-    "type": "mandatory",
-    "price": 500
+    "type": "mandatory"
   },
   {
     "id": 26,
     "name": "InBody analýza",
-    "type": "mandatory",
-    "price": 720
+    "type": "mandatory"
   },
   {
     "id": 27,
