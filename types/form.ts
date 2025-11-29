@@ -59,6 +59,17 @@ export interface FormData {
     dateTime: string;
   }>;
 
+  // Appointment Data with full details
+  appointmentData?: Array<{
+    id: number;
+    examinationName: string;
+    dateTime: string;
+    slotId: string;
+    examination_type_id: number;
+    minutes: number;
+    isManuallySelected: boolean;
+  }>;
+
   // Priority Score
   priority: number;
 
