@@ -42,7 +42,7 @@ export interface FormData {
   hadBreastCancerScreening?: boolean; // Only for women
   hadColorectalCancerScreening?: boolean;
 
-  // Step 7 - Appointments
+  // Step 8 - Appointments
   selectedAppointments: number[];
 
   // Step 8 - Contact Information
@@ -54,6 +54,7 @@ export interface FormData {
   // Step 9 - Appointment Booking
   bookedAppointments: Array<{
     appointmentTypeId: number;
+    examination_type_id: number;
     slotId: string;
     dateTime: string;
   }>;

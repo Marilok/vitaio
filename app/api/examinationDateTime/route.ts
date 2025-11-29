@@ -32,6 +32,7 @@ interface SlotInfo {
   id: number;
   timeFrom: string;
   minutes: number;
+  examination_type_id: number;
   category?: ExaminationCategory;
 }
 
@@ -269,6 +270,7 @@ export async function POST(request: NextRequest) {
             id: candidateSlot.id,
             timeFrom: candidateSlot.dateTime,
             minutes: candidateSlot.minutes,
+            examination_type_id: candidateSlot.examination_type_id,
             category: category || undefined
           });
           

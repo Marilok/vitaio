@@ -22,6 +22,8 @@ import {
 import dayjs from "dayjs";
 import "dayjs/locale/cs";
 import { FormData } from "@/types/form";
+import { transformAppointmentsToScreenings } from "@/utils/appointmentsMapping";
+import { translateExaminationName } from "@/utils/examinationTranslations";
 
 // Set Czech locale for dayjs
 dayjs.locale("cs");
@@ -40,29 +42,51 @@ interface Slot {
   ExaminationType?: ExaminationType;
 }
 
-interface ApiResponse {
+interface SlotInfo {
+  id: number;
+  timeFrom: string;
+  minutes: number;
+  examination_type_id: number;
+  category?: string;
+}
+
+interface ExaminationDateTimeResponse {
   success: boolean;
-  data: Slot[];
-  count: number;
+  availableSlots: Record<string, SlotInfo[]>;
+  totalExaminations: number;
+  message: string;
   error?: string;
 }
 
 interface SelectedAppointment {
   appointmentTypeId: number;
+  examination_type_id: number;
   slotId: string;
   dateTime: string;
+  minutes?: number;
+}
+
+interface ScreeningItem {
+  order: boolean;
+  priority: number;
+}
+
+interface ScreeningsData {
+  mandatory: Record<string, ScreeningItem>;
+  optional: Record<string, ScreeningItem>;
 }
 
 export function Step9Appointments() {
-  const { watch, setValue } = useFormContext<FormData>();
+  const { watch, setValue, getValues } = useFormContext<FormData>();
   const selectedAppointments = useMemo(
     () => watch("selectedAppointments") || [],
     [watch]
   );
 
-  const [slotsByAppointment, setSlotsByAppointment] = useState<
-    Record<number, Slot[]>
+  const [recommendedSlots, setRecommendedSlots] = useState<
+    Record<string, SlotInfo[]>
   >({});
+  const [examinationNames, setExaminationNames] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -74,46 +98,73 @@ export function Step9Appointments() {
   const [bookedAppointments, setBookedAppointments] = useState<
     SelectedAppointment[]
   >([]);
+  const [alternativeSlots, setAlternativeSlots] = useState<
+    Record<string, SlotInfo[]>
+  >({});
+  const [loadingAlternatives, setLoadingAlternatives] = useState(false);
 
   useEffect(() => {
-    const fetchSlots = async () => {
+    const fetchRecommendedSlots = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        const appointmentIds = selectedAppointments.filter((id) => !isNaN(id));
+        const formData = getValues();
 
-        const slotPromises = appointmentIds.map(async (appointmentId) => {
-          const response = await fetch(
-            `/api/slots?examination_type_id=${appointmentId}`
-          );
-          const data: ApiResponse = await response.json();
+        // Transform appointments to screenings format
+        const screeningsData = transformAppointmentsToScreenings(
+          selectedAppointments,
+          formData
+        );
 
-          if (!response.ok) {
-            throw new Error(
-              data.error ||
-                `Failed to fetch slots for appointment ${appointmentId}`
-            );
+        // Call the examinationDateTime API
+        const response = await fetch("/api/examinationDateTime", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            screenings: screeningsData,
+          }),
+        });
+
+        const data: ExaminationDateTimeResponse = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to fetch recommended slots");
+        }
+
+        setRecommendedSlots(data.availableSlots);
+        setExaminationNames(Object.keys(data.availableSlots));
+
+        // Automatically select the first recommended slot for each examination
+        const autoBookedAppointments: SelectedAppointment[] = [];
+
+        Object.entries(data.availableSlots).forEach(
+          ([examinationName, slots]) => {
+            if (slots.length > 0) {
+              const firstSlot = slots[0];
+              autoBookedAppointments.push({
+                appointmentTypeId: firstSlot.id, // Using slot ID as appointment type ID
+                examination_type_id: firstSlot.examination_type_id,
+                slotId: firstSlot.id.toString(),
+                dateTime: firstSlot.timeFrom,
+                minutes: firstSlot.minutes,
+              });
+            }
           }
+        );
 
-          return { appointmentId, slots: data.data };
-        });
+        setBookedAppointments(autoBookedAppointments);
 
-        const results = await Promise.all(slotPromises);
-
-        // Build slots by appointment object
-        const newSlotsByAppointment: Record<number, Slot[]> = {};
-        results.forEach(({ appointmentId, slots }) => {
-          newSlotsByAppointment[appointmentId] = slots;
-        });
-
-        setSlotsByAppointment(newSlotsByAppointment);
+        // Set current appointment index to the last one (all are already selected)
+        setCurrentAppointmentIndex(Object.keys(data.availableSlots).length - 1);
 
         // Focus calendar and select earliest available date when slots are loaded
-        const allSlots = results.flatMap((result) => result.slots);
+        const allSlots = Object.values(data.availableSlots).flat();
         if (allSlots.length > 0) {
           const availableDates = allSlots.map((slot) =>
-            dayjs(slot.dateTime).format("YYYY-MM-DD")
+            dayjs(slot.timeFrom).format("YYYY-MM-DD")
           );
           const uniqueDates = [...new Set(availableDates)].sort();
           const earliestDate = dayjs(uniqueDates[0]).toDate();
@@ -128,9 +179,9 @@ export function Step9Appointments() {
     };
 
     if (selectedAppointments.length > 0) {
-      fetchSlots();
+      fetchRecommendedSlots();
     }
-  }, [selectedAppointments]);
+  }, [selectedAppointments, getValues]);
 
   // Update form field when booked appointments change
   useEffect(() => {
@@ -139,76 +190,192 @@ export function Step9Appointments() {
 
   // Helper functions for appointment management
   const getRequestedAppointments = () => {
-    return selectedAppointments.filter((id) => !isNaN(id));
+    return examinationNames;
   };
 
   const getCurrentAppointment = () => {
-    const appointments = getRequestedAppointments();
-    return appointments[currentAppointmentIndex] || null;
+    return examinationNames[currentAppointmentIndex] || null;
   };
 
-  const getEarliestDateForAppointment = (appointmentId: number) => {
-    const appointmentSlots = slotsByAppointment[appointmentId] || [];
+  const getEarliestDateForAppointment = (appointmentName: string) => {
+    const appointmentSlots = recommendedSlots[appointmentName] || [];
     if (appointmentSlots.length === 0) return null;
 
     const availableDates = appointmentSlots.map((slot) =>
-      dayjs(slot.dateTime).format("YYYY-MM-DD")
+      dayjs(slot.timeFrom).format("YYYY-MM-DD")
     );
     const uniqueDates = [...new Set(availableDates)].sort();
     return dayjs(uniqueDates[0]).toDate();
   };
 
-  const getExaminationTypeDetails = (appointmentId: number) => {
-    const appointmentSlots = slotsByAppointment[appointmentId] || [];
-    if (appointmentSlots.length === 0) return null;
-    return appointmentSlots[0]?.ExaminationType || null;
+  const getExaminationTypeDetails = (appointmentName: string) => {
+    return {
+      name: translateExaminationName(appointmentName),
+      description: translateExaminationName(appointmentName),
+    };
   };
 
-  const handleSlotSelection = (slotId: string, dateTime: string) => {
-    const currentApt = getCurrentAppointment();
-    if (!currentApt) return;
+  /**
+   * Kontroluje, zda jsou dva sloty v konfliktu (překrývají se nebo jsou příliš blízko)
+   * Mezi sloty musí být minimálně 30 minut mezera
+   */
+  const areSlotsConflicting = (
+    slot1: { dateTime: string; minutes: number },
+    slot2: { dateTime: string; minutes: number }
+  ): boolean => {
+    const BUFFER_MINUTES = 30; // Minimální mezera mezi sloty
 
-    // Add or update appointment selection
+    const start1 = new Date(slot1.dateTime);
+    const end1 = new Date(start1.getTime() + slot1.minutes * 60000);
+
+    const start2 = new Date(slot2.dateTime);
+    const end2 = new Date(start2.getTime() + slot2.minutes * 60000);
+
+    // Přidáme buffer k oběma slotům
+    const end1WithBuffer = new Date(end1.getTime() + BUFFER_MINUTES * 60000);
+    const end2WithBuffer = new Date(end2.getTime() + BUFFER_MINUTES * 60000);
+
+    // Sloty jsou v konfliktu, pokud se jejich časové intervaly (včetně bufferu) protínají
+    return start1 < end2WithBuffer && end1WithBuffer > start2;
+  };
+
+  /**
+   * Kontroluje, zda je slot v konfliktu s nějakým již rezervovaným termínem
+   */
+  const isSlotConflictingWithBooked = (
+    slot: SlotInfo,
+    currentExaminationTypeId: number
+  ): boolean => {
+    return bookedAppointments.some((bookedApt) => {
+      // Nechceme kontrolovat konflikt s termínem stejného vyšetření (to chceme přepsat)
+      if (bookedApt.examination_type_id === currentExaminationTypeId) {
+        return false;
+      }
+
+      // Kontrola časového konfliktu
+      return areSlotsConflicting(
+        { dateTime: slot.timeFrom, minutes: slot.minutes },
+        { dateTime: bookedApt.dateTime, minutes: bookedApt.minutes || 30 } // Výchozí 30 minut, pokud není zadáno
+      );
+    });
+  };
+
+  // Fetch alternative slots for a specific examination type
+  const fetchAlternativeSlots = async (
+    appointmentName: string,
+    examinationTypeId: number
+  ) => {
+    try {
+      setLoadingAlternatives(true);
+
+      const response = await fetch(
+        `/api/slots?examination_type_id=${examinationTypeId}`
+      );
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || "Nepodařilo se načíst alternativní termíny"
+        );
+      }
+
+      // Store alternative slots for this examination
+      setAlternativeSlots((prev) => ({
+        ...prev,
+        [appointmentName]: data.slots || [],
+      }));
+    } catch (err) {
+      console.error("Chyba při načítání alternativních slotů:", err);
+      setAlternativeSlots((prev) => ({
+        ...prev,
+        [appointmentName]: [],
+      }));
+    } finally {
+      setLoadingAlternatives(false);
+    }
+  };
+
+  const handleSlotSelection = (
+    slotId: string,
+    dateTime: string,
+    examinationName: string,
+    examinationTypeId: number,
+    minutes: number
+  ) => {
+    // We need to map examination name to appointment type ID
+    // For now, we'll use a hash of the name or store it differently
+    // This is a simplified approach - you might want to adjust based on your needs
+    const appointmentTypeId = parseInt(slotId.split("-")[0]) || 0;
+
     const newSelection: SelectedAppointment = {
-      appointmentTypeId: currentApt,
+      appointmentTypeId,
+      examination_type_id: examinationTypeId,
       slotId,
       dateTime,
+      minutes,
     };
 
     setBookedAppointments((prev) => {
-      const filtered = prev.filter(
-        (apt) => apt.appointmentTypeId !== currentApt
-      );
+      // Remove any previous selection for this examination type
+      const filtered = prev.filter((apt) => {
+        // Check if this appointment belongs to the same examination type
+        return apt.examination_type_id !== examinationTypeId;
+      });
       return [...filtered, newSelection];
     });
 
     setSelectedSlot(slotId);
 
-    // Auto-advance to next appointment after a short delay
-    setTimeout(() => {
-      const appointments = getRequestedAppointments();
-      if (currentAppointmentIndex < appointments.length - 1) {
-        const nextIndex = currentAppointmentIndex + 1;
-        const nextAppointmentId = appointments[nextIndex];
-        const earliestDate = getEarliestDateForAppointment(nextAppointmentId);
+    // After selecting a slot, move away from current appointment to show it as selected (green)
+    // Find the next appointment that is not selected yet, or go to the last one
+    const nextUnselectedIndex = examinationNames.findIndex((name, idx) => {
+      if (idx <= currentAppointmentIndex) return false;
+      const hasSelection = bookedAppointments.some((apt) => {
+        const slots = recommendedSlots[name] || [];
+        return slots.some(
+          (s) => s.examination_type_id === apt.examination_type_id
+        );
+      });
+      return !hasSelection;
+    });
 
-        setCurrentAppointmentIndex(nextIndex);
-        setSelectedSlot(null);
-
+    if (nextUnselectedIndex !== -1) {
+      setCurrentAppointmentIndex(nextUnselectedIndex);
+      // Also fetch alternative slots for the next appointment
+      const nextAppointmentName = examinationNames[nextUnselectedIndex];
+      const nextSlots = recommendedSlots[nextAppointmentName] || [];
+      if (nextSlots.length > 0) {
+        fetchAlternativeSlots(
+          nextAppointmentName,
+          nextSlots[0].examination_type_id
+        );
+        const earliestDate = getEarliestDateForAppointment(nextAppointmentName);
         if (earliestDate) {
           setSelectedDate(earliestDate);
           setCalendarDate(earliestDate);
-        } else {
-          setSelectedDate(null);
         }
       }
-    }, 1000);
+    } else {
+      // All appointments are selected, set current to -1 or last one
+      setCurrentAppointmentIndex(examinationNames.length);
+    }
   };
 
   // Get available dates from slots data
-  const allSlots = Object.values(slotsByAppointment).flat();
+  const allSlots = useMemo(() => {
+    const currentApt = getCurrentAppointment();
+
+    // If we have alternative slots for current appointment, use those
+    if (currentApt && alternativeSlots[currentApt]?.length > 0) {
+      return alternativeSlots[currentApt];
+    }
+
+    // Otherwise use all recommended slots
+    return Object.values(recommendedSlots).flat();
+  }, [recommendedSlots, alternativeSlots, currentAppointmentIndex]);
+
   const availableDates = allSlots.map((slot) =>
-    dayjs(slot.dateTime).format("YYYY-MM-DD")
+    dayjs(slot.timeFrom).format("YYYY-MM-DD")
   );
   const uniqueAvailableDates = [...new Set(availableDates)];
 
@@ -216,13 +383,35 @@ export function Step9Appointments() {
     if (!selectedDate) return [];
 
     const currentApt = getCurrentAppointment();
+    if (!currentApt && examinationNames.length > 0) {
+      // If all appointments are selected, show slots for the first examination
+      const firstExamination = examinationNames[0];
+
+      // Use alternative slots if available, otherwise use recommended slots
+      const slotsSource =
+        alternativeSlots[firstExamination]?.length > 0
+          ? alternativeSlots[firstExamination]
+          : recommendedSlots[firstExamination] || [];
+
+      const selectedDateString = dayjs(selectedDate).format("YYYY-MM-DD");
+      return slotsSource.filter(
+        (slot) =>
+          dayjs(slot.timeFrom).format("YYYY-MM-DD") === selectedDateString
+      );
+    }
+
     if (!currentApt) return [];
 
-    const appointmentSlots = slotsByAppointment[currentApt] || [];
+    // Use alternative slots if available, otherwise use recommended slots
+    const slotsSource =
+      alternativeSlots[currentApt]?.length > 0
+        ? alternativeSlots[currentApt]
+        : recommendedSlots[currentApt] || [];
+
     const selectedDateString = dayjs(selectedDate).format("YYYY-MM-DD");
 
-    return appointmentSlots.filter(
-      (slot) => dayjs(slot.dateTime).format("YYYY-MM-DD") === selectedDateString
+    return slotsSource.filter(
+      (slot) => dayjs(slot.timeFrom).format("YYYY-MM-DD") === selectedDateString
     );
   };
 
@@ -231,7 +420,7 @@ export function Step9Appointments() {
   // Calculate date range for DatePicker
   const getDateRange = () => {
     const today = new Date();
-    const allSlots = Object.values(slotsByAppointment).flat();
+    const allSlots = Object.values(recommendedSlots).flat();
 
     if (allSlots.length === 0) {
       return {
@@ -242,9 +431,9 @@ export function Step9Appointments() {
 
     // Find the latest available date
     const latestSlotDate = allSlots.reduce((latest, slot) => {
-      const slotDate = dayjs(slot.dateTime);
+      const slotDate = dayjs(slot.timeFrom);
       return slotDate.isAfter(latest) ? slotDate : latest;
-    }, dayjs(allSlots[0].dateTime));
+    }, dayjs(allSlots[0].timeFrom));
 
     return {
       minDate: today,
@@ -350,7 +539,8 @@ export function Step9Appointments() {
           Rezervace termínů
         </Title>
         <Text size="md" c="dimmed">
-          Vyberte konkrétní datum a čas pro vaše vybrané termíny.
+          Můžete upravit automaticky vybrané termíny kliknutím na vyšetření a
+          výběrem jiného času.
         </Text>
       </Box>
 
@@ -360,7 +550,7 @@ export function Step9Appointments() {
         </Alert>
       )}
 
-      {getCurrentAppointment() && (
+      {!loading && examinationNames.length > 0 && (
         <>
           <Group align="start" gap="lg" style={{ width: "100%" }}>
             {/* First Column: Appointment Cards */}
@@ -369,35 +559,96 @@ export function Step9Appointments() {
                 Termíny k rezervaci:
               </Text>
               <Stack gap="xs">
-                {getRequestedAppointments().map((appointmentId, index) => {
-                  const isSelected = bookedAppointments.some(
-                    (apt) => apt.appointmentTypeId === appointmentId
-                  );
-                  const isCurrent = getCurrentAppointment() === appointmentId;
+                {getRequestedAppointments().map((appointmentName, index) => {
+                  // Get examination_type_id for this appointment
+                  const appointmentSlots =
+                    recommendedSlots[appointmentName] || [];
+                  const examinationTypeId =
+                    appointmentSlots.length > 0
+                      ? appointmentSlots[0].examination_type_id
+                      : null;
+
+                  // Check if this examination type has a booked appointment
+                  const isSelected =
+                    examinationTypeId !== null &&
+                    bookedAppointments.some(
+                      (apt) => apt.examination_type_id === examinationTypeId
+                    );
+
+                  const isCurrent = getCurrentAppointment() === appointmentName;
                   const examinationType =
-                    getExaminationTypeDetails(appointmentId);
+                    getExaminationTypeDetails(appointmentName);
                   const selectedAppointment = bookedAppointments.find(
-                    (apt) => apt.appointmentTypeId === appointmentId
+                    (apt) => apt.examination_type_id === examinationTypeId
                   );
 
                   return (
                     <Card
-                      key={appointmentId}
+                      key={appointmentName}
                       withBorder
                       padding="sm"
                       radius="sm"
                       style={{
                         opacity: isSelected || isCurrent ? 1 : 0.6,
-                        backgroundColor: isSelected
-                          ? "var(--mantine-color-green-1)"
-                          : isCurrent
+                        backgroundColor: isCurrent
                           ? "var(--mantine-color-blue-1)"
+                          : isSelected
+                          ? "var(--mantine-color-green-1)"
                           : "var(--mantine-color-gray-1)",
-                        borderColor: isSelected
-                          ? "var(--mantine-color-green-4)"
-                          : isCurrent
+                        borderColor: isCurrent
                           ? "var(--mantine-color-blue-4)"
+                          : isSelected
+                          ? "var(--mantine-color-green-4)"
                           : "var(--mantine-color-gray-3)",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        setCurrentAppointmentIndex(index);
+
+                        // Get examination_type_id from the first slot of this appointment
+                        const appointmentSlots =
+                          recommendedSlots[appointmentName] || [];
+                        if (appointmentSlots.length > 0) {
+                          const examinationTypeId =
+                            appointmentSlots[0].examination_type_id;
+                          // Fetch all alternative slots for this examination type
+                          fetchAlternativeSlots(
+                            appointmentName,
+                            examinationTypeId
+                          );
+                        }
+
+                        // If there's an existing appointment, show its date, otherwise show earliest
+                        const existingAppointment = bookedAppointments.find(
+                          (apt) => {
+                            const slots =
+                              recommendedSlots[appointmentName] || [];
+                            return (
+                              slots.length > 0 &&
+                              apt.examination_type_id ===
+                                slots[0].examination_type_id
+                            );
+                          }
+                        );
+
+                        if (existingAppointment) {
+                          // Show the date of the existing appointment
+                          const existingDate = dayjs(
+                            existingAppointment.dateTime
+                          ).toDate();
+                          setSelectedDate(existingDate);
+                          setCalendarDate(existingDate);
+                          setSelectedSlot(existingAppointment.slotId);
+                        } else {
+                          // Show earliest available date
+                          const earliestDate =
+                            getEarliestDateForAppointment(appointmentName);
+                          if (earliestDate) {
+                            setSelectedDate(earliestDate);
+                            setCalendarDate(earliestDate);
+                          }
+                          setSelectedSlot(null);
+                        }
                       }}
                     >
                       <Group gap="sm" align="flex-start">
@@ -406,10 +657,10 @@ export function Step9Appointments() {
                             width: 24,
                             height: 24,
                             borderRadius: "50%",
-                            backgroundColor: isSelected
-                              ? "var(--mantine-color-green-6)"
-                              : isCurrent
+                            backgroundColor: isCurrent
                               ? "var(--mantine-color-blue-6)"
+                              : isSelected
+                              ? "var(--mantine-color-green-6)"
                               : "var(--mantine-color-gray-4)",
                             display: "flex",
                             alignItems: "center",
@@ -420,7 +671,11 @@ export function Step9Appointments() {
                             flexShrink: 0,
                           }}
                         >
-                          {isSelected ? <IconCheck size={12} /> : index + 1}
+                          {isSelected && !isCurrent ? (
+                            <IconCheck size={12} />
+                          ) : (
+                            index + 1
+                          )}
                         </div>
                         <div style={{ flex: 1 }}>
                           <Text
@@ -430,7 +685,7 @@ export function Step9Appointments() {
                             style={{ lineHeight: 1.3 }}
                           >
                             {examinationType?.name ||
-                              `Vyšetření typu ${appointmentId}`}
+                              `Vyšetření ${appointmentName}`}
                           </Text>
                           <Text
                             size="xs"
@@ -441,8 +696,8 @@ export function Step9Appointments() {
                                   "D.M.YYYY v HH:mm"
                                 )
                               : isCurrent
-                              ? "Vybíráte"
-                              : "Čeká na výběr"}
+                              ? "Upravit termín"
+                              : "Kliknutím upravit"}
                           </Text>
                         </div>
                       </Group>
@@ -468,7 +723,7 @@ export function Step9Appointments() {
               />
 
               {!loading &&
-                Object.values(slotsByAppointment).flat().length > 0 && (
+                Object.values(recommendedSlots).flat().length > 0 && (
                   <Stack gap="xs">
                     <Button
                       variant="light"
@@ -496,14 +751,100 @@ export function Step9Appointments() {
 
             {/* Third Column: Time Slots */}
             <Stack gap="sm" style={{ flex: "1 1 auto", minWidth: 200 }}>
-              <Text fw={500} size="md">
-                {selectedDate &&
-                  `${dayjs(selectedDate).format("D. MMMM YYYY")}`}
-              </Text>
+              {getCurrentAppointment() ? (
+                <>
+                  <Text fw={500} size="md">
+                    {selectedDate &&
+                      `${dayjs(selectedDate).format("D. MMMM YYYY")}`}
+                  </Text>
 
-              {selectedDate && selectedDateSlots.length === 0 && (
-                <Text c="dimmed" size="sm">
-                  Pro toto datum nejsou k dispozici žádné sloty
+                  {selectedDate && selectedDateSlots.length === 0 && (
+                    <Text c="dimmed" size="sm">
+                      Pro toto datum nejsou k dispozici žádné sloty
+                    </Text>
+                  )}
+
+                  {selectedDate && selectedDateSlots.length > 0 && (
+                    <>
+                      <div
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns: "1fr 1fr",
+                          gap: "8px",
+                          maxHeight: 400,
+                          overflow: "auto",
+                        }}
+                      >
+                        {selectedDateSlots.map((slot) => {
+                          const slotIdString = slot.id.toString();
+                          const currentApt = getCurrentAppointment();
+                          const currentExaminationType = currentApt
+                            ? recommendedSlots[currentApt]?.[0]
+                                ?.examination_type_id || null
+                            : null;
+
+                          // Zkontrolovat, zda je slot v konfliktu s již rezervovanými termíny
+                          const isConflicting = currentExaminationType
+                            ? isSlotConflictingWithBooked(
+                                slot,
+                                currentExaminationType
+                              )
+                            : false;
+
+                          return (
+                            <Card
+                              key={slot.id}
+                              withBorder
+                              padding="sm"
+                              style={{
+                                cursor: isConflicting
+                                  ? "not-allowed"
+                                  : "pointer",
+                                backgroundColor:
+                                  selectedSlot === slotIdString
+                                    ? "var(--mantine-primary-color-light)"
+                                    : "var(--mantine-color-gray-0)",
+                                borderColor:
+                                  selectedSlot === slotIdString
+                                    ? "var(--mantine-primary-color-filled)"
+                                    : "var(--mantine-color-gray-3)",
+                                borderWidth: 2,
+                                textAlign: "center",
+                                opacity: isConflicting ? 0.4 : 1,
+                              }}
+                              onClick={() => {
+                                if (isConflicting) return; // Zabránit výběru konfliktního slotu
+
+                                if (selectedSlot === slotIdString) {
+                                  setSelectedSlot(null);
+                                } else if (currentApt) {
+                                  handleSlotSelection(
+                                    slotIdString,
+                                    slot.timeFrom,
+                                    currentApt,
+                                    slot.examination_type_id,
+                                    slot.minutes
+                                  );
+                                }
+                              }}
+                            >
+                              <Text
+                                fw={selectedSlot === slotIdString ? 600 : 500}
+                                size="sm"
+                                c={isConflicting ? "dimmed" : undefined}
+                              >
+                                {dayjs(slot.timeFrom).format("HH:mm")}
+                              </Text>
+                            </Card>
+                          );
+                        })}
+                      </div>
+                    </>
+                  )}
+                </>
+              ) : (
+                <Text c="dimmed" size="sm" ta="center" mt="md">
+                  Vyberte vyšetření pro zobrazení dostupných časů
                 </Text>
               )}
 
