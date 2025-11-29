@@ -5,14 +5,14 @@ import { calculateBMI } from "./bmi";
  * Mapping between appointment IDs from appointments.json and screening keys from screenings.json
  */
 export const APPOINTMENT_TO_SCREENING_MAP: Record<number, string> = {
-  // Mandatory appointments
+  // Old mandatory/optional appointments (screenings)
   1: "psaTest", // Vyšetření prostaty
   2: "chestXray", // CT plic
   3: "gynecologicalExamination", // Gynekologické vyšetření
   4: "mammography", // Mamografie
   5: "colonoscopy", // Kolonoskopie
 
-  // Optional appointments
+  // Optional appointments (consultations and tests)
   6: "occultBloodTest", // Test okultního krvácení stolice
   7: "colonoscopy", // Sigmoidoskopie (using colonoscopy as fallback)
   8: "oncologistConsultation", // Gastroenterolog (mapped to oncologist)
@@ -22,6 +22,27 @@ export const APPOINTMENT_TO_SCREENING_MAP: Record<number, string> = {
   12: "oncologistConsultation", // Onkolog
   13: "chestXray", // Radiolog (mapped to xray)
   14: "healthyLifestyleCounseling", // Nutriční poradce
+  
+  // Mandatory appointments (new structure)
+  15: "oncologistConsultation", // Konzultace s onkologem
+  16: "physicalExamination", // Fyzikální vyšetření
+  17: "bloodTests", // Krevní testy
+  18: "urineTest", // Test moči
+  19: "occultBloodTest", // Test okultního krvácení ve stolici
+  20: "bloodPressureAndPulseMeasurement", // Měření krevního tlaku a pulzu
+  21: "ecg", // EKG
+  22: "chestXray", // RTG hrudníku
+  23: "abdominalUltrasound", // Ultrazvuk břicha
+  24: "testicularUltrasound", // Ultrazvuk varlat
+  25: "breastUltrasound", // Ultrazvuk plic
+  26: "inBodyAnalysis", // InBody analýza
+  
+  // Optional appointments (counseling)
+  27: "geneticConsultation", // Genetická konzultace
+  28: "healthyLifestyleCounseling", // Poradenství zdravého životního stylu
+  29: "smokingCessationCounseling", // Poradenství pro odvykání kouření
+  30: "addictionCounseling", // Poradenství pro závislosti
+  31: "physicalActivityCounseling", // Poradenství pro fyzickou aktivitu
 };
 
 /**
@@ -178,9 +199,13 @@ export function transformAppointmentsToScreenings(
   selectedAppointmentIds.forEach((id) => {
     const screeningKey = APPOINTMENT_TO_SCREENING_MAP[id];
     if (screeningKey) {
-      // Only check in optional (mandatory are already set above)
+      // Check in both optional and mandatory sections
       if (result.optional[screeningKey]) {
         result.optional[screeningKey].order = true;
+      } else if (result.mandatory[screeningKey]) {
+        // Some optional appointments map to mandatory screenings
+        // Already set to true above, but we might want to track this
+        // No need to set again, already done in the mandatory loop
       }
     }
   });
