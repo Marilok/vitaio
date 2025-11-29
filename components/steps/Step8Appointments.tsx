@@ -22,6 +22,7 @@ import {
   APPOINTMENT_TO_SCREENING_MAP,
   transformAppointmentsToScreenings,
 } from "@/utils/appointmentsMapping";
+import { getScreeningPrice } from "@/utils/screeningPrice";
 
 interface AppointmentData {
   id: number;
@@ -137,11 +138,12 @@ export function Step8Appointments() {
     .filter((app) => app.type === "optional")
     .filter((app) => {
       // Apply eligibility filtering based on screening criteria
-      // IDs 2-5 are screening appointments that have specific eligibility criteria
+      // IDs 2-6 are screening appointments that have specific eligibility criteria
       if (app.id === 2) return true; // CT plic - always available
       if (app.id === 3) return eligibility.showCervicalCancerScreening; // Gynekologické vyšetření - only for eligible patients
       if (app.id === 4) return eligibility.showBreastCancerScreening; // Mamografie - only for eligible patients
       if (app.id === 5) return eligibility.showColorectalCancerScreening; // Kolonoskopie - only for eligible patients
+      if (app.id === 6) return eligibility.showOccultBloodTest; // Test okultního krvácení - only for eligible patients (50+)
 
       // ID 9 - Gynekologická konzultace - only for women
       if (app.id === 9) return eligibility.showGynecologicalConsultation;
@@ -334,11 +336,34 @@ export function Step8Appointments() {
                               <Text fw={500} size="md" mb="xs">
                                 {appointment.name}
                               </Text>
-                              {appointment.price && (
-                                <Text size="lg" fw={600} c="blue">
-                                  {appointment.price.toLocaleString("cs-CZ")} Kč
-                                </Text>
-                              )}
+                              {(() => {
+                                const screeningPrice = getScreeningPrice(
+                                  appointment.id,
+                                  formData
+                                );
+                                if (screeningPrice.isFree) {
+                                  return (
+                                    <>
+                                      <Text size="lg" fw={700} c="green">
+                                        ZDARMA
+                                      </Text>
+                                      <Text size="xs" c="dimmed">
+                                        {screeningPrice.reason}
+                                      </Text>
+                                    </>
+                                  );
+                                } else if (appointment.price) {
+                                  return (
+                                    <Text size="lg" fw={600} c="blue">
+                                      {appointment.price.toLocaleString(
+                                        "cs-CZ"
+                                      )}{" "}
+                                      Kč
+                                    </Text>
+                                  );
+                                }
+                                return null;
+                              })()}
                             </Box>
                             <Checkbox
                               checked={isSelected}
@@ -462,11 +487,34 @@ export function Step8Appointments() {
                               <Text fw={500} size="md" mb="xs">
                                 {appointment.name}
                               </Text>
-                              {appointment.price && (
-                                <Text size="lg" fw={600} c="blue">
-                                  {appointment.price.toLocaleString("cs-CZ")} Kč
-                                </Text>
-                              )}
+                              {(() => {
+                                const screeningPrice = getScreeningPrice(
+                                  appointment.id,
+                                  formData
+                                );
+                                if (screeningPrice.isFree) {
+                                  return (
+                                    <>
+                                      <Text size="lg" fw={700} c="green">
+                                        ZDARMA
+                                      </Text>
+                                      <Text size="xs" c="dimmed">
+                                        {screeningPrice.reason}
+                                      </Text>
+                                    </>
+                                  );
+                                } else if (appointment.price) {
+                                  return (
+                                    <Text size="lg" fw={600} c="blue">
+                                      {appointment.price.toLocaleString(
+                                        "cs-CZ"
+                                      )}{" "}
+                                      Kč
+                                    </Text>
+                                  );
+                                }
+                                return null;
+                              })()}
                             </Box>
                             <Checkbox
                               checked={isSelected}
@@ -590,11 +638,34 @@ export function Step8Appointments() {
                               <Text fw={500} size="md" mb="xs">
                                 {appointment.name}
                               </Text>
-                              {appointment.price && (
-                                <Text size="lg" fw={600} c="blue">
-                                  {appointment.price.toLocaleString("cs-CZ")} Kč
-                                </Text>
-                              )}
+                              {(() => {
+                                const screeningPrice = getScreeningPrice(
+                                  appointment.id,
+                                  formData
+                                );
+                                if (screeningPrice.isFree) {
+                                  return (
+                                    <>
+                                      <Text size="lg" fw={700} c="green">
+                                        ZDARMA
+                                      </Text>
+                                      <Text size="xs" c="dimmed">
+                                        {screeningPrice.reason}
+                                      </Text>
+                                    </>
+                                  );
+                                } else if (appointment.price) {
+                                  return (
+                                    <Text size="lg" fw={600} c="blue">
+                                      {appointment.price.toLocaleString(
+                                        "cs-CZ"
+                                      )}{" "}
+                                      Kč
+                                    </Text>
+                                  );
+                                }
+                                return null;
+                              })()}
                             </Box>
                             <Checkbox
                               checked={isSelected}

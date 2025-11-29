@@ -28,58 +28,83 @@ export function Screening() {
         <Title order={3} mb="xs">
           🫁 Screeningová vyšetření
         </Title>
-        <Text size="md" c="dimmed">
-          {gender === "female" ? "Absolvovala" : "Absolvoval"} jsem tento
-          screening v uvedeném intervalu
+        <Text size="md" c="dimmed" mb="md">
+          Zaškrtněte vyšetření, která jste již{" "}
+          {gender === "female" ? "absolvovala" : "absolvoval"} v uvedeném
+          intervalu.
         </Text>
       </Box>
 
       <Stack gap="md">
         {[
           {
-            name: "hadProstateScreening",
-            show: eligibility.showProstateScreening,
-            label: "Vyšetření prostaty v posledních 2 letech",
-          },
-          {
-            name: "hadLungCancerScreening",
-            show: eligibility.showLungCancerScreening,
-            label: "Vyšetření karcinomu plic v posledních 12 měsících",
-          },
-          {
             name: "hadCervicalCancerScreening",
             show: eligibility.showCervicalCancerScreening,
-            label:
-              "Vyšetření karcinomu děložního hrdla v posledních 12 měsících",
+            label: "Gynekolog + cytologie čípku (každý rok)",
+            description: "15+ let: preventivní gynekologické vyšetření",
           },
           {
             name: "hadBreastCancerScreening",
             show: eligibility.showBreastCancerScreening,
-            label: "Vyšetření karcinomu prsu v posledních 2 letech",
+            label: "Mamografie (1× za 2 roky)",
+            description: "45+ let: screeningové vyšetření prsů",
           },
           {
             name: "hadColorectalCancerScreening",
             show: eligibility.showColorectalCancerScreening,
-            label: "Vyšetření kolorektálního karcinomu v posledních 10 letech",
+            label: "Kolonoskopie na střevo",
+            description: "50+ let: screening kolorektálního karcinomu",
+          },
+          {
+            name: "hadOccultBloodTest",
+            show: eligibility.showOccultBloodTest,
+            label: "Test okultního krvácení stolice (TOKS)",
+            description:
+              age && age >= 55
+                ? "55+ let: hrazeno 2× ročně"
+                : "50-54 let: hrazeno 1× ročně",
+          },
+          {
+            name: "hadProstateScreening",
+            show: eligibility.showProstateScreening,
+            label: "PSA screening prostaty (pilotní program)",
+            description: "50–69 let: preventivní vyšetření prostaty",
+          },
+          {
+            name: "hadLungCancerScreening",
+            show: eligibility.showLungCancerScreening,
+            label: "CT plic (pro kuřáky/bývalé kuřáky)",
+            description:
+              "55–74 let: screening karcinomu plic (≥20 balíčkoroky)",
           },
         ]
           .filter((screening) => screening.show)
           .map((screening) => (
-            <Controller
-              key={screening.name}
-              name={screening.name as keyof FormData}
-              control={control}
-              render={({ field: { value, onChange, ...field } }) => (
-                <Checkbox
-                  {...field}
-                  checked={!!value}
-                  size="md"
-                  onChange={(event) => onChange(event.currentTarget.checked)}
-                  label={screening.label}
-                  error={errors[screening.name as keyof typeof errors]?.message}
-                />
-              )}
-            />
+            <Box key={screening.name}>
+              <Controller
+                name={screening.name as keyof FormData}
+                control={control}
+                render={({ field: { value, onChange, ...field } }) => (
+                  <Checkbox
+                    {...field}
+                    checked={!!value}
+                    size="md"
+                    onChange={(event) => onChange(event.currentTarget.checked)}
+                    label={
+                      <Box>
+                        <Text fw={500}>{screening.label}</Text>
+                        <Text size="sm" c="dimmed">
+                          {screening.description}
+                        </Text>
+                      </Box>
+                    }
+                    error={
+                      errors[screening.name as keyof typeof errors]?.message
+                    }
+                  />
+                )}
+              />
+            </Box>
           ))}
       </Stack>
     </Stack>
