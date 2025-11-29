@@ -18,6 +18,10 @@ import { IconExternalLink } from "@tabler/icons-react";
 import { FormData } from "@/types/form";
 import appointmentsData from "@/db/appointments.json";
 import { getScreeningEligibility } from "@/utils/priority";
+import {
+  APPOINTMENT_TO_SCREENING_MAP,
+  transformAppointmentsToScreenings,
+} from "@/utils/appointmentsMapping";
 
 interface AppointmentData {
   id: number;
@@ -29,17 +33,48 @@ interface AppointmentData {
 
 const appointments: AppointmentData[] = appointmentsData as AppointmentData[];
 
+// Priority thresholds for appointment recommendations
+const PRIORITY_THRESHOLD_HIGH = 20; // "Silně doporučeno"
+const PRIORITY_THRESHOLD_LOW = 10; // "Doporučeno"
+
+/**
+ * Calculate priority for a specific appointment based on form data
+ */
+function getAppointmentPriority(
+  appointmentId: number,
+  formData: FormData
+): number {
+  // Get all screenings with priorities
+  const screenings = transformAppointmentsToScreenings(
+    [appointmentId],
+    formData
+  );
+
+  // Map appointment ID to screening key
+  const screeningKey = APPOINTMENT_TO_SCREENING_MAP[appointmentId];
+
+  if (!screeningKey) return 0;
+
+  // Check in mandatory first, then optional
+  if (screenings.mandatory[screeningKey]) {
+    return screenings.mandatory[screeningKey].priority;
+  }
+
+  if (screenings.optional[screeningKey]) {
+    return screenings.optional[screeningKey].priority;
+  }
+
+  return 0;
+}
+
 export function Step8Appointments() {
   const { control, watch, setValue } = useFormContext<FormData>();
 
+  const formData = watch(); // Get all form data for priority calculation
   const gender = watch("gender");
   const age = watch("age");
   const hasFamilyCancerHistory = watch("hasFamilyCancerHistory");
   const hadProstateScreening = watch("hadProstateScreening");
-  const hadLungCancerScreening = watch("hadLungCancerScreening");
-  const hadCervicalCancerScreening = watch("hadCervicalCancerScreening");
-  const hadBreastCancerScreening = watch("hadBreastCancerScreening");
-  const hadColorectalCancerScreening = watch("hadColorectalCancerScreening");
 
   const eligibility = getScreeningEligibility(
     gender,
@@ -54,26 +89,18 @@ export function Step8Appointments() {
       show: eligibility.showProstateScreening,
       recommend: !hadProstateScreening,
     },
-    {
-      id: 2,
-      show: eligibility.showLungCancerScreening,
-      recommend: !hadLungCancerScreening,
-    },
-    {
-      id: 3,
-      show: eligibility.showCervicalCancerScreening,
-      recommend: !hadCervicalCancerScreening,
-    },
-    {
-      id: 4,
-      show: eligibility.showBreastCancerScreening,
-      recommend: !hadBreastCancerScreening,
-    },
-    {
-      id: 5,
-      show: eligibility.showColorectalCancerScreening,
-      recommend: !hadColorectalCancerScreening,
-    },
+    { id: 15, show: true, recommend: true },
+    { id: 16, show: true, recommend: true },
+    { id: 17, show: true, recommend: true },
+    { id: 18, show: true, recommend: true },
+    { id: 19, show: true, recommend: true },
+    { id: 20, show: true, recommend: true },
+    { id: 21, show: true, recommend: true },
+    { id: 22, show: true, recommend: true },
+    { id: 23, show: true, recommend: true },
+    { id: 24, show: true, recommend: true },
+    { id: 25, show: true, recommend: true },
+    { id: 26, show: true, recommend: true },
   ];
 
   // Filter appointments based on eligibility
@@ -89,9 +116,13 @@ export function Step8Appointments() {
         ?.recommend,
     }));
 
-  const optionalAppointments = appointments.filter(
-    (app) => app.type === "optional"
-  );
+  const optionalAppointments = appointments
+    .filter((app) => app.type === "optional")
+    .map((app) => ({
+      ...app,
+      priority: getAppointmentPriority(app.id, formData),
+    }))
+    .sort((a, b) => b.priority - a.priority); // Sort by priority descending (highest first)
 
   // Auto-select all visible mandatory appointments on mount
   React.useEffect(() => {
@@ -108,6 +139,8 @@ export function Step8Appointments() {
       setValue("selectedAppointments", newSelected);
     }
   }, [visibleMandatoryAppointments, setValue, watch]);
+
+  console.log("visibleMandatoryAppointments", visibleMandatoryAppointments);
 
   return (
     <Stack gap="lg" pt="md">
@@ -136,83 +169,43 @@ export function Step8Appointments() {
                     Automaticky přidáno
                   </Badge>
                 </Group>
-                <Text size="sm" c="dimmed" mb="md">
-                  Tato vyšetření jsou pro vás doporučena na základě vašeho
-                  zdravotního stavu a nelze je odebrat.
-                </Text>
-                <Grid>
-                  {visibleMandatoryAppointments.map((appointment) => {
-                    const isSelected = true; // Always selected
-
-                    return (
-                      <Grid.Col
-                        key={appointment.id}
-                        span={{ base: 12, sm: 6, md: 4 }}
-                      >
-                        <Card
-                          shadow="sm"
-                          padding="lg"
-                          radius="md"
-                          withBorder
-                          style={{
-                            borderColor: appointment.isRecommended
-                              ? "var(--mantine-color-red-4)"
-                              : "var(--mantine-color-gray-3)",
-                            borderWidth: 1,
-                            backgroundColor: appointment.isRecommended
-                              ? "var(--mantine-color-red-0)"
-                              : "var(--mantine-color-gray-0)",
-                            opacity: 1,
-                          }}
-                        >
-                          <Group
-                            justify="space-between"
-                            align="flex-start"
-                            mb="xs"
-                          >
-                            <Box style={{ flex: 1 }}>
-                              <Group gap="xs" align="center" mb="xs">
-                                <Text fw={500} size="md">
-                                  {appointment.name}
-                                </Text>
-                                <Badge
-                                  size="sm"
-                                  variant="filled"
-                                  color={
-                                    appointment.isRecommended ? "red" : "gray"
-                                  }
-                                >
-                                  {appointment.isRecommended
-                                    ? "Doporučeno"
-                                    : "Povinné"}
-                                </Badge>
-                              </Group>
-                            </Box>
-                            <Checkbox checked={isSelected} disabled size="md" />
-                          </Group>
-                          {appointment.description && (
-                            <Text size="sm" c="dimmed" mb="md">
-                              {appointment.description}
-                            </Text>
-                          )}
-                          {appointment.url && (
-                            <Anchor
-                              href={appointment.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              size="sm"
-                            >
-                              <Group gap="xs" align="center">
-                                <Text size="sm">Dozvědět se více</Text>
-                                <IconExternalLink size={14} />
-                              </Group>
-                            </Anchor>
-                          )}
-                        </Card>
-                      </Grid.Col>
-                    );
-                  })}
-                </Grid>
+                <Card
+                  shadow="sm"
+                  padding="lg"
+                  radius="md"
+                  withBorder
+                  style={{
+                    borderColor: "var(--mantine-color-red-4)",
+                    borderWidth: 1,
+                    backgroundColor: "var(--mantine-color-red-0)",
+                  }}
+                >
+                  <Group justify="space-between" align="flex-start" mb="md">
+                    <Box style={{ flex: 1 }}>
+                      <Group gap="xs" align="center" mb="xs">
+                        <Text fw={500} size="lg">
+                          Základní preventivní balíček
+                        </Text>
+                        <Badge size="sm" variant="filled" color="red">
+                          Povinné
+                        </Badge>
+                      </Group>
+                    </Box>
+                    <Checkbox checked={true} disabled size="md" />
+                  </Group>
+                  <Text size="sm" c="dimmed" mb="sm">
+                    Tato vyšetření jsou pro vás doporučena na základě vašeho
+                    zdravotního stavu a nelze je odebrat.
+                  </Text>
+                  <Text size="sm" fw={500} mb="xs">
+                    Zahrnuje:
+                  </Text>
+                  <Text size="sm" c="dimmed">
+                    {visibleMandatoryAppointments
+                      .map((app) => app.name)
+                      .join(", ")}
+                  </Text>
+                </Card>
               </Box>
             )}
 
@@ -227,6 +220,23 @@ export function Step8Appointments() {
               <Grid>
                 {optionalAppointments.map((appointment) => {
                   const isSelected = field.value.includes(appointment.id);
+                  const priority = appointment.priority;
+
+                  // Determine badge based on priority
+                  let priorityBadge = null;
+                  if (priority >= PRIORITY_THRESHOLD_HIGH) {
+                    priorityBadge = (
+                      <Badge size="sm" variant="filled" color="red">
+                        Silně doporučeno
+                      </Badge>
+                    );
+                  } else if (priority >= PRIORITY_THRESHOLD_LOW) {
+                    priorityBadge = (
+                      <Badge size="sm" variant="filled" color="orange">
+                        Doporučeno
+                      </Badge>
+                    );
+                  }
 
                   return (
                     <Grid.Col
@@ -241,13 +251,19 @@ export function Step8Appointments() {
                         style={{
                           cursor: "pointer",
                           transition: "all 0.2s ease",
-                          borderColor: isSelected
-                            ? "var(--mantine-primary-color-filled)"
-                            : undefined,
+                          borderColor:
+                            priority >= PRIORITY_THRESHOLD_HIGH
+                              ? "var(--mantine-color-red-4)"
+                              : priority >= PRIORITY_THRESHOLD_LOW
+                              ? "var(--mantine-color-orange-4)"
+                              : undefined,
                           borderWidth: 1,
-                          backgroundColor: isSelected
-                            ? "var(--mantine-primary-color-light)"
-                            : undefined,
+                          backgroundColor:
+                            priority >= PRIORITY_THRESHOLD_HIGH
+                              ? "var(--mantine-color-red-0)"
+                              : priority >= PRIORITY_THRESHOLD_LOW
+                              ? "var(--mantine-color-orange-0)"
+                              : undefined,
                         }}
                         onClick={() => {
                           const newValue = isSelected
@@ -268,6 +284,7 @@ export function Step8Appointments() {
                               <Text fw={500} size="md">
                                 {appointment.name}
                               </Text>
+                              {priorityBadge}
                             </Group>
                           </Box>
                           <Checkbox

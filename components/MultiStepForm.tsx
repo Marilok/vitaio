@@ -113,7 +113,7 @@ export function MultiStepForm() {
     trigger,
   });
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     const priorityScore = calculatePriorityScore(data);
     const finalData = { ...data, priority: priorityScore };
 
@@ -129,7 +129,30 @@ export function MultiStepForm() {
       "Selected Appointments (screenings.json format):",
       screeningsData
     );
-    console.log(JSON.stringify(finalData, null, 2));
+
+    try {
+      // Call API endpoint with screeningsData
+      const response = await fetch("/api/examinationDateTime", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          screenings: screeningsData,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error calling API:", errorData);
+        throw new Error(errorData.error || "Unable to load available slots");
+      }
+
+      const result = await response.json();
+      console.log("API answer:", result);
+    } catch (error) {
+      console.error("Error sending form:", error);
+    }
   };
 
   const renderStepContent = () => {

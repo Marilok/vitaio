@@ -32,6 +32,7 @@ interface SlotInfo {
   id: number;
   timeFrom: string;
   minutes: number;
+  category?: ExaminationCategory;
 }
 
 interface ScheduleResponse {
@@ -39,6 +40,67 @@ interface ScheduleResponse {
   availableSlots: Record<string, SlotInfo[]>;
   totalExaminations: number;
   message: string;
+}
+
+type ExaminationCategory = 'laboratory' | 'imaging' | 'ekg' | 'consultation';
+
+/**
+ * Mapa přiřazující každému vyšetření jeho kategorii
+ */
+const EXAMINATION_CATEGORIES: Record<string, ExaminationCategory> = {
+  // Laboratory
+  'bloodTests': 'laboratory',
+  'urineTest': 'laboratory',
+  'occultBloodTest': 'laboratory',
+  'psaTest': 'laboratory',
+  
+  // Imaging
+  'chestXray': 'imaging',
+  'abdominalUltrasound': 'imaging',
+  'testicularUltrasound': 'imaging',
+  'breastUltrasound': 'imaging',
+  'mammography': 'imaging',
+  'colonoscopy': 'imaging',
+  'inBodyAnalysis': 'imaging',
+  
+  // EKG
+  'ecg': 'ekg',
+  'bloodPressureAndPulseMeasurement': 'ekg',
+  
+  // Consultation
+  'oncologistConsultation': 'consultation',
+  'physicalExamination': 'consultation',
+  'geneticConsultation': 'consultation',
+  'gynecologicalExamination': 'consultation',
+  'healthyLifestyleCounseling': 'consultation',
+  'smokingCessationCounseling': 'consultation',
+  'addictionCounseling': 'consultation',
+  'physicalActivityCounseling': 'consultation',
+};
+
+/**
+ * Priorita kategorií vyšetření (nižší číslo = vyšší priorita)
+ */
+const CATEGORY_PRIORITY: Record<ExaminationCategory, number> = {
+  'laboratory': 1,
+  'imaging': 2,
+  'ekg': 3,
+  'consultation': 4,
+};
+
+/**
+ * Vrací kategorii vyšetření podle jeho názvu
+ */
+function getExaminationCategory(examinationName: string): ExaminationCategory | null {
+  return EXAMINATION_CATEGORIES[examinationName] || null;
+}
+
+/**
+ * Vrací prioritu kategorie (nižší číslo = vyšší priorita)
+ */
+function getCategoryPriority(category: ExaminationCategory | null): number {
+  if (!category) return 999; // Neznámé kategorie na konec
+  return CATEGORY_PRIORITY[category];
 }
 
 /**
@@ -106,8 +168,29 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Seřadit podle priority (vyšší číslo = vyšší priorita = první)
-    examinationsToSchedule.sort((a, b) => b.priority - a.priority);
+    // Seřadit nejprve podle kategorie (laboratory → imaging → ekg → consultation)
+    // a pak podle priority (vyšší číslo = vyšší priorita = první)
+    examinationsToSchedule.sort((a, b) => {
+      const categoryA = getExaminationCategory(a.name);
+      const categoryB = getExaminationCategory(b.name);
+      
+      const categoryPriorityA = getCategoryPriority(categoryA);
+      const categoryPriorityB = getCategoryPriority(categoryB);
+      
+      // Nejprve porovnat podle kategorie (nižší číslo = vyšší priorita)
+      if (categoryPriorityA !== categoryPriorityB) {
+        return categoryPriorityA - categoryPriorityB;
+      }
+      
+      // Pokud jsou stejné kategorie, porovnat podle priority vyšetření (vyšší číslo = vyšší priorita)
+      return b.priority - a.priority;
+    });
+
+    // Debug log
+    console.log('=== Pořadí zpracování vyšetření ===');
+    examinationsToSchedule.forEach((exam, idx) => {
+      console.log(`${idx + 1}. ${exam.name} (priority: ${exam.priority}, category: ${getExaminationCategory(exam.name)})`);
+    });
 
     if (examinationsToSchedule.length === 0) {
       return NextResponse.json(
@@ -150,6 +233,7 @@ export async function POST(request: NextRequest) {
 
     for (const examination of examinationsToSchedule) {
       const examTypeId = examTypeNameToId.get(examination.name);
+      const category = getExaminationCategory(examination.name);
       
       if (!examTypeId) {
         console.warn(`Typ vyšetření "${examination.name}" nebyl nalezen v databázi`);
@@ -177,7 +261,8 @@ export async function POST(request: NextRequest) {
           nonOverlappingSlots.push({
             id: candidateSlot.id,
             timeFrom: candidateSlot.dateTime,
-            minutes: candidateSlot.minutes
+            minutes: candidateSlot.minutes,
+            category: category || undefined
           });
           
           // Přidej ho do seznamu vybraných slotů
@@ -188,10 +273,18 @@ export async function POST(request: NextRequest) {
       result[examination.name] = nonOverlappingSlots;
     }
 
-    // 6. Vrátit úspěšnou odpověď
+    // 6. Vytvořit seřazený objekt availableSlots podle pořadí v examinationsToSchedule
+    const sortedAvailableSlots: Record<string, SlotInfo[]> = {};
+    for (const examination of examinationsToSchedule) {
+      if (result[examination.name]) {
+        sortedAvailableSlots[examination.name] = result[examination.name];
+      }
+    }
+
+    // 7. Vrátit úspěšnou odpověď
     return NextResponse.json({
       success: true,
-      availableSlots: result,
+      availableSlots: sortedAvailableSlots,
       totalExaminations: examinationsToSchedule.length,
       message: "Available slots were successfully loaded",
     });
