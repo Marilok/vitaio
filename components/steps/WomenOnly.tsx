@@ -5,7 +5,7 @@ import { Stack, Title, Text, Box, Radio, Checkbox, Group } from "@mantine/core";
 import { FormData } from "@/types/form";
 import { RequiredIndicator } from "@/components/form/RequiredIndicator";
 
-export function Step5WomenOnly() {
+export function WomenOnly() {
   const {
     control,
     watch,

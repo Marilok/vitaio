@@ -17,7 +17,7 @@ import { IconInfoCircle, IconRuler, IconWeight } from "@tabler/icons-react";
 import { RequiredIndicator } from "@/components/form/RequiredIndicator";
 import { Fragment } from "react";
 
-export function Step6Lifestyle() {
+export function Lifestyle() {
   const {
     control,
     watch,

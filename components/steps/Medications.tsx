@@ -12,7 +12,7 @@ const medicamentOptions = medicamentsData.map((med) => ({
   label: med.name,
 }));
 
-export function Step4Medications() {
+export function Medications() {
   const {
     control,
     formState: { errors },
