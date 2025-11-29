@@ -18,10 +18,16 @@ export interface FormData {
   hasGynecologist?: string; // "yes" | "no"
   bookGynecologyExam?: boolean;
 
-  // Step 6 - Lifestyle
+  // Step 5 - Lifestyle (formerly Step 6)
   weeklyExerciseMinutes: number;
-  weeklyCigarettes?: number;
-  alcoholConsumption: string;
+  isSmoker?: boolean;
+  cigarettePacksPerWeek?: number;
+  smokingYears?: number;
+  drinksAlcohol?: boolean;
+  beersPerWeek?: number;
+  drinkingYears?: number;
+  weeklyCigarettes?: number; // Keep for backwards compatibility
+  alcoholConsumption?: string; // Keep for backwards compatibility
 
   // Step 7 - Screening
   hadProstateScreening?: boolean;

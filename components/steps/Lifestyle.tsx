@@ -8,8 +8,8 @@ import {
   Box,
   Alert,
   NumberInput,
-  Select,
   Group,
+  Checkbox,
 } from "@mantine/core";
 import { FormData } from "@/types/form";
 import { calculateBMI, getBMICategory, getBMICategoryColor } from "@/utils/bmi";
@@ -21,11 +21,14 @@ export function Lifestyle() {
   const {
     control,
     watch,
+    setValue,
     formState: { errors },
   } = useFormContext<FormData>();
 
   const weight = watch("weight");
   const height = watch("height");
+  const isSmoker = watch("isSmoker");
+  const drinksAlcohol = watch("drinksAlcohol");
 
   const bmi = calculateBMI(weight, height);
   const bmiCategory = getBMICategory(bmi);
@@ -41,71 +44,6 @@ export function Lifestyle() {
           Informace o vašem životním stylu a zdravotních rizicích
         </Text>
       </Box>
-
-      <Controller
-        name="weeklyExerciseMinutes"
-        control={control}
-        rules={{
-          required: "Počet minut je povinný",
-          min: { value: 0, message: "Minimální hodnota je 0 minut" },
-          max: {
-            value: 10080,
-            message: "Maximum je 10080 minut (7 dní × 24 hodin)",
-          },
-        }}
-        render={({ field }) => (
-          <NumberInput
-            {...field}
-            label={
-              <Fragment>
-                Minuty střední zátěže týdně <RequiredIndicator />
-              </Fragment>
-            }
-            placeholder="Zadejte počet minut"
-            min={0}
-            max={10080}
-            error={errors.weeklyExerciseMinutes?.message}
-          />
-        )}
-      />
-
-      <Controller
-        name="weeklyCigarettes"
-        control={control}
-        render={({ field }) => (
-          <NumberInput
-            {...field}
-            label="Počet vykouřených cigaret týdně"
-            placeholder="Zadejte počet cigaret"
-            min={0}
-            error={errors.weeklyCigarettes?.message}
-          />
-        )}
-      />
-
-      <Controller
-        name="alcoholConsumption"
-        control={control}
-        rules={{ required: "Prosím vyberte jednu z možností" }}
-        render={({ field }) => (
-          <Select
-            {...field}
-            label={
-              <Fragment>
-                Konzumace alkoholu <RequiredIndicator />
-              </Fragment>
-            }
-            placeholder="Vyberte možnost"
-            data={[
-              { value: "frequent", label: "Piji často" },
-              { value: "occasional", label: "Piji příležitostně" },
-              { value: "abstinent", label: "Abstinuji" },
-            ]}
-            error={errors.alcoholConsumption?.message}
-            clearable
-          />
-        )}
-      />
 
       <Group grow preventGrowOverflow={false} gap="md">
         <Controller
@@ -183,6 +121,155 @@ export function Lifestyle() {
           </Stack>
         </Alert>
       )}
+
+      <Controller
+        name="weeklyExerciseMinutes"
+        control={control}
+        rules={{
+          required: "Počet minut je povinný",
+          min: { value: 0, message: "Minimální hodnota je 0 minut" },
+          max: {
+            value: 10080,
+            message: "Maximum je 10080 minut (7 dní × 24 hodin)",
+          },
+        }}
+        render={({ field }) => (
+          <NumberInput
+            {...field}
+            label={
+              <Fragment>
+                Minuty střední zátěže týdně <RequiredIndicator />
+              </Fragment>
+            }
+            placeholder="Zadejte počet minut"
+            min={0}
+            max={10080}
+            error={errors.weeklyExerciseMinutes?.message}
+          />
+        )}
+      />
+
+      <Box>
+        <Controller
+          name="isSmoker"
+          control={control}
+          render={({ field: { value, onChange, ...field } }) => (
+            <Checkbox
+              {...field}
+              checked={value || false}
+              onChange={(event) => {
+                const checked = event.currentTarget.checked;
+                onChange(checked);
+                if (!checked) {
+                  setValue("cigarettePacksPerWeek", undefined);
+                  setValue("smokingYears", undefined);
+                }
+              }}
+              label={<Text size="sm">Jsem kuřák</Text>}
+            />
+          )}
+        />
+
+        {isSmoker && (
+          <Group grow preventGrowOverflow={false} gap="md" mt="md">
+            <Controller
+              name="cigarettePacksPerWeek"
+              control={control}
+              rules={{
+                min: { value: 0, message: "Minimální hodnota je 0" },
+              }}
+              render={({ field }) => (
+                <NumberInput
+                  {...field}
+                  label="Krabičky cigaret týdně"
+                  placeholder="Počet krabiček"
+                  min={0}
+                  decimalScale={1}
+                  error={errors.cigarettePacksPerWeek?.message}
+                />
+              )}
+            />
+
+            <Controller
+              name="smokingYears"
+              control={control}
+              rules={{
+                min: { value: 0, message: "Minimální hodnota je 0 let" },
+              }}
+              render={({ field }) => (
+                <NumberInput
+                  {...field}
+                  label="Jak dlouho kouříte (roky)"
+                  placeholder="Počet let"
+                  min={0}
+                  error={errors.smokingYears?.message}
+                />
+              )}
+            />
+          </Group>
+        )}
+      </Box>
+
+      <Box>
+        <Controller
+          name="drinksAlcohol"
+          control={control}
+          render={({ field: { value, onChange, ...field } }) => (
+            <Checkbox
+              {...field}
+              checked={value || false}
+              onChange={(event) => {
+                const checked = event.currentTarget.checked;
+                onChange(checked);
+                if (!checked) {
+                  setValue("beersPerWeek", undefined);
+                  setValue("drinkingYears", undefined);
+                }
+              }}
+              label={<Text size="sm">Piji alkohol</Text>}
+            />
+          )}
+        />
+
+        {drinksAlcohol && (
+          <Group grow preventGrowOverflow={false} gap="md" mt="md">
+            <Controller
+              name="beersPerWeek"
+              control={control}
+              rules={{
+                min: { value: 0, message: "Minimální hodnota je 0" },
+              }}
+              render={({ field }) => (
+                <NumberInput
+                  {...field}
+                  label="Piv týdně"
+                  placeholder="Počet piv"
+                  min={0}
+                  decimalScale={1}
+                  error={errors.beersPerWeek?.message}
+                />
+              )}
+            />
+
+            <Controller
+              name="drinkingYears"
+              control={control}
+              rules={{
+                min: { value: 0, message: "Minimální hodnota je 0 let" },
+              }}
+              render={({ field }) => (
+                <NumberInput
+                  {...field}
+                  label="Jak dlouho pijete (roky)"
+                  placeholder="Počet let"
+                  min={0}
+                  error={errors.drinkingYears?.message}
+                />
+              )}
+            />
+          </Group>
+        )}
+      </Box>
     </Stack>
   );
 }
