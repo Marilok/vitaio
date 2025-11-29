@@ -14,7 +14,7 @@ export default function Home() {
   return (
     <Box
       style={{
-        minHeight: "100%",
+        minHeight: "100vh",
         backgroundColor: "var(--mantine-primary-color-filled)",
         display: "flex",
         alignItems: "center",

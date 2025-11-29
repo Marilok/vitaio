@@ -79,13 +79,20 @@ export function AnimatedVectors() {
   });
 
   return (
-    <>
+    <div
+      style={{
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        // overflow: "hidden",
+      }}
+    >
       <Image
         src="./M.svg"
         alt="Vitaio Logo M"
         width={300}
         height={300}
-        className="absolute"
+        className="absolute "
         style={createVectorStyle(currentPositions.M)}
       />
       <Image
@@ -104,6 +111,6 @@ export function AnimatedVectors() {
         className="absolute"
         style={createVectorStyle(currentPositions.U)}
       />
-    </>
+    </div>
   );
 }
