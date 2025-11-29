@@ -251,22 +251,19 @@ export function Step8Appointments() {
                         style={{
                           cursor: "pointer",
                           transition: "all 0.2s ease",
-                          borderColor: isSelected
-                            ? "var(--mantine-primary-color-filled)"
-                            : priority >= PRIORITY_THRESHOLD_HIGH
-                            ? "var(--mantine-color-red-4)"
-                            : priority >= PRIORITY_THRESHOLD_LOW
-                            ? "var(--mantine-color-orange-4)"
-                            : undefined,
-                          borderWidth:
-                            priority >= PRIORITY_THRESHOLD_LOW ? 2 : 1,
-                          backgroundColor: isSelected
-                            ? "var(--mantine-primary-color-light)"
-                            : priority >= PRIORITY_THRESHOLD_HIGH
-                            ? "var(--mantine-color-red-0)"
-                            : priority >= PRIORITY_THRESHOLD_LOW
-                            ? "var(--mantine-color-orange-0)"
-                            : undefined,
+                          borderColor:
+                            priority >= PRIORITY_THRESHOLD_HIGH
+                              ? "var(--mantine-color-red-4)"
+                              : priority >= PRIORITY_THRESHOLD_LOW
+                              ? "var(--mantine-color-orange-4)"
+                              : undefined,
+                          borderWidth: 1,
+                          backgroundColor:
+                            priority >= PRIORITY_THRESHOLD_HIGH
+                              ? "var(--mantine-color-red-0)"
+                              : priority >= PRIORITY_THRESHOLD_LOW
+                              ? "var(--mantine-color-orange-0)"
+                              : undefined,
                         }}
                         onClick={() => {
                           const newValue = isSelected
