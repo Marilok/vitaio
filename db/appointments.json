@@ -1,72 +1,100 @@
 [
   {
     "id": 1,
-    "name": "Kolonoskopie",
-    "description": "Preventivní vyšetření tlustého střeva pro včasné odhalení nádorových změn",
-    "type": "examination",
-    "url": "https://www.mou.cz/program-casneho-zachytu-karcinomu-tlusteho-streva-a-konecniku/t1884"
+    "name": "Vyšetření prostaty",
+    "description": "Preventivní vyšetření prostaty včetně PSA testu",
+    "type": "mandatory",
+    "url": "https://example.com/prostate-screening"
   },
   {
     "id": 2,
-    "name": "Genetická konzultace",
-    "description": "Konzultace s genetikem pro posouzení dědičných rizik onemocnění",
-    "type": "consultation",
-    "url": "https://www.mou.cz/vse-o-prevenci/t1309"
+    "name": "CT plic",
+    "description": "Low-dose CT vyšetření plic pro detekci rakoviny",
+    "type": "mandatory",
+    "url": "https://example.com/lung-ct"
   },
   {
     "id": 3,
     "name": "Gynekologické vyšetření",
-    "description": "Preventivní gynekologická prohlídka včetně cytologického vyšetření",
-    "type": "examination",
-    "url": "https://www.mou.cz/screeningove-programy/t1853"
+    "description": "Komplexní gynekologické vyšetření",
+    "type": "mandatory",
+    "url": "https://example.com/gynecology"
   },
   {
     "id": 4,
-    "name": "Poradna zdravý životní styl",
-    "description": "Konzultace o zdravých stravovacích návycích a životním stylu",
-    "type": "consultation",
-    "url": "https://www.mou.cz/jak-predchazet-br-rakovine/t1291"
+    "name": "Mamografie",
+    "description": "Screeningové vyšetření prsů",
+    "type": "mandatory",
+    "url": "https://example.com/mammography"
   },
   {
     "id": 5,
-    "name": "Poradna odvykání kouření",
-    "description": "Odborná pomoc a podpora při odvykání kouření",
-    "type": "consultation",
-    "url": "https://www.mou.cz/vse-o-prevenci/t1309"
+    "name": "Kolonoskopie",
+    "description": "Vyšetření tlustého střeva pro prevenci kolorektálního karcinomu",
+    "type": "mandatory",
+    "url": "https://example.com/colonoscopy"
   },
   {
     "id": 6,
-    "name": "Poradna adiktologa",
-    "description": "Konzultace s odborníkem na závislosti a jejich léčbu",
-    "type": "consultation",
-    "url": "https://www.mou.cz/vse-o-prevenci/t1309"
+    "name": "Test okultního krvácení stolice",
+    "type": "optional",
+    "description": "Neinvazivní vyšetření stolice určené k odhalení skrytého krvácení, které může signalizovat polypy či časné stádium kolorektálního karcinomu.",
+     "url": "https://example.com/occult-blood-test"
   },
   {
     "id": 7,
-    "name": "Pohybová poradna",
-    "description": "Individuální plán pohybové aktivity přizpůsobený vašemu zdravotnímu stavu",
-    "type": "consultation",
-    "url": "https://www.mou.cz/jak-predchazet-br-rakovine/t1291"
+    "name": "Sigmoidoskopie",
+    "type": "optional",
+    "description": "Vyšetření dolní části tlustého střeva sloužící k časnému odhalení zánětů, polypů a prevenci kolorektálního karcinomu.",
+    "url": "https://example.com/sigmoidoscopy"
   },
   {
     "id": 8,
-    "name": "PSA vyšetření",
-    "description": "Krevní test pro včasné odhalení onemocnění prostaty",
-    "type": "examination",
-    "url": "https://www.mou.cz/program-casneho-zachytu-karcinomu-prostaty/t2011"
+    "name": "Gastroenterolog",
+    "description": "Konzultace se specialistou na trávicí systém",
+    "type": "optional",
+    "url": "https://example.com/gastroenterologist"
   },
   {
     "id": 9,
-    "name": "Mamograf",
-    "description": "Rentgenové vyšetření prsu pro včasné odhalení nádorových změn",
-    "type": "examination",
-    "url": "https://www.mou.cz/program-screeningu-karcinomu-prsu/t1888"
+    "name": "Gynekolog",
+    "description": "Gynekologická konzultace",
+    "type": "optional",
+    "url": "https://example.com/gynecologist"
   },
   {
     "id": 10,
-    "name": "Odběr krve",
-    "description": "Základní laboratorní vyšetření krve pro posouzení celkového zdravotního stavu",
-    "type": "examination",
-    "url": "https://www.mou.cz/screeningove-programy/t1853"
+    "name": "Urolog",
+    "description": "Urologická konzultace",
+    "type": "optional",
+    "url": "https://example.com/urologist"
+  },
+  {
+    "id": 11,
+    "name": "Praktický lékař",
+    "description": "Konzultace s praktickým lékařem",
+    "type": "optional",
+    "url": "https://example.com/general-practitioner"
+  },
+  {
+    "id": 12,
+    "name": "Onkolog",
+    "description": "Onkologická konzultace",
+    "type": "optional",
+    "url": "https://example.com/oncologist"
+  },
+  {
+    "id": 13,
+    "name": "Radiolog",
+    "description": "Radiologická konzultace",
+    "type": "optional",
+    "url": "https://example.com/radiologist"
+  },
+  {
+    "id": 14,
+    "name": "Nutriční poradce",
+    "description": "Konzultace s nutričním specialistou",
+    "type": "optional",
+    "url": "https://example.com/nutritionist"
   }
 ]
