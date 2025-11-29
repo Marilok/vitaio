@@ -186,6 +186,12 @@ export async function POST(request: NextRequest) {
       return b.priority - a.priority;
     });
 
+    // Debug log
+    console.log('=== Pořadí zpracování vyšetření ===');
+    examinationsToSchedule.forEach((exam, idx) => {
+      console.log(`${idx + 1}. ${exam.name} (priority: ${exam.priority}, category: ${getExaminationCategory(exam.name)})`);
+    });
+
     if (examinationsToSchedule.length === 0) {
       return NextResponse.json(
         { error: "Žádná vyšetření k naplánování" },
@@ -267,10 +273,18 @@ export async function POST(request: NextRequest) {
       result[examination.name] = nonOverlappingSlots;
     }
 
-    // 6. Vrátit úspěšnou odpověď
+    // 6. Vytvořit seřazený objekt availableSlots podle pořadí v examinationsToSchedule
+    const sortedAvailableSlots: Record<string, SlotInfo[]> = {};
+    for (const examination of examinationsToSchedule) {
+      if (result[examination.name]) {
+        sortedAvailableSlots[examination.name] = result[examination.name];
+      }
+    }
+
+    // 7. Vrátit úspěšnou odpověď
     return NextResponse.json({
       success: true,
-      availableSlots: result,
+      availableSlots: sortedAvailableSlots,
       totalExaminations: examinationsToSchedule.length,
       message: "Available slots were successfully loaded",
     });
