@@ -131,7 +131,8 @@ export function MultiStepForm() {
 
     // Transform selected appointments to screenings.json format
     const screeningsData = transformAppointmentsToScreenings(
-      data.selectedAppointments
+      data.selectedAppointments,
+      data
     );
 
     console.log("Form submitted:", finalData);
