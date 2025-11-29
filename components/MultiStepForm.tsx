@@ -18,12 +18,14 @@ import { MultiStepFormProvider } from "@/contexts/MultiStepFormContext";
 import { FormData } from "@/types/form";
 import { calculatePriorityScore } from "@/utils/priority";
 import { transformAppointmentsToScreenings } from "@/utils/appointmentsMapping";
-import { ContactInfo } from "./steps/ContactInfo";
+import { Loader, Text, Center } from "@mantine/core";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
-const TOTAL_STEPS = 7;
+const HEALTH_ASSESSMENT_STEPS = 5;
 
-// Define which fields to validate for each step
-const getFieldsForStep = (
+// Define which fields to validate for each step in health assessment
+const getHealthAssessmentFieldsForStep = (
   step: number,
   formValues?: Partial<FormData>
 ): (keyof FormData)[] => {
@@ -54,14 +56,19 @@ const getFieldsForStep = (
 
       return fields;
     }
-    case 5:
-      return ["bookedAppointments"]; // Step 6 - Appointment booking validation
+    case 4:
+      return []; // Screening step - no required fields
     default:
       return [];
   }
 };
 
-export function MultiStepForm() {
+// Health Assessment Form Component
+function HealthAssessmentForm({
+  onComplete,
+}: {
+  onComplete: (data: FormData) => void;
+}) {
   const methods = useForm<FormData>({
     mode: "onChange",
     reValidateMode: "onBlur",
@@ -111,23 +118,130 @@ export function MultiStepForm() {
     prevStep,
     goToStep,
   } = useMultiStepForm({
-    totalSteps: TOTAL_STEPS,
-    getFieldsForStep: (step: number) => getFieldsForStep(step, getValues()),
+    totalSteps: HEALTH_ASSESSMENT_STEPS,
+    getFieldsForStep: (step: number) =>
+      getHealthAssessmentFieldsForStep(step, getValues()),
     trigger,
   });
 
   const onSubmit = async (data: FormData) => {
     const priorityScore = calculatePriorityScore(data);
     const finalData = { ...data, priority: priorityScore };
+    onComplete(finalData);
+  };
 
+  const renderStepContent = () => {
+    switch (activeStep) {
+      case 0:
+        return <BasicInfo />;
+      case 1:
+        return <SymptomsAndFamily />;
+      case 2:
+        return <Medications />;
+      case 3:
+        return <Lifestyle />;
+      case 4:
+        return <Screening />;
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <FormProvider {...methods}>
+      <MultiStepFormProvider
+        value={{
+          activeStep,
+          direction,
+          isFirstStep,
+          isLastStep,
+          totalSteps: HEALTH_ASSESSMENT_STEPS,
+          nextStep,
+          prevStep,
+          goToStep,
+          onSubmit: handleSubmit(onSubmit),
+          isSubmitting,
+        }}
+      >
+        <Paper shadow="md" p="xl" radius="md" w={720}>
+          <Stack gap="xl">
+            <FormProgress title="Moje zdravotní analýza" />
+            <StepContainer>{renderStepContent()}</StepContainer>
+            <FormNavigation />
+          </Stack>
+        </Paper>
+      </MultiStepFormProvider>
+    </FormProvider>
+  );
+}
+
+// Loading Component
+function FormEvaluationLoader({ onComplete }: { onComplete: () => void }) {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onComplete();
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [onComplete]);
+
+  return (
+    <Paper shadow="md" p="xl" radius="md" w={720}>
+      <Center>
+        <Stack align="center" gap="lg">
+          <Loader size="xl" type="dots" />
+          <Text size="lg" fw={500}>
+            Vyhodnocujeme váš dotazník
+          </Text>
+        </Stack>
+      </Center>
+    </Paper>
+  );
+}
+
+// Appointments Form Component
+function AppointmentsForm({ formData }: { formData: FormData }) {
+  const methods = useForm<FormData>({
+    defaultValues: formData,
+  });
+
+  const {
+    handleSubmit,
+    trigger,
+    formState: { isSubmitting },
+  } = methods;
+
+  const {
+    activeStep,
+    direction,
+    isFirstStep,
+    isLastStep,
+    nextStep,
+    prevStep,
+    goToStep,
+  } = useMultiStepForm({
+    totalSteps: 2, // Step8Appointments and Step9Appointments
+    getFieldsForStep: (step: number) => {
+      switch (step) {
+        case 0:
+          return []; // Step8Appointments - no required fields initially
+        case 1:
+          return ["bookedAppointments"]; // Step9Appointments - booking validation
+        default:
+          return [];
+      }
+    },
+    trigger,
+  });
+
+  const onSubmit = async (data: FormData) => {
     // Transform selected appointments to screenings.json format
     const screeningsData = transformAppointmentsToScreenings(
       data.selectedAppointments,
       data
     );
 
-    console.log("Form submitted:", finalData);
-    console.log("Priority Score:", priorityScore);
+    console.log("Appointments form submitted:", data);
     console.log(
       "Selected Appointments (screenings.json format):",
       screeningsData
@@ -161,21 +275,9 @@ export function MultiStepForm() {
   const renderStepContent = () => {
     switch (activeStep) {
       case 0:
-        return <BasicInfo />;
-      case 1:
-        return <SymptomsAndFamily />;
-      case 2:
-        return <Medications />;
-      case 3:
-        return <Lifestyle />;
-      case 4:
-        return <Screening />;
-      case 5:
         return <Step8Appointments />;
-      case 6:
+      case 1:
         return <Step9Appointments />;
-      case 8:
-        return <ContactInfo />;
       default:
         return null;
     }
@@ -189,7 +291,7 @@ export function MultiStepForm() {
           direction,
           isFirstStep,
           isLastStep,
-          totalSteps: TOTAL_STEPS,
+          totalSteps: 2,
           nextStep,
           prevStep,
           goToStep,
@@ -197,12 +299,10 @@ export function MultiStepForm() {
           isSubmitting,
         }}
       >
-        <Paper shadow="md" p="xl" radius="md" miw="740px">
+        <Paper shadow="md" p="xl" radius="md" w={1200}>
           <Stack gap="xl">
-            <FormProgress />
-
+            <FormProgress title="Objednání vyšetření" />
             <StepContainer>{renderStepContent()}</StepContainer>
-
             <FormNavigation />
           </Stack>
         </Paper>
@@ -210,3 +310,36 @@ export function MultiStepForm() {
     </FormProvider>
   );
 }
+
+// Main orchestrating component
+export function MultiStepForm() {
+  const router = useRouter();
+  const [currentPhase, setCurrentPhase] = useState<
+    "health-assessment" | "loading"
+  >("health-assessment");
+
+  const handleHealthAssessmentComplete = (data: FormData) => {
+    // Store form data in sessionStorage for the booking page
+    sessionStorage.setItem("healthAssessmentData", JSON.stringify(data));
+    setCurrentPhase("loading");
+  };
+
+  const handleLoadingComplete = () => {
+    // Navigate to the booking page
+    router.push("/booking");
+  };
+
+  switch (currentPhase) {
+    case "health-assessment":
+      return (
+        <HealthAssessmentForm onComplete={handleHealthAssessmentComplete} />
+      );
+    case "loading":
+      return <FormEvaluationLoader onComplete={handleLoadingComplete} />;
+    default:
+      return null;
+  }
+}
+
+// Export the AppointmentsForm for use in the booking page
+export { AppointmentsForm };

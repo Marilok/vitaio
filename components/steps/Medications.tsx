@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormContext, Controller, useFieldArray } from "react-hook-form";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import {
   Stack,
   Title,
@@ -13,7 +13,6 @@ import {
   Card,
   ActionIcon,
   Box,
-  Avatar,
 } from "@mantine/core";
 import { FormData } from "@/types/form";
 import { IconPlus, IconTrash } from "@tabler/icons-react";
@@ -48,9 +47,12 @@ export function Medications() {
     name: "medications",
   });
 
+  const hasInitialized = useRef(false);
+
   // Initialize with one empty medication if none exist
   useEffect(() => {
-    if (fields.length === 0) {
+    if (fields.length === 0 && !hasInitialized.current) {
+      hasInitialized.current = true;
       append({
         id: "",
         name: "",
@@ -113,14 +115,8 @@ export function Medications() {
           const isCustom = medications?.[index]?.isCustom || false;
 
           return (
-            <Card
-              key={field.id}
-              withBorder
-              padding="md"
-              radius="md"
-              shadow="none"
-            >
-              <Group align="flex-start" gap="md">
+            <Card key={field.id} padding="0" radius="0" shadow="none">
+              <Group align="flex-start" gap="xs">
                 {isCustom ? (
                   <Controller
                     name={`medications.${index}.name`}
@@ -131,7 +127,7 @@ export function Medications() {
                         {...nameField}
                         label="Název léku"
                         placeholder="Napište název léku"
-                        w={260}
+                        w={220}
                         size="md"
                         error={errors.medications?.[index]?.name?.message}
                       />
@@ -145,7 +141,7 @@ export function Medications() {
                     render={({ field: selectField }) => (
                       <Select
                         {...selectField}
-                        w={260}
+                        w={220}
                         label="Název léku"
                         placeholder="Vyberte lék"
                         data={medicamentOptions}
@@ -173,6 +169,7 @@ export function Medications() {
                       {...freqField}
                       label="Frekvence"
                       placeholder="Jak často"
+                      w={"140"}
                       data={frequencyOptions}
                       size="md"
                       error={errors.medications?.[index]?.frequency?.message}
@@ -200,7 +197,7 @@ export function Medications() {
                   variant="light"
                   size="xl"
                   onClick={() => remove(index)}
-                  style={{ marginTop: 22, flexShrink: 0 }}
+                  style={{ marginTop: 24, flexShrink: 0 }}
                 >
                   <IconTrash size={20} />
                 </ActionIcon>

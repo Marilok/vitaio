@@ -9,6 +9,9 @@ import {
   NumberInput,
   Group,
   Checkbox,
+  Paper,
+  Divider,
+  Space,
 } from "@mantine/core";
 import { FormData } from "@/types/form";
 import { calculateBMI, getBMICategory, getBMICategoryColor } from "@/utils/bmi";
@@ -42,7 +45,8 @@ export function Lifestyle() {
         </Title>
       </Box>
 
-      <Box mb={"xl"} mt={"sm"}>
+      {/* Physical Stats Section */}
+      <Paper shadow="xs" p="lg" radius="md" withBorder>
         <Text size="md" fw={500} mb="sm">
           {bmi > 0 && weight && height ? (
             <>
@@ -56,7 +60,7 @@ export function Lifestyle() {
         </Text>
 
         {/* Custom BMI Progress Bar */}
-        <Box style={{ position: "relative", marginBottom: "16px" }}>
+        <Box style={{ position: "relative", marginBottom: "24px" }}>
           {/* Background track */}
           <Box
             style={{
@@ -239,104 +243,115 @@ export function Lifestyle() {
             </Text>
           </Box>
         </Box>
-      </Box>
-
-      <Group grow preventGrowOverflow={false} gap="md">
-        <Controller
-          name="height"
-          control={control}
-          rules={{
-            required: "Pro výpočet BMI je potřeba znát výšku",
-            min: { value: 50, message: "Výška musí být alespoň 50 cm" },
-            max: { value: 300, message: "Výška musí být menší než 300 cm" },
-          }}
-          render={({ field }) => (
-            <NumberInput
-              {...field}
-              label={
-                <Fragment>
-                  Měřím.. <RequiredIndicator />
-                </Fragment>
-              }
-              min={50}
-              max={300}
-              error={errors.height?.message}
-              leftSection={<IconRuler size={16} />}
-              suffix={field.value ? " cm" : ""}
-              style={{ maxWidth: 150 }}
-            />
-          )}
-        />
-
-        <Controller
-          name="weight"
-          control={control}
-          rules={{
-            required: "Pro výpočet BMI je potřeba znát hmotnost",
-            min: { value: 1, message: "Hmotnost musí být alespoň 1 kg" },
-            max: { value: 500, message: "Hmotnost musí být menší než 500 kg" },
-          }}
-          render={({ field }) => (
-            <NumberInput
-              {...field}
-              label={
-                <Fragment>
-                  Vážím.. <RequiredIndicator />
-                </Fragment>
-              }
-              min={1}
-              max={500}
-              error={errors.weight?.message}
-              decimalScale={1}
-              leftSection={<IconWeight size={16} />}
-              suffix={field.value ? " kg" : ""}
-              style={{ maxWidth: 150 }}
-            />
-          )}
-        />
-
-        <Controller
-          name="weeklyExerciseMinutes"
-          control={control}
-          rules={{
-            required: "Počet minut je povinný",
-            min: { value: 0, message: "Minimální hodnota je 0 minut" },
-            max: {
-              value: 10080,
-              message: "Maximum je 10080 minut (7 dní × 24 hodin)",
-            },
-          }}
-          render={({ field }) => {
-            const formatSuffix = () => {
-              if (!field.value) return "";
-              const value = Number(field.value);
-              if (value === 1) return " minuta";
-              if (value >= 2 && value <= 4) return " minuty";
-              return " minut";
-            };
-
-            return (
+        <Space h="xl" />
+        <Space h="md" />
+        <Group grow preventGrowOverflow={false} gap="md">
+          <Controller
+            name="height"
+            control={control}
+            rules={{
+              required: "Prosím vyplňte",
+              min: { value: 50, message: "Výška musí být alespoň 50 cm" },
+              max: { value: 300, message: "Výška musí být menší než 300 cm" },
+            }}
+            render={({ field }) => (
               <NumberInput
+                size="md"
                 {...field}
                 label={
                   <Fragment>
-                    Za týden nasportuji.. <RequiredIndicator />
+                    Měřím.. <RequiredIndicator />
                   </Fragment>
                 }
-                placeholder="Zadejte počet minut"
-                min={0}
-                max={10080}
-                leftSection={<IconRun size={16} />}
-                suffix={formatSuffix()}
-                error={errors.weeklyExerciseMinutes?.message}
-                style={{ maxWidth: 200 }}
+                min={50}
+                max={300}
+                error={errors.height?.message}
+                leftSection={<IconRuler size={16} />}
+                suffix={field.value ? " cm" : ""}
+                style={{ maxWidth: 150 }}
               />
-            );
-          }}
-        />
-      </Group>
+            )}
+          />
 
-      <Box>
+          <Controller
+            name="weight"
+            control={control}
+            rules={{
+              required: "Prosím vyplňte",
+              min: { value: 1, message: "Hmotnost musí být alespoň 1 kg" },
+              max: {
+                value: 500,
+                message: "Hmotnost musí být menší než 500 kg",
+              },
+            }}
+            render={({ field }) => (
+              <NumberInput
+                size="md"
+                {...field}
+                label={
+                  <Fragment>
+                    Vážím.. <RequiredIndicator />
+                  </Fragment>
+                }
+                min={1}
+                max={500}
+                error={errors.weight?.message}
+                decimalScale={1}
+                leftSection={<IconWeight size={16} />}
+                suffix={field.value ? " kg" : ""}
+                style={{ maxWidth: 150 }}
+              />
+            )}
+          />
+
+          <Controller
+            name="weeklyExerciseMinutes"
+            control={control}
+            rules={{
+              required: "Prosím vyplňte",
+              min: { value: 0, message: "Minimální hodnota je 0 minut" },
+              max: {
+                value: 10080,
+                message: "Maximum je 10080 minut (7 dní × 24 hodin)",
+              },
+            }}
+            render={({ field }) => {
+              const formatSuffix = () => {
+                if (!field.value) return "";
+                const value = Number(field.value);
+                if (value === 1) return " minuta";
+                if (value >= 2 && value <= 4) return " minuty";
+                return " minut";
+              };
+
+              return (
+                <NumberInput
+                  {...field}
+                  size="md"
+                  label={
+                    <Fragment>
+                      Za týden nasportuji.. <RequiredIndicator />
+                    </Fragment>
+                  }
+                  placeholder="Zadejte počet minut"
+                  min={0}
+                  max={10080}
+                  leftSection={<IconRun size={16} />}
+                  suffix={formatSuffix()}
+                  error={errors.weeklyExerciseMinutes?.message}
+                />
+              );
+            }}
+          />
+        </Group>
+      </Paper>
+
+      {/* Smoking Section */}
+      <Paper shadow="xs" p="lg" radius="md" withBorder>
+        <Title order={4} mb="md">
+          🚬 Kouření
+        </Title>
+
         <Controller
           name="isSmoker"
           control={control}
@@ -364,7 +379,7 @@ export function Lifestyle() {
               name="cigarettePacksPerWeek"
               control={control}
               rules={{
-                required: "Počet krabiček je povinný",
+                required: "Prosím vyplňte",
                 min: { value: 0, message: "Minimální hodnota je 0" },
               }}
               render={({ field }) => {
@@ -386,6 +401,7 @@ export function Lifestyle() {
                     }
                     placeholder="Počet krabiček"
                     min={0}
+                    size="md"
                     decimalScale={1}
                     suffix={formatCigaretteSuffix()}
                     error={errors.cigarettePacksPerWeek?.message}
@@ -398,7 +414,7 @@ export function Lifestyle() {
               name="smokingYears"
               control={control}
               rules={{
-                required: "Počet let je povinný",
+                required: "Prosím vyplňte",
                 min: { value: 0, message: "Minimální hodnota je 0 let" },
               }}
               render={({ field }) => {
@@ -420,6 +436,7 @@ export function Lifestyle() {
                     }
                     placeholder="Počet let"
                     min={0}
+                    size="md"
                     suffix={formatYearsSuffix()}
                     error={errors.smokingYears?.message}
                   />
@@ -428,9 +445,14 @@ export function Lifestyle() {
             />
           </Group>
         )}
-      </Box>
+      </Paper>
 
-      <Box>
+      {/* Alcohol Section */}
+      <Paper shadow="xs" p="lg" radius="md" withBorder>
+        <Title order={4} mb="md">
+          🍺 Alkohol
+        </Title>
+
         <Controller
           name="drinksAlcohol"
           control={control}
@@ -458,7 +480,7 @@ export function Lifestyle() {
               name="beersPerWeek"
               control={control}
               rules={{
-                required: "Počet piv je povinný",
+                required: "Prosím vyplňte",
                 min: { value: 0, message: "Minimální hodnota je 0" },
               }}
               render={({ field }) => {
@@ -480,6 +502,7 @@ export function Lifestyle() {
                     }
                     placeholder="Počet alkoholických nápojů"
                     min={0}
+                    size="md"
                     decimalScale={1}
                     suffix={formatDrinkSuffix()}
                     error={errors.beersPerWeek?.message}
@@ -492,7 +515,7 @@ export function Lifestyle() {
               name="drinkingYears"
               control={control}
               rules={{
-                required: "Počet let je povinný",
+                required: "Prosím vyplňte",
                 min: { value: 0, message: "Minimální hodnota je 0 let" },
               }}
               render={({ field }) => {
@@ -514,6 +537,7 @@ export function Lifestyle() {
                     }
                     placeholder="Počet let"
                     min={0}
+                    size="md"
                     suffix={formatYearsSuffix()}
                     error={errors.drinkingYears?.message}
                   />
@@ -522,7 +546,7 @@ export function Lifestyle() {
             />
           </Group>
         )}
-      </Box>
+      </Paper>
     </Stack>
   );
 }
