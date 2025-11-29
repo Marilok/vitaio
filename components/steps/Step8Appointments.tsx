@@ -190,8 +190,8 @@ export function Step8Appointments() {
         <Title order={3} mb="xs">
           🧑‍⚕️ Doporučené vyšetření pro mě
         </Title>
-        <Text size="md" c="dimmed" mb="lg">
-          Na základě vyplněných informací jsme navrhli následující vyšetření.
+        <Text size="md" c="dimmed">
+          Na základě vyplněných informací jsme navrhli následující vyšetření:
         </Text>
       </Box>
 
@@ -256,7 +256,7 @@ export function Step8Appointments() {
             {/* Examinations Section */}
             {examinationAppointments.length > 0 && (
               <Box>
-                <Title order={4} mb="md">
+                <Title order={4} mb="0">
                   Vyšetření
                 </Title>
                 <Text size="sm" c="dimmed" mb="md">
@@ -384,7 +384,7 @@ export function Step8Appointments() {
             {/* Consultations Section */}
             {consultationAppointments.length > 0 && (
               <Box>
-                <Title order={4} mb="md">
+                <Title order={4} mb="0">
                   Konzultace
                 </Title>
                 <Text size="sm" c="dimmed" mb="md">

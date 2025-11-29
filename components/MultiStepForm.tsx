@@ -177,7 +177,7 @@ function HealthAssessmentForm({
   );
 }
 
-// Loading Component
+// Loading Component with proper context and centering
 function FormEvaluationLoader({ onComplete }: { onComplete: () => void }) {
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -187,17 +187,52 @@ function FormEvaluationLoader({ onComplete }: { onComplete: () => void }) {
     return () => clearTimeout(timer);
   }, [onComplete]);
 
+  // Create a dummy context for the loading state to show animated background
+  const dummyContext = {
+    activeStep: 4, // Show the final step colors during loading
+    direction: "forward" as const,
+    isFirstStep: false,
+    isLastStep: true,
+    totalSteps: 5,
+    nextStep: async () => false,
+    prevStep: () => {},
+    goToStep: () => {},
+    onSubmit: () => {},
+    isSubmitting: false,
+  };
+
   return (
-    <Paper shadow="md" p="xl" radius="md" w={720}>
-      <Center>
-        <Stack align="center" gap="lg">
-          <Loader size="xl" type="dots" />
-          <Text size="lg" fw={500}>
-            Vyhodnocujeme váš dotazník
-          </Text>
-        </Stack>
-      </Center>
-    </Paper>
+    <MultiStepFormProvider value={dummyContext}>
+      <div
+        style={{
+          position: "relative",
+          width: "100%",
+          minHeight: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "2rem 0",
+        }}
+      >
+        <AnimatedVectors />
+        <Paper
+          shadow="md"
+          p="xl"
+          radius="md"
+          w={720}
+          style={{ position: "relative", zIndex: 1 }}
+        >
+          <Center>
+            <Stack align="center" gap="lg">
+              <Loader size="xl" type="dots" />
+              <Text size="lg" fw={500}>
+                Vyhodnocujeme váš dotazník
+              </Text>
+            </Stack>
+          </Center>
+        </Paper>
+      </div>
+    </MultiStepFormProvider>
   );
 }
 
@@ -536,6 +571,7 @@ function HealthAssessmentFormWithVectors({
             radius="md"
             w={720}
             style={{ position: "relative", zIndex: 1 }}
+            mt={"lg"}
           >
             <Stack gap="xl">
               <FormProgress title="Moje zdravotní analýza" />

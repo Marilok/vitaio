@@ -18,15 +18,16 @@ export function FormNavigation({
   } = useMultiStepFormContext();
 
   return (
-    <Group justify="space-between" mt="xl">
-      <Button
-        variant="default"
-        onClick={prevStep}
-        disabled={isFirstStep}
-        size="md"
-      >
-        Zpět
-      </Button>
+    <Group justify={isFirstStep ? "flex-end" : "space-between"} mt="xl">
+      {!isFirstStep && (
+        <Button
+          variant="default"
+          onClick={prevStep}
+          size="md"
+        >
+          Zpět
+        </Button>
+      )}
 
       {isLastStep ? (
         <Button onClick={onSubmit} size="md" loading={isSubmitting}>

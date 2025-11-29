@@ -7,14 +7,11 @@ interface StepContainerProps {
   minHeight?: number;
 }
 
-export function StepContainer({
-  children,
-  minHeight = 400,
-}: StepContainerProps) {
+export function StepContainer({ children }: StepContainerProps) {
   const { direction } = useMultiStepFormContext();
 
   return (
-    <Box style={{ position: "relative", minHeight }}>
+    <Box style={{ position: "relative", minHeight: 300 }}>
       <Transition
         mounted={true}
         transition={direction === "forward" ? "slide-left" : "slide-right"}
