@@ -7,8 +7,11 @@ import { FormData } from "@/types/form";
 export function SymptomsAndFamily() {
   const {
     control,
+    watch,
     formState: { errors },
   } = useFormContext<FormData>();
+
+  const gender = watch("gender");
 
   return (
     <Stack gap="lg" pt="md">
@@ -16,6 +19,9 @@ export function SymptomsAndFamily() {
         <Title order={3} mb="xs">
           🌡️ Příznaky a rodinná anamnéza
         </Title>
+        <Text size="md" c="dimmed">
+          Zaškrtněte platná tvrzení, která se Vás týkají:
+        </Text>
       </Box>
 
       <Controller
@@ -26,6 +32,7 @@ export function SymptomsAndFamily() {
             <Checkbox
               {...field}
               checked={value || false}
+              size="md"
               onChange={(event) => onChange(event.currentTarget.checked)}
               label="Měl(a) jsem někdy krvácení stolice"
               error={errors.hasRectalBleeding?.message}
@@ -45,10 +52,11 @@ export function SymptomsAndFamily() {
         render={({ field: { value, onChange, ...field } }) => (
           <Box>
             <Checkbox
+              size="md"
               {...field}
               checked={value || false}
               onChange={(event) => onChange(event.currentTarget.checked)}
-              label="V rodině v jedné pokrevní linii byly minimálně 2 výskyty nádorů s výskytem do 50 let věku"
+              label="V mé pokrevní rodině (rodiče, sourozenci, prarodiče...) se vyskytly minimálně 2 nádory u příbuzných, kteří byli mladší 50 let"
               error={errors.hasFamilyCancerHistory?.message}
             />
             {errors.hasFamilyCancerHistory && (
@@ -59,6 +67,30 @@ export function SymptomsAndFamily() {
           </Box>
         )}
       />
+
+      {gender === "female" && (
+        <Controller
+          name="hasGynecologist"
+          control={control}
+          render={({ field: { value, onChange, ...field } }) => (
+            <Box>
+              <Checkbox
+                {...field}
+                checked={!!value}
+                size="md"
+                onChange={(event) => onChange(event.currentTarget.checked)}
+                label="Mám vlastního gynekologa"
+                error={errors.hasGynecologist?.message}
+              />
+              {errors.hasGynecologist && (
+                <Text size="sm" c="red" mt="xs">
+                  {errors.hasGynecologist.message}
+                </Text>
+              )}
+            </Box>
+          )}
+        />
+      )}
     </Stack>
   );
 }

@@ -5,10 +5,10 @@ import { Paper, Stack } from "@mantine/core";
 import { BasicInfo } from "./steps/BasicInfo";
 import { SymptomsAndFamily } from "./steps/SymptomsAndFamily";
 import { Medications } from "./steps/Medications";
-import { WomenOnly } from "./steps/WomenOnly";
 import { Lifestyle } from "./steps/Lifestyle";
 import { Screening } from "./steps/Screening";
 import { Step8Appointments } from "./steps/Step8Appointments";
+import { Step9Appointments } from "./steps/Step9Appointments";
 import { FormProgress } from "./form/FormProgress";
 import { FormNavigation } from "./form/FormNavigation";
 import { StepContainer } from "./form/StepContainer";
@@ -19,7 +19,7 @@ import { FormData } from "@/types/form";
 import { calculatePriorityScore } from "@/utils/priority";
 import { transformAppointmentsToScreenings } from "@/utils/appointmentsMapping";
 
-const TOTAL_STEPS = 10;
+const TOTAL_STEPS = 9;
 
 // Define which fields to validate for each step
 const getFieldsForStep = (
@@ -33,10 +33,8 @@ const getFieldsForStep = (
       return []; // No required fields in step 2 (symptoms + family history)
     case 2:
       return []; // No required fields in step 3 (medications)
-    case 3:
-      return ["hasGynecologist"]; // Step 4 - only for women
-    case 4: {
-      // Step 5 - Lifestyle: dynamically add fields based on checkbox state
+    case 3: {
+      // Step 4 - Lifestyle: dynamically add fields based on checkbox state
       const fields: (keyof FormData)[] = [
         "height",
         "weight",
@@ -55,6 +53,8 @@ const getFieldsForStep = (
 
       return fields;
     }
+    case 7:
+      return ["bookedAppointments"]; // Step 8 - Appointment booking validation
     default:
       return [];
   }
@@ -87,6 +87,7 @@ export function MultiStepForm() {
       hadBreastCancerScreening: undefined,
       hadColorectalCancerScreening: undefined,
       selectedAppointments: [],
+      bookedAppointments: [],
       priority: 0,
     },
   });
@@ -98,17 +99,7 @@ export function MultiStepForm() {
     formState: { isSubmitting },
   } = methods;
 
-  // Helper function to check if a step should be skipped
-  const shouldSkipStep = (step: number): boolean => {
-    const gender = getValues("gender");
 
-    // Step 4 (index 3) is only for women
-    if (step === 3 && gender === "male") {
-      return true;
-    }
-
-    return false;
-  };
 
   const {
     activeStep,
@@ -122,7 +113,6 @@ export function MultiStepForm() {
     totalSteps: TOTAL_STEPS,
     getFieldsForStep: (step: number) => getFieldsForStep(step, getValues()),
     trigger,
-    shouldSkipStep,
   });
 
   const onSubmit = (data: FormData) => {
@@ -153,19 +143,17 @@ export function MultiStepForm() {
       case 2:
         return <Medications />;
       case 3:
-        return <WomenOnly />;
-      case 4:
         return <Lifestyle />;
-      case 5:
+      case 4:
         return <Screening />;
+      case 5:
+        return <PlaceholderStep stepNumber={6} />;
       case 6:
-        return <PlaceholderStep stepNumber={7} />;
-      case 7:
         return <Step8Appointments />;
+      case 7:
+        return <Step9Appointments />;
       case 8:
         return <PlaceholderStep stepNumber={9} />;
-      case 9:
-        return <PlaceholderStep stepNumber={10} />;
       default:
         return null;
     }

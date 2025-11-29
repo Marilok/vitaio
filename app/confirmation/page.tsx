@@ -1,16 +1,14 @@
 import {
   Container,
-  Paper,
-  Stack,
   Title,
   Text,
+  Stack,
   Button,
-  Group,
-  ThemeIcon,
-  Alert,
-  Code,
+  Anchor,
+  Box,
 } from "@mantine/core";
-import { IconCheck, IconInfoCircle } from "@tabler/icons-react";
+import { IconArrowRight } from "@tabler/icons-react";
+import Image from "next/image";
 
 interface ConfirmationPageProps {
   email?: string;
@@ -22,47 +20,114 @@ export default function ConfirmationPage({
   appointmentCount = 1,
 }: ConfirmationPageProps) {
   return (
-    <Container
-      size="sm"
-      py="xl"
+    <Box
       style={{
         minHeight: "100vh",
-        minWidth: "100vw",
+        backgroundColor: "#4A7C59", // mou-green color
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        position: "relative",
       }}
-      bg="var(--mantine-primary-color-light)"
     >
-      <Paper shadow="md" p="xl" radius="md" w="100%" maw={500}>
-        <Stack align="center" gap="lg">
-          {/* Checkmark Icon */}
-          <ThemeIcon size={80} radius="xl" color="green" variant="light">
-            <IconCheck size={50} />
-          </ThemeIcon>
+      <Container size="xl" py="xl">
+        <Box
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "4rem",
+            alignItems: "center",
+            maxWidth: 1200,
+            margin: "0 auto",
+          }}
+        >
+          {/* Left side - Content */}
+          <Stack gap="xl" style={{ textAlign: "left", maxWidth: 500 }}>
+            <Title
+              order={1}
+              size="4rem"
+              style={{
+                color: "white",
+                fontWeight: 700,
+                lineHeight: 1.2,
+                marginBottom: "1rem",
+              }}
+            >
+              {appointmentCount !== 1
+                ? TEXTS.appointmentsConfirmed
+                : TEXTS.appointmentConfirmed}
+            </Title>
 
-          {/* Confirmation Title */}
-          <Title order={1} ta="center" c="dark">
-            {appointmentCount !== 1
-              ? TEXTS.appointmentsConfirmed
-              : TEXTS.appointmentConfirmed}
-          </Title>
+            <Text
+              size="xl"
+              c={"white"}
+              style={{
+                maxWidth: 500,
+                fontSize: "1.25rem",
+                lineHeight: 1.6,
+              }}
+            >
+              {TEXTS.confirmationMessage}{" "}
+              <span style={{ fontWeight: 700 }}>{email}</span>
+            </Text>
 
-          <Text ta="center" c="dimmed">
-            {TEXTS.confirmationMessage}{" "}
-            <span style={{ fontWeight: 700 }}>{email}</span>
-          </Text>
-        </Stack>
-      </Paper>
-    </Container>
+            <Stack gap="xs">
+              <Anchor href="/" underline="never" style={{ marginTop: "2rem" }}>
+                <Button
+                  size="xl"
+                  rightSection={<IconArrowRight size={20} />}
+                  style={{
+                    background: "white",
+                    color: "#4A7C59",
+                    fontSize: "1.1rem",
+                    padding: "1rem 2rem",
+                    borderRadius: "50px",
+                    border: "none",
+                    fontWeight: 600,
+                    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2)",
+                    transition: "all 0.3s ease",
+                  }}
+                  className="hover:scale-105"
+                >
+                  Zpět na hlavní stránku
+                </Button>
+              </Anchor>
+
+              <Text size="sm" c={"white"} className="ml-16!">
+                Děkujeme za vaši důvěru
+              </Text>
+            </Stack>
+          </Stack>
+          {/* Right side - Stock Image */}
+          <Box
+            style={{
+              position: "relative",
+              width: "100%",
+              height: "500px",
+            }}
+          >
+            <Image
+              src="/stock_2.webp"
+              alt="Successful appointment confirmation"
+              fill
+              style={{
+                objectFit: "cover",
+                borderRadius: "20px",
+                boxShadow: "0 20px 40px rgba(0, 0, 0, 0.3)",
+              }}
+            />
+          </Box>
+        </Box>
+      </Container>
+    </Box>
   );
 }
 
 // Czech translations
 const TEXTS = {
   defaultEmail: "vaše emailová adresa",
-  appointmentConfirmed: "Termín potvrzen!",
-  appointmentsConfirmed: "Termíny potvrzeny!",
+  appointmentConfirmed: "Termín byl úspěšně potvrzen!",
+  appointmentsConfirmed: "Termíny byly úspěšně potvrzeny!",
   confirmationMessage:
     "Potvrzovací email se všemi detaily termínu, instrukcemi pro přípravu a informacemi o místě byl odeslán na:",
 };

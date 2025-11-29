@@ -12,7 +12,13 @@ export interface FormData {
   hasFamilyCancerHistory: boolean;
 
   // Step 4 - Medications
-  medications: string[];
+  medications: Array<{
+    id: string;
+    name: string;
+    frequency: string;
+    dosage: string;
+    isCustom?: boolean;
+  }>;
 
   // Step 5 - Women Only
   hasGynecologist?: string; // "yes" | "no"
@@ -38,6 +44,13 @@ export interface FormData {
 
   // Step 8 - Appointments
   selectedAppointments: number[];
+
+  // Step 9 - Appointment Booking
+  bookedAppointments: Array<{
+    appointmentTypeId: number;
+    slotId: string;
+    dateTime: string;
+  }>;
 
   // Priority Score
   priority: number;

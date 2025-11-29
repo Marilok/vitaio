@@ -1,21 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import { ColorSchemeScript } from "@mantine/core";
 import { Providers } from "./providers";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "VitaIO - Next.js App",
+  title: "Objednání na prevenci | MOU",
   description:
     "Next.js app with TypeScript, Tailwind, Mantine, React Hook Form, and Supabase",
 };
@@ -27,9 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`antialiased`}>
         <ColorSchemeScript defaultColorScheme="light" />
         <Providers>{children}</Providers>
       </body>
