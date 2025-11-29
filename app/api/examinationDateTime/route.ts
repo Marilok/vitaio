@@ -43,56 +43,58 @@ interface ScheduleResponse {
   message: string;
 }
 
-type ExaminationCategory = 'laboratory' | 'imaging' | 'ekg' | 'consultation';
+type ExaminationCategory = "laboratory" | "imaging" | "ekg" | "consultation";
 
 /**
  * Mapa přiřazující každému vyšetření jeho kategorii
  */
 const EXAMINATION_CATEGORIES: Record<string, ExaminationCategory> = {
   // Laboratory
-  'bloodTests': 'laboratory',
-  'urineTest': 'laboratory',
-  'occultBloodTest': 'laboratory',
-  'psaTest': 'laboratory',
-  
+  bloodTests: "laboratory",
+  urineTest: "laboratory",
+  occultBloodTest: "laboratory",
+  psaTest: "laboratory",
+
   // Imaging
-  'chestXray': 'imaging',
-  'abdominalUltrasound': 'imaging',
-  'testicularUltrasound': 'imaging',
-  'breastUltrasound': 'imaging',
-  'mammography': 'imaging',
-  'colonoscopy': 'imaging',
-  'inBodyAnalysis': 'imaging',
-  
+  chestXray: "imaging",
+  abdominalUltrasound: "imaging",
+  testicularUltrasound: "imaging",
+  breastUltrasound: "imaging",
+  mammography: "imaging",
+  colonoscopy: "imaging",
+  inBodyAnalysis: "imaging",
+
   // EKG
-  'ecg': 'ekg',
-  'bloodPressureAndPulseMeasurement': 'ekg',
-  
+  ecg: "ekg",
+  bloodPressureAndPulseMeasurement: "ekg",
+
   // Consultation
-  'oncologistConsultation': 'consultation',
-  'physicalExamination': 'consultation',
-  'geneticConsultation': 'consultation',
-  'gynecologicalExamination': 'consultation',
-  'healthyLifestyleCounseling': 'consultation',
-  'smokingCessationCounseling': 'consultation',
-  'addictionCounseling': 'consultation',
-  'physicalActivityCounseling': 'consultation',
+  oncologistConsultation: "consultation",
+  physicalExamination: "consultation",
+  geneticConsultation: "consultation",
+  gynecologicalExamination: "consultation",
+  healthyLifestyleCounseling: "consultation",
+  smokingCessationCounseling: "consultation",
+  addictionCounseling: "consultation",
+  physicalActivityCounseling: "consultation",
 };
 
 /**
  * Priorita kategorií vyšetření (nižší číslo = vyšší priorita)
  */
 const CATEGORY_PRIORITY: Record<ExaminationCategory, number> = {
-  'laboratory': 1,
-  'imaging': 2,
-  'ekg': 3,
-  'consultation': 4,
+  laboratory: 1,
+  imaging: 2,
+  ekg: 3,
+  consultation: 4,
 };
 
 /**
  * Vrací kategorii vyšetření podle jeho názvu
  */
-function getExaminationCategory(examinationName: string): ExaminationCategory | null {
+function getExaminationCategory(
+  examinationName: string
+): ExaminationCategory | null {
   return EXAMINATION_CATEGORIES[examinationName] || null;
 }
 
@@ -110,17 +112,17 @@ function getCategoryPriority(category: ExaminationCategory | null): number {
  */
 function areSlotsConflicting(slot1: Slot, slot2: Slot): boolean {
   const BUFFER_MINUTES = 30; // Minimální mezera mezi sloty
-  
+
   const start1 = new Date(slot1.dateTime);
   const end1 = new Date(start1.getTime() + slot1.minutes * 60000);
-  
+
   const start2 = new Date(slot2.dateTime);
   const end2 = new Date(start2.getTime() + slot2.minutes * 60000);
-  
+
   // Přidáme buffer k oběma slotům
   const end1WithBuffer = new Date(end1.getTime() + BUFFER_MINUTES * 60000);
   const end2WithBuffer = new Date(end2.getTime() + BUFFER_MINUTES * 60000);
-  
+
   // Sloty jsou v konfliktu, pokud se jejich časové intervaly (včetně bufferu) protínají
   return start1 < end2WithBuffer && end1WithBuffer > start2;
 }
@@ -181,23 +183,17 @@ export async function POST(request: NextRequest) {
     examinationsToSchedule.sort((a, b) => {
       const categoryA = getExaminationCategory(a.name);
       const categoryB = getExaminationCategory(b.name);
-      
+
       const categoryPriorityA = getCategoryPriority(categoryA);
       const categoryPriorityB = getCategoryPriority(categoryB);
-      
+
       // Nejprve porovnat podle kategorie (nižší číslo = vyšší priorita)
       if (categoryPriorityA !== categoryPriorityB) {
         return categoryPriorityA - categoryPriorityB;
       }
-      
+
       // Pokud jsou stejné kategorie, porovnat podle priority vyšetření (vyšší číslo = vyšší priorita)
       return b.priority - a.priority;
-    });
-
-    // Debug log
-    console.log('=== Pořadí zpracování vyšetření ===');
-    examinationsToSchedule.forEach((exam, idx) => {
-      console.log(`${idx + 1}. ${exam.name} (priority: ${exam.priority}, category: ${getExaminationCategory(exam.name)})`);
     });
 
     if (examinationsToSchedule.length === 0) {
@@ -242,16 +238,19 @@ export async function POST(request: NextRequest) {
     for (const examination of examinationsToSchedule) {
       const examTypeId = examTypeNameToId.get(examination.name);
       const category = getExaminationCategory(examination.name);
-      
+
       if (!examTypeId) {
-        console.warn(`Typ vyšetření "${examination.name}" nebyl nalezen v databázi`);
+        console.warn(
+          `Typ vyšetření "${examination.name}" nebyl nalezen v databázi`
+        );
         result[examination.name] = [];
         continue;
       }
 
       // Najít sloty pro tento typ vyšetření, které se NEPŘEKRÝVAJÍ s již vybranými
-      const candidateSlots = (availableSlots as Slot[])
-        .filter(slot => slot.examination_type_id === examTypeId);
+      const candidateSlots = (availableSlots as Slot[]).filter(
+        (slot) => slot.examination_type_id === examTypeId
+      );
 
       const nonOverlappingSlots: SlotInfo[] = [];
 
@@ -260,7 +259,7 @@ export async function POST(request: NextRequest) {
         if (nonOverlappingSlots.length >= 1) break;
 
         // Kontrola, zda se tento slot nepřekrývá nebo není příliš blízko již vybraným slotům
-        const hasConflict = allSelectedSlots.some(selectedSlot => 
+        const hasConflict = allSelectedSlots.some((selectedSlot) =>
           areSlotsConflicting(candidateSlot, selectedSlot)
         );
 
@@ -271,9 +270,9 @@ export async function POST(request: NextRequest) {
             timeFrom: candidateSlot.dateTime,
             minutes: candidateSlot.minutes,
             examination_type_id: candidateSlot.examination_type_id,
-            category: category || undefined
+            category: category || undefined,
           });
-          
+
           // Přidej ho do seznamu vybraných slotů
           allSelectedSlots.push(candidateSlot);
         }
@@ -299,6 +298,9 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("API Error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

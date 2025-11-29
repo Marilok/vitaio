@@ -190,8 +190,6 @@ export function Step8Appointments() {
     }
   }, [visibleMandatoryAppointments, setValue, watch]);
 
-  console.log("visibleMandatoryAppointments", visibleMandatoryAppointments);
-
   return (
     <Stack gap="lg" pt="md">
       <Box>

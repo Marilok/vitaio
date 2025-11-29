@@ -281,12 +281,6 @@ function AppointmentsForm({ formData }: { formData: FormData }) {
       data
     );
 
-    console.log("Appointments form submitted:", data);
-    console.log(
-      "Selected Appointments (screenings.json format):",
-      screeningsData
-    );
-
     try {
       // Call API endpoint with screeningsData
       const response = await fetch("/api/examinationDateTime", {
@@ -306,8 +300,6 @@ function AppointmentsForm({ formData }: { formData: FormData }) {
       }
 
       const result = await response.json();
-      console.log("API answer:", result);
-
       // Call email confirmation API
       try {
         const emailResponse = await fetch("/api/email/confirmation", {

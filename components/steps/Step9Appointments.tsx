@@ -187,19 +187,11 @@ export function Step9Appointments() {
 
   // Update form field when booked appointments change
   useEffect(() => {
-    console.log("💾 Ukládám bookedAppointments:", bookedAppointments);
     setValue("bookedAppointments", bookedAppointments);
   }, [bookedAppointments, setValue]);
 
   // Update appointmentData with full details when booked appointments change
   useEffect(() => {
-    console.log("🔄 Aktualizace appointmentData...");
-    console.log(
-      "  📦 Rezervované termíny (bookedAppointments):",
-      bookedAppointments
-    );
-    console.log("  🗂️ Doporučené sloty (recommendedSlots):", recommendedSlots);
-
     const fullAppointmentData = bookedAppointments.map((apt) => {
       // Find examination name from recommendedSlots
       let examinationName = "";
@@ -229,22 +221,10 @@ export function Step9Appointments() {
         isManuallySelected: apt.isManuallySelected || false,
       };
 
-      console.log(`  ✅ Vytvořen záznam pro vyšetření:`, {
-        id: result.id,
-        examinace: result.examinationName,
-        čas: dayjs(result.dateTime).format("D.M.YYYY v HH:mm"),
-        ručně_vybrané: result.isManuallySelected,
-      });
-
       return result;
     });
 
     setValue("appointmentData", fullAppointmentData);
-    console.log(
-      "📅 ✨ KOMPLETNÍ DATA ULOŽENA DO appointmentData:",
-      fullAppointmentData
-    );
-    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
   }, [bookedAppointments, recommendedSlots, setValue]);
 
   // Helper functions for appointment management
@@ -375,15 +355,6 @@ export function Step9Appointments() {
       isManuallySelected: true, // Uživatel ručně vybral
     };
 
-    console.log("🎯 Uživatel vybral slot:", {
-      vyšetření: translateExaminationName(examinationName),
-      čas: dayjs(dateTime).format("D.M.YYYY v HH:mm"),
-      slotId,
-      examination_type_id: examinationTypeId,
-      minuty: minutes,
-      ručně_vybráno: true,
-    });
-
     setBookedAppointments((prev) => {
       // Remove any previous selection for this examination type
       const filtered = prev.filter((apt) => {
@@ -391,7 +362,7 @@ export function Step9Appointments() {
         return apt.examination_type_id !== examinationTypeId;
       });
       const updated = [...filtered, newSelection];
-      console.log("📋 Aktualizované rezervované termíny:", updated);
+
       return updated;
     });
 
