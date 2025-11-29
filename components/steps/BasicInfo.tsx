@@ -24,11 +24,8 @@ export function BasicInfo() {
     <Stack gap="lg" pt="md">
       <Box>
         <Title order={3} mb="xs">
-          Základní informace
+          👋 Základní informace o mě
         </Title>
-        <Text size="sm" c="dimmed">
-          Prosím vyplňte vaše základní údaje
-        </Text>
       </Box>
 
       <Controller
@@ -37,12 +34,13 @@ export function BasicInfo() {
         rules={{ required: "Pohlaví je povinné" }}
         render={({ field }) => (
           <Box>
-            <Text size="sm" fw={500} mb="xs">
-              Pohlaví <RequiredIndicator />
+            <Text size="lg" fw={500} mb="xs">
+              Jsem... <RequiredIndicator />
             </Text>
             <SegmentedControl
               {...field}
               fullWidth
+              size="lg"
               color={
                 field.value === "male"
                   ? "var(--mantine-color-blue-7)"
@@ -87,20 +85,19 @@ export function BasicInfo() {
         name="age"
         control={control}
         rules={{
-          required: "Věk je povinný",
-          min: { value: 1, message: "Věk musí být alespoň 1" },
-          max: { value: 120, message: "Věk musí být menší než 120" },
+          required:
+            "Vyplňte prosím svůj věk, abychom mohli nabídnout relevantní doporučení",
+          min: { value: 1, message: "Musíte být starý alespoň 1 rok" },
+          max: { value: 130, message: "Musíte být mladší než 130 let" },
         }}
         render={({ field }) => (
           <NumberInput
             {...field}
-            label={
-              <Fragment>
-                Věk <RequiredIndicator />
-              </Fragment>
-            }
+            label="Je mi..."
             min={1}
-            max={120}
+            required
+            size="lg"
+            max={130}
             error={errors.age?.message}
             leftSection={<IconCalendar size={16} />}
             suffix={
