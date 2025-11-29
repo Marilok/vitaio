@@ -16,6 +16,7 @@ import { PlaceholderStep } from "./form/PlaceholderStep";
 import { useMultiStepForm } from "@/hooks/useMultiStepForm";
 import { MultiStepFormProvider } from "@/contexts/MultiStepFormContext";
 import { FormData } from "@/types/form";
+import { calculatePriorityScore } from "@/utils/priority";
 
 const TOTAL_STEPS = 10;
 
@@ -65,6 +66,7 @@ export function MultiStepForm() {
       hadCervicalCancerScreening: undefined,
       hadBreastCancerScreening: undefined,
       hadColorectalCancerScreening: undefined,
+      priority: 0,
     },
   });
 
@@ -103,8 +105,11 @@ export function MultiStepForm() {
   });
 
   const onSubmit = (data: FormData) => {
-    console.log("Form submitted:", data);
-    // Handle form submission
+    const priorityScore = calculatePriorityScore(data);
+    const finalData = { ...data, priority: priorityScore };
+    console.log("Form submitted:", finalData);
+    console.log("Priority Score:", priorityScore);
+    console.log(JSON.stringify(finalData, null, 2));
   };
 
   const renderStepContent = () => {

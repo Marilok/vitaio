@@ -30,5 +30,8 @@ export interface FormData {
   hadBreastCancerScreening?: boolean; // Only for women
   hadColorectalCancerScreening?: boolean;
 
+  // Priority Score
+  priority: number;
+
   // Add more steps data as needed
 }

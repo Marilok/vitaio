@@ -3,33 +3,7 @@
 import { useFormContext, Controller } from "react-hook-form";
 import { Stack, Title, Text, Checkbox, Box } from "@mantine/core";
 import { FormData } from "@/types/form";
-
-interface ScreeningEligibility {
-  showProstateScreening: boolean;
-  showLungCancerScreening: boolean;
-  showCervicalCancerScreening: boolean;
-  showBreastCancerScreening: boolean;
-  showColorectalCancerScreening: boolean;
-}
-
-function getScreeningEligibility(
-  gender: "male" | "female",
-  age: number | undefined,
-  hasFamilyCancerHistory: boolean | undefined
-): ScreeningEligibility {
-  const patientAge = age || 0;
-  const hasFamilyHistory = hasFamilyCancerHistory || false;
-
-  return {
-    showProstateScreening:
-      gender === "male" && patientAge >= 50 && patientAge <= 69,
-    showLungCancerScreening: true,
-    showCervicalCancerScreening: gender === "female" && patientAge >= 15,
-    showBreastCancerScreening:
-      gender === "female" && (patientAge >= 45 || hasFamilyHistory),
-    showColorectalCancerScreening: patientAge >= 45 && patientAge <= 74,
-  };
-}
+import { getScreeningEligibility } from "@/utils/priority";
 
 export function Step7Screening() {
   const {
