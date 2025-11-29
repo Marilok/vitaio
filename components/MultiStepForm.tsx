@@ -8,6 +8,7 @@ import { Medications } from "./steps/Medications";
 import { WomenOnly } from "./steps/WomenOnly";
 import { Lifestyle } from "./steps/Lifestyle";
 import { Screening } from "./steps/Screening";
+import { Step8Appointments } from "./steps/Step8Appointments";
 import { FormProgress } from "./form/FormProgress";
 import { FormNavigation } from "./form/FormNavigation";
 import { StepContainer } from "./form/StepContainer";
@@ -37,6 +38,12 @@ const getFieldsForStep = (step: number): (keyof FormData)[] => {
         "weeklyExerciseMinutes",
         "alcoholConsumption",
       ]; // Step 5
+    case 5:
+      return []; // Step 6 - Screening (no required fields)
+    case 6:
+      return []; // Step 7 - Placeholder
+    case 7:
+      return []; // Step 8 - Appointments (no required fields)
     // Add more cases for other steps
     default:
       return [];
@@ -63,6 +70,7 @@ export function MultiStepForm() {
       hadCervicalCancerScreening: undefined,
       hadBreastCancerScreening: undefined,
       hadColorectalCancerScreening: undefined,
+      selectedAppointments: [],
       priority: 0,
     },
   });
@@ -106,6 +114,7 @@ export function MultiStepForm() {
     const finalData = { ...data, priority: priorityScore };
     console.log("Form submitted:", finalData);
     console.log("Priority Score:", priorityScore);
+    console.log("Selected Appointments:", data.selectedAppointments);
     console.log(JSON.stringify(finalData, null, 2));
   };
 
@@ -126,7 +135,7 @@ export function MultiStepForm() {
       case 6:
         return <PlaceholderStep stepNumber={7} />;
       case 7:
-        return <PlaceholderStep stepNumber={8} />;
+        return <Step8Appointments />;
       case 8:
         return <PlaceholderStep stepNumber={9} />;
       case 9:
