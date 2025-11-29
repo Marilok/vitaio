@@ -254,12 +254,6 @@ export function Step8Appointments() {
                         Doporučeno
                       </Badge>
                     );
-                  } else {
-                    priorityBadge = (
-                      <Badge size="sm" variant="light" color="mou-blue">
-                        /Volitelné
-                      </Badge>
-                    );
                   }
 
                   return (
