@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import {
   Stack,
@@ -11,6 +12,7 @@ import {
   Card,
   Divider,
   Table,
+  Select,
 } from "@mantine/core";
 import { IconUser, IconMail, IconPhone } from "@tabler/icons-react";
 import { FormData } from "@/types/form";
@@ -30,11 +32,19 @@ interface AppointmentData {
 
 const appointments: AppointmentData[] = appointmentsData as AppointmentData[];
 
+const countryOptions = [
+  { value: "+420", label: "+420" },
+  { value: "+421", label: "+421" },
+];
+
 export function ContactInfo() {
+  const [countryCode, setCountryCode] = useState("+420");
+
   const {
     control,
     formState: { errors },
     watch,
+    setValue,
   } = useFormContext<FormData>();
 
   const selectedAppointments = watch("selectedAppointments") || [];
@@ -161,32 +171,64 @@ export function ContactInfo() {
           )}
         />
 
-        <Controller
-          name="phone"
-          control={control}
-          rules={{
-            required: "Telefonní číslo je povinné",
-            pattern: {
-              value: /^(\+420)?[0-9]{9}$/,
-              message: "Neplatný formát telefonního čísla (použijte 9 číslic)",
-            },
-          }}
-          render={({ field }) => (
-            <TextInput
-              {...field}
-              label={
-                <>
-                  Telefonní číslo <RequiredIndicator />
-                </>
-              }
-              placeholder="+420123456789"
-              error={errors.phone?.message}
+        <Box style={{ flex: 1 }}>
+          <Text size="sm" fw={500} mb={5}>
+            Telefonní číslo <RequiredIndicator />
+          </Text>
+          <Group gap="xs" align="flex-start">
+            <Select
+              data={countryOptions}
+              value={countryCode}
+              onChange={(value) => {
+                if (value) {
+                  setCountryCode(value);
+                  // Update the phone field to include the new country code
+                  const currentPhone = watch("phone") || "";
+                  const phoneWithoutPrefix = currentPhone.replace(
+                    /^\+\d{3}/,
+                    ""
+                  );
+                  setValue("phone", `${value}${phoneWithoutPrefix}`);
+                }
+              }}
               size="md"
-              type="tel"
-              leftSection={<IconPhone size={16} />}
+              
+              allowDeselect={false}
             />
-          )}
-        />
+            <Controller
+              name="phone"
+              control={control}
+              rules={{
+                required: "Telefonní číslo je povinné",
+                pattern: {
+                  value: /^(\+420|\+421)[0-9]{9}$/,
+                  message:
+                    "Neplatný formát telefonního čísla (použijte 9 číslic)",
+                },
+              }}
+              render={({ field }) => (
+                <TextInput
+                  {...field}
+                  placeholder="123456789"
+                  error={errors.phone?.message}
+                  size="md"
+                  type="tel"
+                  style={{ flex: 1 }}
+                  leftSection={<IconPhone size={16} />}
+                  onChange={(event) => {
+                    const phoneNumber = event.currentTarget.value.replace(
+                      /^\+\d{3}/,
+                      ""
+                    );
+                    const fullPhone = `${countryCode}${phoneNumber}`;
+                    field.onChange(fullPhone);
+                  }}
+                  value={field.value?.replace(/^\+\d{3}/, "") || ""}
+                />
+              )}
+            />
+          </Group>
+        </Box>
       </Group>
 
       {/* Summary of Selected Appointments */}
@@ -237,7 +279,10 @@ export function ContactInfo() {
 
             {/* Optional Appointments */}
             {optionalAppointments.map((app) => {
-              const screeningPrice = getScreeningPrice(app.id, watch() as FormData);
+              const screeningPrice = getScreeningPrice(
+                app.id,
+                watch() as FormData
+              );
               return (
                 <Table.Tr key={app.id}>
                   <Table.Td>

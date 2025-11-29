@@ -2,6 +2,8 @@
 
 import { useForm, FormProvider } from "react-hook-form";
 import { Paper, Stack } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
+import { useAppData } from "@/contexts/AppDataContext";
 import { BasicInfo } from "./steps/BasicInfo";
 import { SymptomsAndFamily } from "./steps/SymptomsAndFamily";
 import { Medications } from "./steps/Medications";
@@ -66,11 +68,10 @@ const getHealthAssessmentFieldsForStep = (
 };
 
 // Health Assessment Form Component
-function HealthAssessmentForm({
-  onComplete,
-}: {
-  onComplete: (data: FormData) => void;
-}) {
+function HealthAssessmentForm() {
+  const { setHealthAssessmentData } = useAppData();
+  const router = useRouter();
+
   const methods = useForm<FormData>({
     mode: "onChange",
     reValidateMode: "onBlur",
@@ -129,7 +130,8 @@ function HealthAssessmentForm({
   const onSubmit = async (data: FormData) => {
     const priorityScore = calculatePriorityScore(data);
     const finalData = { ...data, priority: priorityScore };
-    onComplete(finalData);
+    setHealthAssessmentData(finalData);
+    router.push("/booking");
   };
 
   const renderStepContent = () => {
@@ -237,10 +239,23 @@ function FormEvaluationLoader({ onComplete }: { onComplete: () => void }) {
 }
 
 // Appointments Form Component
-function AppointmentsForm({ formData }: { formData: FormData }) {
+function AppointmentsForm() {
   const router = useRouter();
+  const { healthAssessmentData, setConfirmationData, setAppointmentData } =
+    useAppData();
+
+  // Redirect if no health assessment data
+  useEffect(() => {
+    if (
+      !healthAssessmentData ||
+      Object.keys(healthAssessmentData).length === 0
+    ) {
+      router.push("/");
+    }
+  }, [healthAssessmentData, router]);
+
   const methods = useForm<FormData>({
-    defaultValues: formData,
+    defaultValues: healthAssessmentData || {},
   });
 
   const {
@@ -275,10 +290,19 @@ function AppointmentsForm({ formData }: { formData: FormData }) {
   });
 
   const onSubmit = async (data: FormData) => {
+    // Store appointment data in context
+    setAppointmentData(data.bookedAppointments || []);
+
     // Transform selected appointments to screenings.json format
     const screeningsData = transformAppointmentsToScreenings(
       data.selectedAppointments,
       data
+    );
+
+    console.log("Appointments form submitted:", data);
+    console.log(
+      "Selected Appointments (screenings.json format):",
+      screeningsData
     );
 
     try {
@@ -299,35 +323,85 @@ function AppointmentsForm({ formData }: { formData: FormData }) {
         throw new Error(errorData.error || "Unable to load available slots");
       }
 
-      const result = await response.json();
-      // Call email confirmation API
+      await response.json(); // Process the response
+
+      // Send single email confirmation with all booked appointments
       try {
+        const appointments = (data.bookedAppointments || []).map(
+          (appointment) => {
+            const appointmentDate = new Date(appointment.dateTime);
+            const endDate = new Date(appointmentDate.getTime() + 30 * 60000); // Default 30 minutes
+
+            return {
+              appointmentName: `Vyšetření Health Screening`,
+              date: appointmentDate.toISOString().split("T")[0], // YYYY-MM-DD format
+              startTime: appointmentDate.toTimeString().slice(0, 5), // HH:MM format
+              endTime: endDate.toTimeString().slice(0, 5), // HH:MM format
+              description: `Rezervované vyšetření v rámci zdravotní analýzy`,
+            };
+          }
+        );
+
         const emailResponse = await fetch("/api/email/confirmation", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            name: `${data.firstName} ${data.lastName}`,
             email: data.email,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            appointments: data.selectedAppointments,
-            bookedAppointments: data.bookedAppointments,
+            appointments: appointments,
+            location: "VitaIO Health Clinic",
           }),
         });
 
         if (!emailResponse.ok) {
-          console.error("Error sending confirmation email");
+          const errorData = await emailResponse.json();
+          throw new Error(
+            errorData.error || "Failed to send confirmation email"
+          );
         }
-      } catch (emailError) {
-        console.error("Error calling email confirmation API:", emailError);
-      }
 
-      // Store email for confirmation page and redirect
-      sessionStorage.setItem("confirmationEmail", data.email);
-      router.push("/confirmation");
+        // Store confirmation data in context
+        const confirmationDataToSet = {
+          email: data.email,
+          appointmentCount: data.bookedAppointments?.length || 1,
+          appointmentData: data.appointmentData || [],
+        };
+        console.log("Setting confirmation data:", confirmationDataToSet);
+        setConfirmationData(confirmationDataToSet);
+
+        notifications.show({
+          title: "Úspěch",
+          message: "Potvrzovací email byl úspěšně odeslán",
+          color: "green",
+        });
+
+        router.push("/confirmation");
+      } catch (emailError) {
+        console.error("Error sending confirmation email:", emailError);
+        notifications.show({
+          title: "Chyba při odesílání emailu",
+          message:
+            emailError instanceof Error
+              ? emailError.message
+              : "Nepodařilo se odeslat potvrzovací email",
+          color: "red",
+          autoClose: false, // Keep the notification visible
+        });
+        // Don't redirect on email error, keep user on the form
+        return;
+      }
     } catch (error) {
       console.error("Error sending form:", error);
+      notifications.show({
+        title: "Chyba při odesílání formuláře",
+        message:
+          error instanceof Error ? error.message : "Došlo k neočekávané chybě",
+        color: "red",
+        autoClose: false, // Keep the notification visible
+      });
+      // Don't redirect on general errors, keep user on the form
     }
   };
 
@@ -343,6 +417,10 @@ function AppointmentsForm({ formData }: { formData: FormData }) {
         return null;
     }
   };
+
+  if (!healthAssessmentData || Object.keys(healthAssessmentData).length === 0) {
+    return null; // Will redirect via useEffect
+  }
 
   return (
     <FormProvider {...methods}>
@@ -393,32 +471,7 @@ function AppointmentsForm({ formData }: { formData: FormData }) {
 
 // Main orchestrating component
 export function MultiStepForm() {
-  const router = useRouter();
-  const [currentPhase, setCurrentPhase] = useState<
-    "health-assessment" | "loading"
-  >("health-assessment");
-
-  const handleHealthAssessmentComplete = (data: FormData) => {
-    // Store form data in sessionStorage for the booking page
-    sessionStorage.setItem("healthAssessmentData", JSON.stringify(data));
-    setCurrentPhase("loading");
-  };
-
-  const handleLoadingComplete = () => {
-    // Navigate to the booking page
-    router.push("/booking");
-  };
-
-  switch (currentPhase) {
-    case "health-assessment":
-      return (
-        <HealthAssessmentForm onComplete={handleHealthAssessmentComplete} />
-      );
-    case "loading":
-      return <FormEvaluationLoader onComplete={handleLoadingComplete} />;
-    default:
-      return null;
-  }
+  return <HealthAssessmentForm />;
 }
 
 // Export the AppointmentsForm for use in the booking page
@@ -427,15 +480,9 @@ export { AppointmentsForm };
 // Wrapper component that provides context to both form and vectors
 export function MultiStepFormWithVectors() {
   const router = useRouter();
-  const [currentPhase, setCurrentPhase] = useState<
-    "health-assessment" | "loading"
-  >("health-assessment");
-
-  const handleHealthAssessmentComplete = (data: FormData) => {
-    // Store form data in sessionStorage for the booking page
-    sessionStorage.setItem("healthAssessmentData", JSON.stringify(data));
-    setCurrentPhase("loading");
-  };
+  const [currentPhase] = useState<"health-assessment" | "loading">(
+    "health-assessment"
+  );
 
   const handleLoadingComplete = () => {
     // Navigate to the booking page
@@ -445,11 +492,7 @@ export function MultiStepFormWithVectors() {
   const renderPhase = () => {
     switch (currentPhase) {
       case "health-assessment":
-        return (
-          <HealthAssessmentFormWithVectors
-            onComplete={handleHealthAssessmentComplete}
-          />
-        );
+        return <HealthAssessmentFormWithVectors />;
       case "loading":
         return <FormEvaluationLoader onComplete={handleLoadingComplete} />;
       default:
@@ -465,11 +508,10 @@ export function MultiStepFormWithVectors() {
 }
 
 // Modified HealthAssessmentForm that includes vectors with shared context
-function HealthAssessmentFormWithVectors({
-  onComplete,
-}: {
-  onComplete: (data: FormData) => void;
-}) {
+function HealthAssessmentFormWithVectors() {
+  const { setHealthAssessmentData } = useAppData();
+  const router = useRouter();
+
   const methods = useForm<FormData>({
     mode: "onChange",
     reValidateMode: "onBlur",
@@ -528,7 +570,11 @@ function HealthAssessmentFormWithVectors({
   const onSubmit = async (data: FormData) => {
     const priorityScore = calculatePriorityScore(data);
     const finalData = { ...data, priority: priorityScore };
-    onComplete(finalData);
+    setHealthAssessmentData(finalData);
+    // Show loading and then redirect
+    setTimeout(() => {
+      router.push("/booking");
+    }, 3000);
   };
 
   const renderStepContent = () => {

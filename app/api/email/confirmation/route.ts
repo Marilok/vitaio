@@ -4,14 +4,18 @@ import { createEvent, EventAttributes } from "ics";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-interface AppointmentEmailRequest {
-  name: string;
-  email: string;
+interface AppointmentItem {
   appointmentName: string;
   date: string; // Format: YYYY-MM-DD
   startTime: string; // Format: HH:MM
   endTime: string; // Format: HH:MM
   description?: string;
+}
+
+interface AppointmentEmailRequest {
+  name: string;
+  email: string;
+  appointments: AppointmentItem[];
   location?: string;
 }
 
@@ -23,10 +27,9 @@ export async function POST(request: NextRequest) {
     if (
       !body.name ||
       !body.email ||
-      !body.appointmentName ||
-      !body.date ||
-      !body.startTime ||
-      !body.endTime
+      !body.appointments ||
+      !Array.isArray(body.appointments) ||
+      body.appointments.length === 0
     ) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -42,59 +45,80 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Parse date and time
-    const appointmentDate = new Date(`${body.date}T${body.startTime}:00`);
-    const endDate = new Date(`${body.date}T${body.endTime}:00`);
+    // Create ICS events for all appointments
+    const icsFiles: string[] = [];
 
-    // Create ICS event
-    const eventData: EventAttributes = {
-      start: [
-        appointmentDate.getFullYear(),
-        appointmentDate.getMonth() + 1,
-        appointmentDate.getDate(),
-        appointmentDate.getHours(),
-        appointmentDate.getMinutes(),
-      ],
-      end: [
-        endDate.getFullYear(),
-        endDate.getMonth() + 1,
-        endDate.getDate(),
-        endDate.getHours(),
-        endDate.getMinutes(),
-      ],
-      title: body.appointmentName,
-      attendees: [{ name: body.name, email: body.email }],
-      status: "CONFIRMED",
-    };
-
-    const { error: icsError, value: icsFile } = createEvent(eventData);
-
-    if (icsError) {
-      console.error("Error creating ICS file:", icsError);
-      return NextResponse.json(
-        { error: "Failed to create calendar event" },
-        { status: 500 }
+    for (const appointment of body.appointments) {
+      const appointmentDate = new Date(
+        `${appointment.date}T${appointment.startTime}:00`
       );
+      const endDate = new Date(`${appointment.date}T${appointment.endTime}:00`);
+
+      const eventData: EventAttributes = {
+        start: [
+          appointmentDate.getFullYear(),
+          appointmentDate.getMonth() + 1,
+          appointmentDate.getDate(),
+          appointmentDate.getHours(),
+          appointmentDate.getMinutes(),
+        ],
+        end: [
+          endDate.getFullYear(),
+          endDate.getMonth() + 1,
+          endDate.getDate(),
+          endDate.getHours(),
+          endDate.getMinutes(),
+        ],
+        title: appointment.appointmentName,
+        description: appointment.description || "Health Screening Appointment",
+        attendees: [{ name: body.name, email: body.email }],
+        status: "CONFIRMED",
+        location: body.location || "MOÚ",
+      };
+
+      const { error: icsError, value: icsFile } = createEvent(eventData);
+
+      if (icsError) {
+        console.error(
+          "Error creating ICS file for appointment:",
+          appointment.appointmentName,
+          icsError
+        );
+        continue; // Skip this appointment but continue with others
+      }
+
+      if (icsFile) {
+        icsFiles.push(icsFile);
+      }
     }
 
-    // Format date and time for email display
-    const formattedDate = appointmentDate.toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+    // Format appointments for email display
+    const formattedAppointments = body.appointments.map((appointment) => {
+      const appointmentDate = new Date(
+        `${appointment.date}T${appointment.startTime}:00`
+      );
+      const endDate = new Date(`${appointment.date}T${appointment.endTime}:00`);
 
-    const formattedStartTime = appointmentDate.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    });
-
-    const formattedEndTime = endDate.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
+      return {
+        name: appointment.appointmentName,
+        description: appointment.description || "",
+        formattedDate: appointmentDate.toLocaleDateString("cs-CZ", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }),
+        formattedStartTime: appointmentDate.toLocaleTimeString("cs-CZ", {
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: false,
+        }),
+        formattedEndTime: endDate.toLocaleTimeString("cs-CZ", {
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: false,
+        }),
+      };
     });
 
     // Email HTML content
@@ -181,48 +205,61 @@ export async function POST(request: NextRequest) {
           </div>
 
           <div class="appointment-card">
-            <div class="appointment-title">${body.appointmentName}</div>
-            <p>Dear ${body.name},</p>
-            <p>Your appointment has been confirmed. Please find the details below:</p>
+            <div class="appointment-title">Potvrzení objednávky vyšetření</div>
+            <p>Vážený/á ${body.name},</p>
+            <p>Vaše objednávka byla úspěšně potvrzena. Níže najdete detaily všech rezervovaných vyšetření:</p>
 
-            <div class="appointment-details">
-              <div class="detail-row">
-                <span class="detail-label">Date:</span>
-                <span class="detail-value">${formattedDate}</span>
+            ${formattedAppointments
+              .map(
+                (appointment, index) => `
+              <div class="appointment-details" style="margin-bottom: 20px; border-bottom: ${
+                index < formattedAppointments.length - 1
+                  ? "1px solid #e9ecef"
+                  : "none"
+              }; padding-bottom: ${
+                  index < formattedAppointments.length - 1 ? "15px" : "0"
+                };">
+                <h4 style="color: #495057; margin-bottom: 10px;">${
+                  appointment.name
+                }</h4>
+                <div class="detail-row">
+                  <span class="detail-label">Datum:</span>
+                  <span class="detail-value">${appointment.formattedDate}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Čas:</span>
+                  <span class="detail-value">${
+                    appointment.formattedStartTime
+                  } - ${appointment.formattedEndTime}</span>
+                </div>
+                ${
+                  body.location
+                    ? `
+                <div class="detail-row">
+                  <span class="detail-label">Místo:</span>
+                  <span class="detail-value">${body.location}</span>
+                </div>
+                `
+                    : ""
+                }
+                ${
+                  appointment.description
+                    ? `
+                <div class="detail-row">
+                  <span class="detail-label">Popis:</span>
+                  <span class="detail-value">${appointment.description}</span>
+                </div>
+                `
+                    : ""
+                }
               </div>
-              <div class="detail-row">
-                <span class="detail-label">Time:</span>
-                <span class="detail-value">${formattedStartTime} - ${formattedEndTime}</span>
-              </div>
-              <div class="detail-row">
-                <span class="detail-label">Appointment:</span>
-                <span class="detail-value">${body.appointmentName}</span>
-              </div>
-              ${
-                body.location
-                  ? `
-              <div class="detail-row">
-                <span class="detail-label">Location:</span>
-                <span class="detail-value">${body.location}</span>
-              </div>
-              `
-                  : ""
-              }
-              ${
-                body.description
-                  ? `
-              <div class="detail-row">
-                <span class="detail-label">Description:</span>
-                <span class="detail-value">${body.description}</span>
-              </div>
-              `
-                  : ""
-              }
-            </div>
+            `
+              )
+              .join("")}
 
-            <p>A calendar event has been attached to this email. Please add it to your calendar to receive reminders.</p>
+            <p>K tomuto e-mailu jsou přiloženy kalendářní události. Prosím přidejte je do svého kalendáře pro připomínky.</p>
             
-            <p>If you need to reschedule or cancel your appointment, please contact us as soon as possible.</p>
+            <p>Pokud potřebujete přeložit nebo zrušit některé z vyšetření, kontaktujte nás prosím co nejdříve.</p>
           </div>
 
           <div class="footer">
@@ -233,21 +270,23 @@ export async function POST(request: NextRequest) {
       </html>
     `;
 
-    // Send email with ICS attachment
+    // Send email with ICS attachments
+    const attachments = icsFiles.map((icsFile, index) => ({
+      filename: `appointment_${index + 1}.ics`,
+      content: Buffer.from(icsFile),
+      contentType: "text/calendar",
+    }));
+
     const { data, error } = await resend.emails.send({
       from:
         process.env.RESEND_FROM_EMAIL ||
         "VitaIO Health <noreply@vitaio.health>",
       to: [body.email],
-      subject: `Appointment Confirmation - ${body.appointmentName}`,
+      subject: `Potvrzení objednávky vyšetření - ${
+        body.appointments.length
+      } termín${body.appointments.length > 1 ? "ů" : ""}`,
       html: emailHtml,
-      attachments: [
-        {
-          filename: "appointment.ics",
-          content: Buffer.from(icsFile || ""),
-          contentType: "text/calendar",
-        },
-      ],
+      attachments: attachments,
     });
 
     if (error) {

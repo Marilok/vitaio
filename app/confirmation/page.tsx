@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   Container,
@@ -13,25 +13,19 @@ import {
 } from "@mantine/core";
 import { IconArrowRight } from "@tabler/icons-react";
 import Image from "next/image";
+import { useAppData } from "@/contexts/AppDataContext";
 
 export default function ConfirmationPage() {
   const router = useRouter();
-  const [email, setEmail] = useState<string>(TEXTS.defaultEmail);
-  const [appointmentCount] = useState(1);
+  const { confirmationData } = useAppData();
+  const email = confirmationData.email || TEXTS.defaultEmail;
+  const appointmentCount = confirmationData.appointmentCount || 1;
 
   useEffect(() => {
-    // Get email from sessionStorage
-    const storedEmail = sessionStorage.getItem("confirmationEmail");
-
-    if (storedEmail) {
-      setEmail(storedEmail);
-      // Clear the stored email after retrieving it
-      sessionStorage.removeItem("confirmationEmail");
-    } else {
-      // Redirect back if no email found
+    if (!confirmationData.email) {
       router.push("/");
     }
-  }, [router]);
+  }, [confirmationData.email, router]);
   return (
     <Box
       style={{

@@ -1,34 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Container, Center, Text, Paper, Stack } from "@mantine/core";
 import { AppointmentsForm } from "@/components/MultiStepForm";
-import { FormData } from "@/types/form";
-
-function getStoredFormData(): FormData | null {
-  if (typeof window === "undefined") return null;
-
-  try {
-    const storedData = sessionStorage.getItem("healthAssessmentData");
-    return storedData ? JSON.parse(storedData) : null;
-  } catch (error) {
-    console.error("Error parsing stored form data:", error);
-    return null;
-  }
-}
+import { useAppData } from "@/contexts/AppDataContext";
 
 export default function BookingPage() {
   const router = useRouter();
-  const [formData] = useState<FormData | null>(() => getStoredFormData());
+  const { healthAssessmentData } = useAppData();
 
   useEffect(() => {
-    if (!formData) {
+    if (
+      !healthAssessmentData ||
+      Object.keys(healthAssessmentData).length === 0
+    ) {
       router.push("/");
     }
-  }, [formData, router]);
+  }, [healthAssessmentData, router]);
 
-  if (!formData) {
+  if (!healthAssessmentData || Object.keys(healthAssessmentData).length === 0) {
     return (
       <Container size="sm" py="xl">
         <Center h={400}>
@@ -57,7 +48,7 @@ export default function BookingPage() {
       }}
     >
       <Center>
-        <AppointmentsForm formData={formData} />
+        <AppointmentsForm />
       </Center>
     </Container>
   );

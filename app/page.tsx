@@ -14,7 +14,7 @@ export default function Home() {
   return (
     <Box
       style={{
-        // minHeight: "100vh",
+        minHeight: "100%",
         backgroundColor: "var(--mantine-primary-color-filled)",
         display: "flex",
         alignItems: "center",
@@ -87,7 +87,7 @@ export default function Home() {
                 </Button>
               </Anchor>
 
-              <Text size="sm" c={"white"} className="!ml-16">
+              <Text size="sm" c={"white"} className="ml-16!">
                 Zabere přibližně 5-10 minut
               </Text>
             </Stack>

@@ -4,17 +4,13 @@ import { DatesProvider } from "@mantine/dates";
 
 import { colorsTuple, MantineProvider, createTheme } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
+import { AppDataProvider } from "@/contexts/AppDataContext";
 
 const theme = createTheme({
   /** Your theme customization here */
-  fonts: {
-    body: "Arial, sans-serif",
-    // headings: { fontFamily: "Matter, sans-serif" },
-  },
   cursorType: "pointer",
 
   primaryColor: "mou-orange",
-  secondaryColor: "mou-blue",
   colors: {
     "mou-orange": colorsTuple("#f04600"),
     "mou-blue": [
@@ -63,8 +59,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <MantineProvider theme={theme} defaultColorScheme="light">
       <DatesProvider settings={{ locale: "cs" }}>
-        <Notifications />
-        {children}
+        <AppDataProvider>
+          <Notifications />
+          {children}
+        </AppDataProvider>
       </DatesProvider>
     </MantineProvider>
   );
