@@ -56,12 +56,15 @@ function getAppointmentPriority(
   if (!screeningKey) return 0;
 
   // Check in mandatory first, then optional
-  if (screenings.mandatory[screeningKey]) {
-    return screenings.mandatory[screeningKey].priority;
+  if (screeningKey in screenings.mandatory) {
+    return screenings.mandatory[
+      screeningKey as keyof typeof screenings.mandatory
+    ].priority;
   }
 
-  if (screenings.optional[screeningKey]) {
-    return screenings.optional[screeningKey].priority;
+  if (screeningKey in screenings.optional) {
+    return screenings.optional[screeningKey as keyof typeof screenings.optional]
+      .priority;
   }
 
   return 0;
@@ -103,12 +106,24 @@ export function Step8Appointments() {
     { id: 26, show: true, recommend: true },
   ];
 
-  // Filter appointments based on eligibility
+  // Filter appointments based on eligibility and gender
   const visibleMandatoryAppointments = appointments
     .filter((app) => app.type === "mandatory")
     .filter((app) => {
       const config = mandatoryAppointmentsConfig.find((c) => c.id === app.id);
-      return config?.show;
+      if (!config?.show) return false;
+
+      // Filter gender-specific mandatory appointments
+      // PSA Test (id: 1) - only for males
+      if (app.id === 1 && gender !== "male") return false;
+
+      // Breast Ultrasound (id: 24) - only for females
+      if (app.id === 24 && gender !== "female") return false;
+
+      // Testicular Ultrasound (id: 23) - only for males
+      if (app.id === 23 && gender !== "male") return false;
+
+      return true;
     })
     .map((app) => ({
       ...app,

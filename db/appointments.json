@@ -50,50 +50,50 @@
   },
   {
     "id": 8,
-    "name": "Gastroenterolog",
-    "description": "Konzultace se specialistou na trávicí systém",
+    "name": "Gastroenterologická konzultace",
+    "description": "Vyšetření trávicího systému pro prevenci onemocnění jícnu, žaludku, střev a jater. Vhodné při trávicích potížích.",
     "type": "optional",
     "url": "https://www.mou.cz/gastroenterologicke-oddeleni/t1360"
   },
   {
     "id": 9,
-    "name": "Gynekolog",
-    "description": "Gynekologická konzultace",
+    "name": "Gynekologická konzultace",
+    "description": "Preventivní prohlídka, ultrazvuk a screening cervikálního karcinomu. Doporučeno pro všechny ženy.",
     "type": "optional",
     "url": "https://www.mou.cz/gynekologicke-vysetreni/t1388"
   },
   {
     "id": 10,
-    "name": "Urolog",
-    "description": "Urologická konzultace",
+    "name": "Urologická konzultace",
+    "description": "Vyšetření močového systému a prevence nádorů prostaty a varlat. Vhodné pro muže nad 45 let.",
     "type": "optional",
     "url": "https://www.mou.cz/oddeleni-urologicke-onkologie/t1354"
   },
   {
     "id": 11,
-    "name": "Praktický lékař",
-    "description": "Konzultace s praktickým lékařem",
+    "name": "Konzultace s praktickým lékařem",
+    "description": "Preventivní vyšetření s posouzením celkového zdravotního stavu. Základ komplexní péče.",
     "type": "optional",
     "url": "https://www.mou.cz/lekari-a-farmaceuti/t1487"
   },
   {
     "id": 12,
-    "name": "Onkolog",
-    "description": "Onkologická konzultace",
+    "name": "Onkologická konzultace",
+    "description": "Posouzení rizika nádorových onemocnění a individuální screeningový plán. Doporučeno při rodinné zátěži.",
     "type": "optional",
     "url": "https://www.mou.cz/klinika-komplexni-onkologicke-pece/t1383"
   },
   {
     "id": 13,
-    "name": "Radiolog",
-    "description": "Radiologická konzultace",
+    "name": "Radiologická konzultace",
+    "description": "Vyhodnocení zobrazovacích vyšetření (RTG, CT, MRI). Vhodné pro upřesnění nejasných nálezů.",
     "type": "optional",
     "url": "https://www.mou.cz/oddeleni-radiologie/t1362"
   },
   {
     "id": 14,
-    "name": "Nutriční poradce",
-    "description": "Konzultace s nutričním specialistou",
+    "name": "Nutriční konzultace",
+    "description": "Individuální plán stravy pro prevenci nadváhy a diabetu. Zahrnuje analýzu stravovacích návyků.",
     "type": "optional",
     "url": "https://www.mou.cz/usek-lecebne-vyzivy/t1377"
   },
@@ -149,7 +149,7 @@
   },
   {
     "id": 25,
-    "name": "Ultrazvuk prsou",
+    "name": "Ultrazvuk plic",
     "type": "mandatory"
   },
   {
@@ -160,26 +160,31 @@
   {
     "id": 27,
     "name": "Genetická konzultace",
+    "description": "Odborná konzultace pro posouzení dědičného rizika nádorových onemocnění v rodině",
     "type": "optional"
   },
   {
     "id": 28,
     "name": "Poradenství zdravého životního stylu",
+    "description": "Komplexní poradenství zaměřené na správnou výživu, pohybovou aktivitu a prevenci civilizačních onemocnění",
     "type": "optional"
   },
   {
     "id": 29,
     "name": "Poradenství pro odvykání kouření",
+    "description": "Individuální program pro ukončení kouření s podporou odborníka a důkazem založených metod",
     "type": "optional"
   },
   {
     "id": 30,
     "name": "Poradenství pro závislosti",
+    "description": "Odborná pomoc při řešení alkoholové nebo jiné závislosti s možností dlouhodobé podpory",
     "type": "optional"
   },
   {
     "id": 31,
     "name": "Poradenství pro fyzickou aktivitu",
+    "description": "Nastavení individuálního cvičebního plánu s ohledem na váš zdravotní stav a cíle",
     "type": "optional"
   }
 ]
