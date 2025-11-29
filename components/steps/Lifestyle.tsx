@@ -9,7 +9,6 @@ import {
   NumberInput,
   Group,
   Checkbox,
-  Slider,
 } from "@mantine/core";
 import { FormData } from "@/types/form";
 import { calculateBMI, getBMICategory, getBMICategoryColor } from "@/utils/bmi";
@@ -29,6 +28,7 @@ export function Lifestyle() {
   const height = watch("height");
   const isSmoker = watch("isSmoker");
   const drinksAlcohol = watch("drinksAlcohol");
+  const gender = watch("gender");
 
   const bmi = calculateBMI(weight, height);
   const bmiCategory = getBMICategory(bmi);
@@ -40,6 +40,205 @@ export function Lifestyle() {
         <Title order={3} mb="xs">
           🏃 Můj životní styl
         </Title>
+      </Box>
+
+      <Box mb={"xl"} mt={"sm"}>
+        <Text size="md" fw={500} mb="sm">
+          {bmi > 0 && weight && height ? (
+            <>
+              Moje BMI (Body Mass Index) je <strong>{bmi}</strong> {"("}
+              {bmiCategory}
+              {")"}
+            </>
+          ) : (
+            "BMI (Body Mass Index)"
+          )}
+        </Text>
+
+        {/* Custom BMI Progress Bar */}
+        <Box style={{ position: "relative", marginBottom: "16px" }}>
+          {/* Background track */}
+          <Box
+            style={{
+              height: "8px",
+              borderRadius: "4px",
+              backgroundColor: "#e9ecef",
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            {/* Color segments */}
+            <Box
+              style={{
+                position: "absolute",
+                left: "0%",
+                width: `${((18.5 - 15) / (40 - 15)) * 100}%`,
+                height: "100%",
+                backgroundColor: "#1976d2",
+              }}
+            />
+            <Box
+              style={{
+                position: "absolute",
+                left: `${((18.5 - 15) / (40 - 15)) * 100}%`,
+                width: `${((25 - 18.5) / (40 - 15)) * 100}%`,
+                height: "100%",
+                backgroundColor: "#4caf50",
+              }}
+            />
+            <Box
+              style={{
+                position: "absolute",
+                left: `${((25 - 15) / (40 - 15)) * 100}%`,
+                width: `${((30 - 25) / (40 - 15)) * 100}%`,
+                height: "100%",
+                backgroundColor: "#ffd54f",
+              }}
+            />
+            <Box
+              style={{
+                position: "absolute",
+                left: `${((30 - 15) / (40 - 15)) * 100}%`,
+                width: `${((35 - 30) / (40 - 15)) * 100}%`,
+                height: "100%",
+                backgroundColor: "#ff9800",
+              }}
+            />
+            <Box
+              style={{
+                position: "absolute",
+                left: `${((35 - 15) / (40 - 15)) * 100}%`,
+                width: `${((40 - 35) / (40 - 15)) * 100}%`,
+                height: "100%",
+                backgroundColor: "#f44336",
+              }}
+            />
+          </Box>
+
+          {/* BMI Indicator */}
+          {bmi > 0 && weight && height && (
+            <Box
+              style={{
+                position: "absolute",
+                left: `calc(${Math.min(
+                  Math.max(((bmi - 15) / (40 - 15)) * 100, 0),
+                  100
+                )}% - 10px)`,
+                top: "-6px",
+                width: "20px",
+                height: "20px",
+                borderRadius: "50%",
+                backgroundColor: bmiColor,
+                border: "2px solid white",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+                zIndex: 1,
+              }}
+            />
+          )}
+
+          {/* Labels */}
+          <Box style={{ position: "relative", marginTop: "8px" }}>
+            <Text
+              size="xs"
+              style={{
+                position: "absolute",
+                left: `${((18.5 - 15) / (40 - 15)) * 100}%`,
+                transform: "translateX(-50%)",
+              }}
+            >
+              18.5
+            </Text>
+            <Text
+              size="xs"
+              style={{
+                position: "absolute",
+                left: `${((25 - 15) / (40 - 15)) * 100}%`,
+                transform: "translateX(-50%)",
+              }}
+            >
+              25
+            </Text>
+            <Text
+              size="xs"
+              style={{
+                position: "absolute",
+                left: `${((30 - 15) / (40 - 15)) * 100}%`,
+                transform: "translateX(-50%)",
+              }}
+            >
+              30
+            </Text>
+            <Text
+              size="xs"
+              style={{
+                position: "absolute",
+                left: `${((35 - 15) / (40 - 15)) * 100}%`,
+                transform: "translateX(-50%)",
+              }}
+            >
+              35
+            </Text>
+          </Box>
+
+          {/* Category labels */}
+          <Box style={{ position: "relative", marginTop: "16px" }}>
+            <Text
+              size="xs"
+              c="dimmed"
+              style={{
+                position: "absolute",
+                left: `${((18.5 - 15) / 2 / (40 - 15)) * 100}%`,
+                transform: "translateX(-50%)",
+              }}
+            >
+              Podváha
+            </Text>
+            <Text
+              size="xs"
+              c="dimmed"
+              style={{
+                position: "absolute",
+                left: `${(((18.5 + 25) / 2 - 15) / (40 - 15)) * 100}%`,
+                transform: "translateX(-50%)",
+              }}
+            >
+              Normální
+            </Text>
+            <Text
+              size="xs"
+              c="dimmed"
+              style={{
+                position: "absolute",
+                left: `${(((25 + 30) / 2 - 15) / (40 - 15)) * 100}%`,
+                transform: "translateX(-50%)",
+              }}
+            >
+              Obezita I
+            </Text>
+            <Text
+              size="xs"
+              c="dimmed"
+              style={{
+                position: "absolute",
+                left: `${(((30 + 35) / 2 - 15) / (40 - 15)) * 100}%`,
+                transform: "translateX(-50%)",
+              }}
+            >
+              Obezita II
+            </Text>
+            <Text
+              size="xs"
+              c="dimmed"
+              style={{
+                position: "absolute",
+                left: `${(((35 + 40) / 2 - 15) / (40 - 15)) * 100}%`,
+                transform: "translateX(-50%)",
+              }}
+            >
+              Obezita III
+            </Text>
+          </Box>
+        </Box>
       </Box>
 
       <Group grow preventGrowOverflow={false} gap="md">
@@ -137,52 +336,6 @@ export function Lifestyle() {
         />
       </Group>
 
-      {bmi > 0 && weight && height && (
-        <Box>
-          <Text size="md" fw={500} mb="sm">
-            Vaše BMI (Body Mass Index): <strong>{bmi}</strong> - {bmiCategory}
-          </Text>
-          <Slider
-            value={bmi}
-            min={15}
-            max={35}
-            step={0.1}
-            color={bmiColor}
-            size="lg"
-            thumbSize={20}
-            labelAlwaysOn
-            label={(value) => value.toFixed(1)}
-            marks={[
-              { value: 18.5, label: "Podváha" },
-              { value: 25, label: "Normální" },
-              { value: 30, label: "Nadváha" },
-              { value: 35, label: "Obezita" },
-            ]}
-            disabled
-            styles={{
-              track: {
-                background: `linear-gradient(to right, 
-                  #1976d2 0%, #1976d2 18.5%, 
-                  #4caf50 18.5%, #4caf50 25%, 
-                  #ff9800 25%, #ff9800 30%, 
-                  #f44336 30%, #f44336 100%)`,
-              },
-              bar: {
-                display: "none",
-              },
-              thumb: {
-                backgroundColor: bmiColor,
-                borderColor: bmiColor,
-              },
-            }}
-          />
-          <Text size="xs" c="dimmed" mt="sm">
-            BMI se vypočítává jako váha (kg) dělená druhou mocninou výšky (m).
-            Váš výpočet: {weight} kg / ({(height / 100).toFixed(2)} m)² = {bmi}
-          </Text>
-        </Box>
-      )}
-
       <Box>
         <Controller
           name="isSmoker"
@@ -191,6 +344,7 @@ export function Lifestyle() {
             <Checkbox
               {...field}
               checked={value || false}
+              size="md"
               onChange={(event) => {
                 const checked = event.currentTarget.checked;
                 onChange(checked);
@@ -199,7 +353,7 @@ export function Lifestyle() {
                   setValue("smokingYears", undefined);
                 }
               }}
-              label={<Text size="sm">Jsem kuřák</Text>}
+              label={gender === "female" ? "Jsem kuřačka" : "Jsem kuřák"}
             />
           )}
         />
@@ -213,20 +367,31 @@ export function Lifestyle() {
                 required: "Počet krabiček je povinný",
                 min: { value: 0, message: "Minimální hodnota je 0" },
               }}
-              render={({ field }) => (
-                <NumberInput
-                  {...field}
-                  label={
-                    <Fragment>
-                      Krabičky cigaret týdně <RequiredIndicator />
-                    </Fragment>
-                  }
-                  placeholder="Počet krabiček"
-                  min={0}
-                  decimalScale={1}
-                  error={errors.cigarettePacksPerWeek?.message}
-                />
-              )}
+              render={({ field }) => {
+                const formatCigaretteSuffix = () => {
+                  if (!field.value) return "";
+                  const value = Number(field.value);
+                  if (value === 1) return " krabičku";
+                  if (value >= 2 && value <= 4) return " krabičky";
+                  return " krabiček";
+                };
+
+                return (
+                  <NumberInput
+                    {...field}
+                    label={
+                      <Fragment>
+                        Týdně vykouřím <RequiredIndicator />
+                      </Fragment>
+                    }
+                    placeholder="Počet krabiček"
+                    min={0}
+                    decimalScale={1}
+                    suffix={formatCigaretteSuffix()}
+                    error={errors.cigarettePacksPerWeek?.message}
+                  />
+                );
+              }}
             />
 
             <Controller
@@ -236,19 +401,30 @@ export function Lifestyle() {
                 required: "Počet let je povinný",
                 min: { value: 0, message: "Minimální hodnota je 0 let" },
               }}
-              render={({ field }) => (
-                <NumberInput
-                  {...field}
-                  label={
-                    <Fragment>
-                      Jak dlouho kouříte (roky) <RequiredIndicator />
-                    </Fragment>
-                  }
-                  placeholder="Počet let"
-                  min={0}
-                  error={errors.smokingYears?.message}
-                />
-              )}
+              render={({ field }) => {
+                const formatYearsSuffix = () => {
+                  if (!field.value) return "";
+                  const value = Number(field.value);
+                  if (value === 1) return " rok";
+                  if (value >= 2 && value <= 4) return " roky";
+                  return " let";
+                };
+
+                return (
+                  <NumberInput
+                    {...field}
+                    label={
+                      <Fragment>
+                        Jak dlouho kouřím <RequiredIndicator />
+                      </Fragment>
+                    }
+                    placeholder="Počet let"
+                    min={0}
+                    suffix={formatYearsSuffix()}
+                    error={errors.smokingYears?.message}
+                  />
+                );
+              }}
             />
           </Group>
         )}
@@ -270,7 +446,8 @@ export function Lifestyle() {
                   setValue("drinkingYears", undefined);
                 }
               }}
-              label={<Text size="sm">Piji alkohol</Text>}
+              size="md"
+              label="Piji alkohol"
             />
           )}
         />
@@ -284,20 +461,31 @@ export function Lifestyle() {
                 required: "Počet piv je povinný",
                 min: { value: 0, message: "Minimální hodnota je 0" },
               }}
-              render={({ field }) => (
-                <NumberInput
-                  {...field}
-                  label={
-                    <Fragment>
-                      Piv týdně <RequiredIndicator />
-                    </Fragment>
-                  }
-                  placeholder="Počet piv"
-                  min={0}
-                  decimalScale={1}
-                  error={errors.beersPerWeek?.message}
-                />
-              )}
+              render={({ field }) => {
+                const formatDrinkSuffix = () => {
+                  if (!field.value) return "";
+                  const value = Number(field.value);
+                  if (value === 1) return " alkoholický nápoj";
+                  if (value >= 2 && value <= 4) return " alkoholické nápoje";
+                  return " alkoholických nápojů";
+                };
+
+                return (
+                  <NumberInput
+                    {...field}
+                    label={
+                      <Fragment>
+                        Týdně vypiji <RequiredIndicator />
+                      </Fragment>
+                    }
+                    placeholder="Počet alkoholických nápojů"
+                    min={0}
+                    decimalScale={1}
+                    suffix={formatDrinkSuffix()}
+                    error={errors.beersPerWeek?.message}
+                  />
+                );
+              }}
             />
 
             <Controller
@@ -307,19 +495,30 @@ export function Lifestyle() {
                 required: "Počet let je povinný",
                 min: { value: 0, message: "Minimální hodnota je 0 let" },
               }}
-              render={({ field }) => (
-                <NumberInput
-                  {...field}
-                  label={
-                    <Fragment>
-                      Jak dlouho pijete (roky) <RequiredIndicator />
-                    </Fragment>
-                  }
-                  placeholder="Počet let"
-                  min={0}
-                  error={errors.drinkingYears?.message}
-                />
-              )}
+              render={({ field }) => {
+                const formatYearsSuffix = () => {
+                  if (!field.value) return "";
+                  const value = Number(field.value);
+                  if (value === 1) return " rok";
+                  if (value >= 2 && value <= 4) return " roky";
+                  return " let";
+                };
+
+                return (
+                  <NumberInput
+                    {...field}
+                    label={
+                      <Fragment>
+                        Jak dlouho piji <RequiredIndicator />
+                      </Fragment>
+                    }
+                    placeholder="Počet let"
+                    min={0}
+                    suffix={formatYearsSuffix()}
+                    error={errors.drinkingYears?.message}
+                  />
+                );
+              }}
             />
           </Group>
         )}
