@@ -6,6 +6,7 @@ import {
   Button,
   Anchor,
   Box,
+  Flex,
 } from "@mantine/core";
 import { IconArrowRight } from "@tabler/icons-react";
 import Image from "next/image";
@@ -35,7 +36,11 @@ export default function Home() {
           }}
         >
           {/* Left side - Content */}
-          <Stack gap="xl" style={{ textAlign: "left", maxWidth: 500 }}>
+          <Stack
+            gap="xl"
+            style={{ textAlign: "left", maxWidth: 500 }}
+            align="start"
+          >
             <Title
               order={1}
               size="4rem"
@@ -62,7 +67,7 @@ export default function Home() {
               hodnocené instituce v Česku.
             </Text>
 
-            <Stack gap="xs">
+            <Flex direction="column" align="center" gap={"sm"}>
               <Anchor
                 href="/assessment"
                 underline="never"
@@ -71,6 +76,7 @@ export default function Home() {
                 <Button
                   size="xl"
                   rightSection={<IconArrowRight size={20} />}
+                  color="white"
                   style={{
                     background: "white",
                     color: "var(--mantine-primary-color-filled)",
@@ -82,14 +88,7 @@ export default function Home() {
                     boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2)",
                     transition: "all 0.3s ease",
                   }}
-                  styles={{
-                    root: {
-                      "&:hover": {
-                        transform: "scale(1.05)",
-                        boxShadow: "0 15px 40px rgba(0, 0, 0, 0.3)",
-                      },
-                    },
-                  }}
+                  className="hover:scale-105"
                 >
                   Vytvořit moje doporučení
                 </Button>
@@ -99,13 +98,12 @@ export default function Home() {
                 size="sm"
                 c={"white"}
                 style={{
-                  marginLeft: "4rem",
                   opacity: 0.9,
                 }}
               >
                 Zabere přibližně 5-10 minut
               </Text>
-            </Stack>
+            </Flex>
           </Stack>
           {/* Right side - Stock Image */}
           <Box
