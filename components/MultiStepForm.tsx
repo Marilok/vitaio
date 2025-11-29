@@ -508,14 +508,16 @@ export function MultiStepFormWithVectors() {
   };
 
   return (
-    <div style={{ 
-      position: "relative", 
-      width: "100%", 
-      minHeight: "calc(100vh - 80px)",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center"
-    }}>
+    <div
+      style={{
+        position: "relative",
+        width: "100%",
+        minHeight: "calc(100vh - 80px)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       {renderPhase()}
     </div>
   );
