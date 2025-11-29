@@ -26,6 +26,10 @@ export function BasicInfo() {
         <Title order={3} mb="xs">
           👋 Základní informace o mě
         </Title>
+        <Text size="md" c="dimmed">
+          V následujících krocích nám prosím sdělte několik základních informací
+          o sobě, abychom Vám mohli nabídnout co nejrelevantnější doporučení.
+        </Text>
       </Box>
 
       <Group align="flex-start" gap="xl">

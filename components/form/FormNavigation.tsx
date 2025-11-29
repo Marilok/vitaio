@@ -24,11 +24,11 @@ export function FormNavigation() {
 
       {isLastStep ? (
         <Button onClick={onSubmit} size="md" loading={isSubmitting}>
-          Odeslat vyhodnocení
+          Odeslat dotazník a doporučit prohlídky
         </Button>
       ) : (
         <Button onClick={nextStep} size="md">
-          Další
+          Další krok
         </Button>
       )}
     </Group>
