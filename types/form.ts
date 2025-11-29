@@ -42,8 +42,13 @@ export interface FormData {
   hadBreastCancerScreening?: boolean; // Only for women
   hadColorectalCancerScreening?: boolean;
 
-  // Step 8 - Appointments
+  // Step 7 - Appointments
   selectedAppointments: number[];
+
+  // Step 8 - Contact Information
+  fullName: string;
+  email: string;
+  phone: string;
 
   // Step 9 - Appointment Booking
   bookedAppointments: Array<{

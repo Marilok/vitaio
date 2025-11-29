@@ -18,6 +18,7 @@ import { MultiStepFormProvider } from "@/contexts/MultiStepFormContext";
 import { FormData } from "@/types/form";
 import { calculatePriorityScore } from "@/utils/priority";
 import { transformAppointmentsToScreenings } from "@/utils/appointmentsMapping";
+import { ContactInfo } from "./steps/ContactInfo";
 
 const TOTAL_STEPS = 9;
 
@@ -174,7 +175,7 @@ export function MultiStepForm() {
       case 7:
         return <Step9Appointments />;
       case 8:
-        return <PlaceholderStep stepNumber={9} />;
+        return <ContactInfo />;
       default:
         return null;
     }
