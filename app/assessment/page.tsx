@@ -1,5 +1,4 @@
-import { MultiStepForm } from "@/components/MultiStepForm";
-import { AnimatedVectors } from "@/components/AnimatedVectors";
+import { MultiStepFormWithVectors } from "@/components/MultiStepForm";
 import { Container } from "@mantine/core";
 
 export default function AssessmentPage() {
@@ -11,15 +10,11 @@ export default function AssessmentPage() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "var(--mantine-primary-color-light)",
         position: "relative",
         overflow: "hidden",
       }}
     >
-      <AnimatedVectors />
-      <Container size="xl" py="xl">
-        <MultiStepForm />
-      </Container>
+      <MultiStepFormWithVectors />
     </Container>
   );
 }

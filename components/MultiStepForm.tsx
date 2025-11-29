@@ -13,6 +13,7 @@ import { ContactInfo } from "./steps/ContactInfo";
 import { FormProgress } from "./form/FormProgress";
 import { FormNavigation } from "./form/FormNavigation";
 import { StepContainer } from "./form/StepContainer";
+import { AnimatedVectors } from "./AnimatedVectors";
 
 import { useMultiStepForm } from "@/hooks/useMultiStepForm";
 import { MultiStepFormProvider } from "@/contexts/MultiStepFormContext";
@@ -376,3 +377,174 @@ export function MultiStepForm() {
 
 // Export the AppointmentsForm for use in the booking page
 export { AppointmentsForm };
+
+// Wrapper component that provides context to both form and vectors
+export function MultiStepFormWithVectors() {
+  const router = useRouter();
+  const [currentPhase, setCurrentPhase] = useState<
+    "health-assessment" | "loading"
+  >("health-assessment");
+
+  const handleHealthAssessmentComplete = (data: FormData) => {
+    // Store form data in sessionStorage for the booking page
+    sessionStorage.setItem("healthAssessmentData", JSON.stringify(data));
+    setCurrentPhase("loading");
+  };
+
+  const handleLoadingComplete = () => {
+    // Navigate to the booking page
+    router.push("/booking");
+  };
+
+  const renderPhase = () => {
+    switch (currentPhase) {
+      case "health-assessment":
+        return (
+          <HealthAssessmentFormWithVectors
+            onComplete={handleHealthAssessmentComplete}
+          />
+        );
+      case "loading":
+        return <FormEvaluationLoader onComplete={handleLoadingComplete} />;
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div style={{ position: "relative", width: "100%", height: "100%" }}>
+      {renderPhase()}
+    </div>
+  );
+}
+
+// Modified HealthAssessmentForm that includes vectors with shared context
+function HealthAssessmentFormWithVectors({
+  onComplete,
+}: {
+  onComplete: (data: FormData) => void;
+}) {
+  const methods = useForm<FormData>({
+    mode: "onChange",
+    reValidateMode: "onBlur",
+    defaultValues: {
+      gender: "male",
+      age: undefined,
+      weight: undefined,
+      height: undefined,
+      hasRectalBleeding: undefined,
+      hasFamilyCancerHistory: undefined,
+      medications: [],
+      hasGynecologist: undefined,
+      bookGynecologyExam: undefined,
+      weeklyExerciseMinutes: undefined,
+      isSmoker: undefined,
+      cigarettePacksPerWeek: undefined,
+      smokingYears: undefined,
+      drinksAlcohol: undefined,
+      beersPerWeek: undefined,
+      drinkingYears: undefined,
+      weeklyCigarettes: undefined,
+      alcoholConsumption: undefined,
+      hadProstateScreening: undefined,
+      hadLungCancerScreening: undefined,
+      hadCervicalCancerScreening: undefined,
+      hadBreastCancerScreening: undefined,
+      hadColorectalCancerScreening: undefined,
+      selectedAppointments: [],
+      bookedAppointments: [],
+      priority: 0,
+    },
+  });
+
+  const {
+    handleSubmit,
+    trigger,
+    getValues,
+    formState: { isSubmitting },
+  } = methods;
+
+  const {
+    activeStep,
+    direction,
+    isFirstStep,
+    isLastStep,
+    nextStep,
+    prevStep,
+    goToStep,
+  } = useMultiStepForm({
+    totalSteps: HEALTH_ASSESSMENT_STEPS,
+    getFieldsForStep: (step: number) =>
+      getHealthAssessmentFieldsForStep(step, getValues()),
+    trigger,
+  });
+
+  const onSubmit = async (data: FormData) => {
+    const priorityScore = calculatePriorityScore(data);
+    const finalData = { ...data, priority: priorityScore };
+    onComplete(finalData);
+  };
+
+  const renderStepContent = () => {
+    switch (activeStep) {
+      case 0:
+        return <BasicInfo />;
+      case 1:
+        return <SymptomsAndFamily />;
+      case 2:
+        return <Medications />;
+      case 3:
+        return <Lifestyle />;
+      case 4:
+        return <Screening />;
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <FormProvider {...methods}>
+      <MultiStepFormProvider
+        value={{
+          activeStep,
+          direction,
+          isFirstStep,
+          isLastStep,
+          totalSteps: HEALTH_ASSESSMENT_STEPS,
+          nextStep,
+          prevStep,
+          goToStep,
+          onSubmit: handleSubmit(onSubmit),
+          isSubmitting,
+        }}
+      >
+        <div
+          style={{
+            position: "relative",
+            width: "100%",
+            minHeight: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "2rem 0",
+          }}
+        >
+          <AnimatedVectors />
+          <Paper
+            shadow="md"
+            p="xl"
+            radius="md"
+            w={720}
+            style={{ position: "relative", zIndex: 1 }}
+          >
+            <Stack gap="xl">
+              <FormProgress title="Moje zdravotní analýza" />
+              <StepContainer>{renderStepContent()}</StepContainer>
+              <FormNavigation />
+            </Stack>
+          </Paper>
+        </div>
+      </MultiStepFormProvider>
+    </FormProvider>
+  );
+}
