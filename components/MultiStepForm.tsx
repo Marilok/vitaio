@@ -99,8 +99,6 @@ export function MultiStepForm() {
     formState: { isSubmitting },
   } = methods;
 
-
-
   const {
     activeStep,
     direction,

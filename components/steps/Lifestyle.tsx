@@ -13,11 +13,7 @@ import {
 } from "@mantine/core";
 import { FormData } from "@/types/form";
 import { calculateBMI, getBMICategory, getBMICategoryColor } from "@/utils/bmi";
-import {
-  IconRuler,
-  IconWeight,
-  IconRun,
-} from "@tabler/icons-react";
+import { IconRuler, IconWeight, IconRun } from "@tabler/icons-react";
 import { RequiredIndicator } from "@/components/form/RequiredIndicator";
 import { Fragment } from "react";
 
@@ -169,15 +165,15 @@ export function Lifestyle() {
                   #1976d2 0%, #1976d2 18.5%, 
                   #4caf50 18.5%, #4caf50 25%, 
                   #ff9800 25%, #ff9800 30%, 
-                  #f44336 30%, #f44336 100%)`
+                  #f44336 30%, #f44336 100%)`,
               },
               bar: {
-                display: 'none'
+                display: "none",
               },
               thumb: {
                 backgroundColor: bmiColor,
                 borderColor: bmiColor,
-              }
+              },
             }}
           />
           <Text size="xs" c="dimmed" mt="sm">
