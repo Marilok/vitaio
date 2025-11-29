@@ -226,7 +226,7 @@ function FormEvaluationLoader({ onComplete }: { onComplete: () => void }) {
             <Stack align="center" gap="lg">
               <Loader size="xl" type="dots" />
               <Text size="lg" fw={500}>
-                Vyhodnocujeme váš dotazník
+                Vyhodnocujeme Váš dotazník
               </Text>
             </Stack>
           </Center>
@@ -368,13 +368,32 @@ function AppointmentsForm({ formData }: { formData: FormData }) {
           isSubmitting,
         }}
       >
-        <Paper shadow="md" p="xl" radius="md" w={1200}>
-          <Stack gap="xl">
-            <FormProgress title="Objednání vyšetření" />
-            <StepContainer>{renderStepContent()}</StepContainer>
-            <FormNavigation isAppointmentForm />
-          </Stack>
-        </Paper>
+        <div
+          style={{
+            position: "relative",
+            width: "100%",
+            minHeight: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "2rem 0",
+          }}
+        >
+          <AnimatedVectors />
+          <Paper
+            shadow="md"
+            p="xl"
+            radius="md"
+            w={1000}
+            style={{ position: "relative", zIndex: 1 }}
+          >
+            <Stack gap="xl">
+              <FormProgress title="Objednání vyšetření" />
+              <StepContainer>{renderStepContent()}</StepContainer>
+              <FormNavigation isAppointmentForm />
+            </Stack>
+          </Paper>
+        </div>
       </MultiStepFormProvider>
     </FormProvider>
   );
