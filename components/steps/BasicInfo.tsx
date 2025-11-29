@@ -109,7 +109,7 @@ export function BasicInfo() {
                   : " let"
                 : ""
             }
-            style={{ maxWidth: 200 }}
+            style={{ maxWidth: 300 }}
           />
         )}
       />

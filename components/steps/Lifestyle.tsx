@@ -35,7 +35,7 @@ export function Lifestyle() {
     <Stack gap="lg" pt="md">
       <Box>
         <Title order={3} mb="xs">
-          Životní styl a rizika
+          🏃 Životní styl a rizika
         </Title>
         <Text size="sm" c="dimmed">
           Informace o vašem životním stylu a zdravotních rizicích

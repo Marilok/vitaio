@@ -22,7 +22,7 @@ export function Medications() {
     <Stack gap="lg" pt="md">
       <Box>
         <Title order={3} mb="xs">
-          Léky
+          💊 Léky
         </Title>
         <Text size="sm" c="dimmed">
           Vyberte léky, které pravidelně užíváte

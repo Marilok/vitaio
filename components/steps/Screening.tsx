@@ -26,7 +26,7 @@ export function Screening() {
     <Stack gap="lg" pt="md">
       <Box>
         <Title order={3} mb="xs">
-          Screeningová vyšetření
+          🫁 Screeningová vyšetření
         </Title>
         <Text size="sm" c="dimmed">
           Absolvoval(a) jsem tento screening v doporučeném intervalu

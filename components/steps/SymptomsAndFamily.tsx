@@ -14,11 +14,8 @@ export function SymptomsAndFamily() {
     <Stack gap="lg" pt="md">
       <Box>
         <Title order={3} mb="xs">
-          Příznaky a rodinná anamnéza
+          🌡️ Příznaky a rodinná anamnéza
         </Title>
-        <Text size="sm" c="dimmed">
-          Prosím odpovězte na následující otázky
-        </Text>
       </Box>
 
       <Controller
@@ -30,7 +27,7 @@ export function SymptomsAndFamily() {
               {...field}
               checked={value || false}
               onChange={(event) => onChange(event.currentTarget.checked)}
-              label="Měl(a) jsem krvácení stolice"
+              label="Měl(a) jsem někdy krvácení stolice"
               error={errors.hasRectalBleeding?.message}
             />
             {errors.hasRectalBleeding && (

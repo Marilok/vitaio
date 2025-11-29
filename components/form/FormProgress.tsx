@@ -6,7 +6,7 @@ interface FormProgressProps {
 }
 
 export function FormProgress({
-  title = "Zdravotní posouzení",
+  title = "Moje zdravotní analýza",
 }: FormProgressProps) {
   const { activeStep, totalSteps } = useMultiStepFormContext();
   const progress = ((activeStep + 1) / totalSteps) * 100;
@@ -23,4 +23,3 @@ export function FormProgress({
     </Box>
   );
 }
-
