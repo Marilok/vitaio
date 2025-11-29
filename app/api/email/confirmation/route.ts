@@ -4,6 +4,50 @@ import { createEvent, EventAttributes } from "ics";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// Czech declension helper function
+function getCzechVocative(name: string): string {
+  const lowerName = name.toLowerCase();
+  const lastChar = lowerName.slice(-1);
+  const lastTwoChars = lowerName.slice(-2);
+
+  // Common male name endings -> vocative
+  if (
+    lastChar === "a" &&
+    !lowerName.endsWith("cha") &&
+    !lowerName.endsWith("sha")
+  ) {
+    return name.slice(0, -1) + "o"; // Jana -> Jano, but not for foreign names
+  }
+  if (lastChar === "e") {
+    return name; // No change for names ending in 'e'
+  }
+  if (lastChar === "l") {
+    return name + "e"; // Pavel -> Pavle
+  }
+  if (lastChar === "r") {
+    return name + "e"; // Petr -> Petre
+  }
+  if (lastChar === "k") {
+    return name.slice(0, -1) + "ku"; // Tomáš -> not applicable, but Marek -> Marku
+  }
+  if (lastChar === "š") {
+    return name.slice(0, -1) + "ši"; // Tomáš -> Tomáši
+  }
+  if (lastTwoChars === "ek") {
+    return name.slice(0, -2) + "ku"; // Marek -> Marku
+  }
+  if (lastTwoChars === "el") {
+    return name.slice(0, -2) + "le"; // Karel -> Karle
+  }
+
+  // Default: add 'e' for most male names, keep unchanged for female names ending in consonants
+  if (["n", "t", "d", "m", "v", "j"].includes(lastChar)) {
+    return name + "e";
+  }
+
+  return name; // Default: no change
+}
+
 interface AppointmentItem {
   appointmentName: string;
   date: string; // Format: YYYY-MM-DD
@@ -128,7 +172,7 @@ export async function POST(request: NextRequest) {
         <head>
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Appointment Confirmation</title>
+          <title>Potvrzení rezervací</title>
           <style>
             body {
               font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -200,13 +244,13 @@ export async function POST(request: NextRequest) {
         </head>
         <body>
           <div class="header">
-            <h1 style="color: #007bff; margin: 0;">VitaIO Health</h1>
-            <p style="margin: 5px 0 0 0; color: #6c757d;">Appointment Confirmation</p>
+            <h1 style="color: #f04600; margin: 0;">MOÚ Brno</h1>
+            <p style="margin: 5px 0 0 0; color: #6c757d;">Potvrzení rezervací</p>
           </div>
 
           <div class="appointment-card">
             <div class="appointment-title">Potvrzení objednávky vyšetření</div>
-            <p>Vážený/á ${body.name},</p>
+            <p>Vážený/á ${getCzechVocative(body.name)},</p>
             <p>Vaše objednávka byla úspěšně potvrzena. Níže najdete detaily všech rezervovaných vyšetření:</p>
 
             ${formattedAppointments
@@ -263,8 +307,9 @@ export async function POST(request: NextRequest) {
           </div>
 
           <div class="footer">
-            <p>Thank you for choosing VitaIO Health</p>
-            <p>This is an automated message. Please do not reply to this email.</p>
+            <p>Děkujeme, že jste si vybrali MOÚ Brno</p>
+            <p>Toto je automaticky generovaná zpráva. Neodpovídejte prosím na tento e-mail.</p>
+            <p>Pro změny nebo dotazy kontaktujte recepci MOÚ.</p>
           </div>
         </body>
       </html>
@@ -282,9 +327,13 @@ export async function POST(request: NextRequest) {
         process.env.RESEND_FROM_EMAIL ||
         "VitaIO Health <noreply@vitaio.health>",
       to: [body.email],
-      subject: `Potvrzení objednávky vyšetření - ${
-        body.appointments.length
-      } termín${body.appointments.length > 1 ? "ů" : ""}`,
+      subject: `Potvrzení objednávky vyšetření - ${body.appointments.length} ${
+        body.appointments.length === 1
+          ? "termín"
+          : body.appointments.length < 5
+          ? "termíny"
+          : "termínů"
+      }`,
       html: emailHtml,
       attachments: attachments,
     });
