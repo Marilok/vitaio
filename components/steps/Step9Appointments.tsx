@@ -140,20 +140,22 @@ export function Step9Appointments() {
 
         // Automatically select the first recommended slot for each examination
         const autoBookedAppointments: SelectedAppointment[] = [];
-        
-        Object.entries(data.availableSlots).forEach(([examinationName, slots]) => {
-          if (slots.length > 0) {
-            const firstSlot = slots[0];
-            autoBookedAppointments.push({
-              appointmentTypeId: firstSlot.id, // Using slot ID as appointment type ID
-              examination_type_id: firstSlot.examination_type_id,
-              slotId: firstSlot.id.toString(),
-              dateTime: firstSlot.timeFrom,
-              minutes: firstSlot.minutes,
-              isManuallySelected: false, // Automaticky předvybrané
-            });
+
+        Object.entries(data.availableSlots).forEach(
+          ([examinationName, slots]) => {
+            if (slots.length > 0) {
+              const firstSlot = slots[0];
+              autoBookedAppointments.push({
+                appointmentTypeId: firstSlot.id, // Using slot ID as appointment type ID
+                examination_type_id: firstSlot.examination_type_id,
+                slotId: firstSlot.id.toString(),
+                dateTime: firstSlot.timeFrom,
+                minutes: firstSlot.minutes,
+                isManuallySelected: false, // Automaticky předvybrané
+              });
+            }
           }
-        });
+        );
 
         setBookedAppointments(autoBookedAppointments);
 
@@ -192,14 +194,21 @@ export function Step9Appointments() {
   // Update appointmentData with full details when booked appointments change
   useEffect(() => {
     console.log("🔄 Aktualizace appointmentData...");
-    console.log("  📦 Rezervované termíny (bookedAppointments):", bookedAppointments);
+    console.log(
+      "  📦 Rezervované termíny (bookedAppointments):",
+      bookedAppointments
+    );
     console.log("  🗂️ Doporučené sloty (recommendedSlots):", recommendedSlots);
-    
+
     const fullAppointmentData = bookedAppointments.map((apt) => {
       // Find examination name from recommendedSlots
       let examinationName = "";
       for (const [name, slots] of Object.entries(recommendedSlots)) {
-        if (slots.some((slot) => slot.examination_type_id === apt.examination_type_id)) {
+        if (
+          slots.some(
+            (slot) => slot.examination_type_id === apt.examination_type_id
+          )
+        ) {
           examinationName = name;
           break;
         }
@@ -231,7 +240,10 @@ export function Step9Appointments() {
     });
 
     setValue("appointmentData", fullAppointmentData);
-    console.log("📅 ✨ KOMPLETNÍ DATA ULOŽENA DO appointmentData:", fullAppointmentData);
+    console.log(
+      "📅 ✨ KOMPLETNÍ DATA ULOŽENA DO appointmentData:",
+      fullAppointmentData
+    );
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
   }, [bookedAppointments, recommendedSlots, setValue]);
 
@@ -632,19 +644,20 @@ export function Step9Appointments() {
                     (apt) => apt.examination_type_id === examinationTypeId
                   );
                   const isSelected = selectedAppointment !== undefined;
-                  
+
                   const isCurrent = getCurrentAppointment() === appointmentName;
                   const examinationType =
                     getExaminationTypeDetails(appointmentName);
-                  
+
                   // Determine colors based on state
                   // isCurrent (editing) = yellow #ffd600
                   // isManuallySelected = green #008638
                   // auto-selected = blue #53c0d7
-                  const isManuallySelected = selectedAppointment?.isManuallySelected === true;
-                  
+                  const isManuallySelected =
+                    selectedAppointment?.isManuallySelected === true;
+
                   let backgroundColor, borderColor, circleColor;
-                  
+
                   if (isCurrent) {
                     // Právě upravuje - žlutá
                     backgroundColor = "#fff9e6"; // Light yellow
@@ -825,7 +838,10 @@ export function Step9Appointments() {
             </Stack>
 
             {/* Third Column: Time Slots */}
-            <Stack gap="sm" style={{ flex: "1 1 auto", minWidth: 200 }}>
+            <Stack
+              gap="sm"
+              style={{ flex: "1 1 auto", minWidth: 200, height: "100%" }}
+            >
               {getCurrentAppointment() ? (
                 <>
                   <Text fw={500} size="md">
@@ -846,7 +862,6 @@ export function Step9Appointments() {
                           display: "grid",
                           gridTemplateColumns: "1fr 1fr",
                           gap: "8px",
-                          maxHeight: 400,
                           overflow: "auto",
                         }}
                       >

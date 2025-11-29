@@ -251,7 +251,6 @@ export function Lifestyle() {
             control={control}
             rules={{
               required: "Prosím vyplňte",
-              min: { value: 50, message: "Výška musí být alespoň 50 cm" },
               max: { value: 300, message: "Výška musí být menší než 300 cm" },
             }}
             render={({ field }) => (

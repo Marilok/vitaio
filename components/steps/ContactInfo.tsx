@@ -16,6 +16,7 @@ import { IconUser, IconMail, IconPhone } from "@tabler/icons-react";
 import { FormData } from "@/types/form";
 import { RequiredIndicator } from "../form/RequiredIndicator";
 import appointmentsData from "@/db/appointments.json";
+import { getScreeningPrice } from "@/utils/screeningPrice";
 
 interface AppointmentData {
   id: number;
@@ -56,12 +57,15 @@ export function ContactInfo() {
     (app) => app.type === "optional" && selectedAppointments.includes(app.id)
   );
 
-  // Calculate total price
+  // Calculate total price considering free screenings
   const mandatoryPackagePrice = 10000;
-  const optionalPrice = optionalAppointments.reduce(
-    (sum, app) => sum + (app.price || 0),
-    0
-  );
+  const optionalPrice = optionalAppointments.reduce((sum, app) => {
+    const screeningPrice = getScreeningPrice(app.id, watch() as FormData);
+    if (screeningPrice.isFree) {
+      return sum; // Free screening, don't add to price
+    }
+    return sum + (app.price || 0);
+  }, 0);
   const totalPrice = mandatoryPackagePrice + optionalPrice;
 
   return (
@@ -232,14 +236,30 @@ export function ContactInfo() {
             </Table.Tr>
 
             {/* Optional Appointments */}
-            {optionalAppointments.map((app) => (
-              <Table.Tr key={app.id}>
-                <Table.Td>{app.name}</Table.Td>
-                <Table.Td style={{ textAlign: "right" }}>
-                  {(app.price || 0).toLocaleString("cs-CZ")} Kč
-                </Table.Td>
-              </Table.Tr>
-            ))}
+            {optionalAppointments.map((app) => {
+              const screeningPrice = getScreeningPrice(app.id, watch() as FormData);
+              return (
+                <Table.Tr key={app.id}>
+                  <Table.Td>
+                    {app.name}
+                    {screeningPrice.isFree && (
+                      <Text size="xs" c="dimmed">
+                        {screeningPrice.reason}
+                      </Text>
+                    )}
+                  </Table.Td>
+                  <Table.Td style={{ textAlign: "right" }}>
+                    {screeningPrice.isFree ? (
+                      <Text fw={700} c="green">
+                        ZDARMA
+                      </Text>
+                    ) : (
+                      <Text>{(app.price || 0).toLocaleString("cs-CZ")} Kč</Text>
+                    )}
+                  </Table.Td>
+                </Table.Tr>
+              );
+            })}
           </Table.Tbody>
         </Table>
 

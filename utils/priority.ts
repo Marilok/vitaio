@@ -8,25 +8,40 @@ interface ScreeningEligibility {
   showBreastCancerScreening: boolean;
   showColorectalCancerScreening: boolean;
   showGynecologicalConsultation: boolean;
+  showOccultBloodTest: boolean;
 }
 
 export function getScreeningEligibility(
   gender: "male" | "female",
   age: number | undefined,
-  hasFamilyCancerHistory: boolean | undefined
+  _hasFamilyCancerHistory: boolean | undefined
 ): ScreeningEligibility {
   const patientAge = age || 0;
-  const hasFamilyHistory = hasFamilyCancerHistory || false;
+
+  // Ženy kritéria
+  const womenGynecology = gender === "female" && patientAge >= 15; // 15+ let: gynekolog + cytologie čípku (zdarma)
+  const womenMammography = gender === "female" && patientAge >= 45; // 45+ let: mamograf 1× za 2 roky (zdarma)
+  const womenColorectal = gender === "female" && patientAge >= 50; // 50+ let: TOKS/kolonoskopie (zdarma)
+  const womenLungCancer =
+    gender === "female" && patientAge >= 55 && patientAge <= 74; // 55–74 let: CT plic pokud kuřačka (zdarma)
+
+  // Muži kritéria
+  const menColorectal = gender === "male" && patientAge >= 50; // 50+ let: TOKS/kolonoskopie (zdarma)
+  const menProstate = gender === "male" && patientAge >= 50 && patientAge <= 69; // 50–69 let: PSA screening prostaty (zdarma)
+  const menLungCancer =
+    gender === "male" && patientAge >= 55 && patientAge <= 74; // 55–74 let: CT plic pokud kuřák (zdarma)
+
+  // Test okultního krvácení - 50+ let pro oba pohlaví
+  const occultBloodTest = patientAge >= 50; // 50-54 let: 1x ročně, 55+ let: 2x ročně (zdarma)
 
   return {
-    showProstateScreening:
-      gender === "male" && patientAge >= 50 && patientAge <= 69,
-    showLungCancerScreening: true,
-    showCervicalCancerScreening: gender === "female" && patientAge >= 15,
-    showBreastCancerScreening:
-      gender === "female" && (patientAge >= 45 || hasFamilyHistory),
-    showColorectalCancerScreening: patientAge >= 45 && patientAge <= 74,
+    showProstateScreening: menProstate,
+    showLungCancerScreening: womenLungCancer || menLungCancer,
+    showCervicalCancerScreening: womenGynecology,
+    showBreastCancerScreening: womenMammography,
+    showColorectalCancerScreening: womenColorectal || menColorectal,
     showGynecologicalConsultation: gender === "female",
+    showOccultBloodTest: occultBloodTest,
   };
 }
 

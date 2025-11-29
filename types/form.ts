@@ -41,6 +41,7 @@ export interface FormData {
   hadCervicalCancerScreening?: boolean; // Only for women
   hadBreastCancerScreening?: boolean; // Only for women
   hadColorectalCancerScreening?: boolean;
+  hadOccultBloodTest?: boolean; // Test okultního krvácení
 
   // Step 8 - Appointments
   selectedAppointments: number[];
