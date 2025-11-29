@@ -4,6 +4,7 @@ import { useFormContext, Controller } from "react-hook-form";
 import { Stack, Title, Text, Checkbox, Box } from "@mantine/core";
 import { FormData } from "@/types/form";
 import { getScreeningEligibility } from "@/utils/priority";
+import { calculatePackYears } from "@/utils/packYears";
 
 export function Screening() {
   const {
@@ -15,11 +16,17 @@ export function Screening() {
   const gender = watch("gender");
   const age = watch("age");
   const hasFamilyCancerHistory = watch("hasFamilyCancerHistory");
+  const isSmoker = watch("isSmoker");
+  const cigarettePacksPerWeek = watch("cigarettePacksPerWeek");
+  const smokingYears = watch("smokingYears");
 
   const eligibility = getScreeningEligibility(
     gender,
     age,
-    hasFamilyCancerHistory
+    hasFamilyCancerHistory,
+    isSmoker,
+    cigarettePacksPerWeek,
+    smokingYears
   );
 
   return (
@@ -52,7 +59,7 @@ export function Screening() {
           {
             name: "hadColorectalCancerScreening",
             show: eligibility.showColorectalCancerScreening,
-            label: "Kolonoskopie na střevo",
+            label: "Kolonoskopie",
             description: "50+ let: screening kolorektálního karcinomu",
           },
           {
@@ -74,8 +81,15 @@ export function Screening() {
             name: "hadLungCancerScreening",
             show: eligibility.showLungCancerScreening,
             label: "CT plic (pro kuřáky/bývalé kuřáky)",
-            description:
-              "55–74 let: screening karcinomu plic (≥20 balíčkoroky)",
+            description: (() => {
+              const packYears = calculatePackYears(
+                cigarettePacksPerWeek,
+                smokingYears
+              );
+              return `55–74 let: screening karcinomu plic (≥20 balíčkoroky)${
+                packYears > 0 ? ` - Vaše balíčkoroky: ${packYears}` : ""
+              }`;
+            })(),
           },
         ]
           .filter((screening) => screening.show)

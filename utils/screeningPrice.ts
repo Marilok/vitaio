@@ -5,7 +5,7 @@ import { getScreeningEligibility } from "./priority";
  * Determines if a screening appointment should be free based on:
  * 1. Patient eligibility (age, gender)
  * 2. Whether they have NOT completed the screening in the required interval
- * 
+ *
  * If checkbox is NOT checked in Step 7 = they haven't done it = FREE
  * If checkbox IS checked in Step 7 = they have done it = PAID
  */
@@ -16,7 +16,10 @@ export function getScreeningPrice(
   const eligibility = getScreeningEligibility(
     formData.gender,
     formData.age,
-    formData.hasFamilyCancerHistory
+    formData.hasFamilyCancerHistory,
+    formData.isSmoker,
+    formData.cigarettePacksPerWeek,
+    formData.smokingYears
   );
 
   // Mapping appointment IDs to screening eligibility and form fields
@@ -44,17 +47,19 @@ export function getScreeningPrice(
     5: {
       isEligible: eligibility.showColorectalCancerScreening,
       hasCompleted: formData.hadColorectalCancerScreening || false,
-      reason: formData.gender === "female" 
-        ? "Screeningový program pro ženy 50+ let"
-        : "Screeningový program pro muže 50+ let",
+      reason:
+        formData.gender === "female"
+          ? "Screeningový program pro ženy 50+ let"
+          : "Screeningový program pro muže 50+ let",
     },
     // ID 6 - Test okultního krvácení stolice (TOKS)
     6: {
       isEligible: eligibility.showOccultBloodTest,
       hasCompleted: formData.hadOccultBloodTest || false,
-      reason: (formData.age || 0) >= 55
-        ? "Screeningový program: hrazeno 2× ročně"
-        : "Screeningový program: hrazeno 1× ročně",
+      reason:
+        (formData.age || 0) >= 55
+          ? "Screeningový program: hrazeno 2× ročně"
+          : "Screeningový program: hrazeno 1× ročně",
     },
     // ID 1 - Vyšetření prostaty (prostate screening) - this might not be in optional, check if needed
     1: {
@@ -66,9 +71,8 @@ export function getScreeningPrice(
     2: {
       isEligible: eligibility.showLungCancerScreening,
       hasCompleted: formData.hadLungCancerScreening || false,
-      reason: formData.gender === "female"
-        ? "Screeningový program pro ženy 55–74 let (kuřačky)"
-        : "Screeningový program pro muže 55–74 let (kuřáci)",
+      reason:
+        "Screeningový program pro kuřáky 55–74 let (≥20 balíčkoroky) - hrazeno 1× ročně",
     },
   };
 
@@ -87,4 +91,3 @@ export function getScreeningPrice(
 
   return { isFree: false };
 }
-

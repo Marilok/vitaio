@@ -81,11 +81,17 @@ export function Step8Appointments() {
   const age = watch("age");
   const hasFamilyCancerHistory = watch("hasFamilyCancerHistory");
   const hadProstateScreening = watch("hadProstateScreening");
+  const isSmoker = watch("isSmoker");
+  const cigarettePacksPerWeek = watch("cigarettePacksPerWeek");
+  const smokingYears = watch("smokingYears");
 
   const eligibility = getScreeningEligibility(
     gender,
     age,
-    hasFamilyCancerHistory
+    hasFamilyCancerHistory,
+    isSmoker,
+    cigarettePacksPerWeek,
+    smokingYears
   );
 
   // Determine which mandatory appointments to show and recommend
@@ -138,7 +144,7 @@ export function Step8Appointments() {
     .filter((app) => app.type === "optional")
     .filter((app) => {
       // Apply eligibility filtering based on screening criteria
-      // IDs 2-6 are screening appointments that have specific eligibility criteria
+      // IDs 2-5 are screening appointments that have specific eligibility criteria
       if (app.id === 2) return true; // CT plic - always available
       if (app.id === 3) return eligibility.showCervicalCancerScreening; // Gynekologické vyšetření - only for eligible patients
       if (app.id === 4) return eligibility.showBreastCancerScreening; // Mamografie - only for eligible patients
@@ -183,8 +189,6 @@ export function Step8Appointments() {
       setValue("selectedAppointments", newSelected);
     }
   }, [visibleMandatoryAppointments, setValue, watch]);
-
-  console.log("visibleMandatoryAppointments", visibleMandatoryAppointments);
 
   return (
     <Stack gap="lg" pt="md">
@@ -752,13 +756,17 @@ export function Step8Appointments() {
                     // Base price for mandatory package
                     let totalPrice = 10000;
 
-                    // Add prices of selected optional appointments
+                    // Add prices of selected optional appointments (excluding free screenings)
                     field.value.forEach((id: number) => {
                       const appointment = appointments.find(
                         (a) => a.id === id && a.type === "optional"
                       );
-                      if (appointment?.price) {
-                        totalPrice += appointment.price;
+                      if (appointment) {
+                        // Check if this is a free screening
+                        const screeningPrice = getScreeningPrice(id, formData);
+                        if (!screeningPrice.isFree && appointment.price) {
+                          totalPrice += appointment.price;
+                        }
                       }
                     });
 
