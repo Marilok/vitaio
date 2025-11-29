@@ -150,6 +150,7 @@ export function Step9Appointments() {
               slotId: firstSlot.id.toString(),
               dateTime: firstSlot.timeFrom,
               minutes: firstSlot.minutes,
+              isManuallySelected: false, // Automaticky předvybrané
             });
           }
         });
@@ -569,9 +570,10 @@ export function Step9Appointments() {
                       : null;
 
                   // Check if this examination type has a booked appointment
-                  const isSelected = examinationTypeId !== null && bookedAppointments.some(
+                  const selectedAppointment = bookedAppointments.find(
                     (apt) => apt.examination_type_id === examinationTypeId
                   );
+                  const isSelected = selectedAppointment !== undefined;
                   
                   const isCurrent = getCurrentAppointment() === appointmentName;
                   const examinationType =
