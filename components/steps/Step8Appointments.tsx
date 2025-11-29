@@ -29,13 +29,14 @@ interface AppointmentData {
   description?: string;
   type: string;
   url?: string;
+  price?: number;
 }
 
 const appointments: AppointmentData[] = appointmentsData as AppointmentData[];
 
 // Priority thresholds for appointment recommendations
 const PRIORITY_THRESHOLD_HIGH = 20; // "Silně doporučeno"
-const PRIORITY_THRESHOLD_LOW = 10; // "Doporučeno"
+const PRIORITY_THRESHOLD_LOW = 5; // "Doporučeno"
 
 /**
  * Calculate priority for a specific appointment based on form data
@@ -56,12 +57,15 @@ function getAppointmentPriority(
   if (!screeningKey) return 0;
 
   // Check in mandatory first, then optional
-  if (screenings.mandatory[screeningKey]) {
-    return screenings.mandatory[screeningKey].priority;
+  if (screeningKey in screenings.mandatory) {
+    return screenings.mandatory[
+      screeningKey as keyof typeof screenings.mandatory
+    ].priority;
   }
 
-  if (screenings.optional[screeningKey]) {
-    return screenings.optional[screeningKey].priority;
+  if (screeningKey in screenings.optional) {
+    return screenings.optional[screeningKey as keyof typeof screenings.optional]
+      .priority;
   }
 
   return 0;
@@ -103,12 +107,24 @@ export function Step8Appointments() {
     { id: 26, show: true, recommend: true },
   ];
 
-  // Filter appointments based on eligibility
+  // Filter appointments based on eligibility and gender
   const visibleMandatoryAppointments = appointments
     .filter((app) => app.type === "mandatory")
     .filter((app) => {
       const config = mandatoryAppointmentsConfig.find((c) => c.id === app.id);
-      return config?.show;
+      if (!config?.show) return false;
+
+      // Filter gender-specific mandatory appointments
+      // PSA Test (id: 1) - only for males
+      if (app.id === 1 && gender !== "male") return false;
+
+      // Breast Ultrasound (id: 24) - only for females
+      if (app.id === 24 && gender !== "female") return false;
+
+      // Testicular Ultrasound (id: 23) - only for males
+      if (app.id === 23 && gender !== "male") return false;
+
+      return true;
     })
     .map((app) => ({
       ...app,
@@ -189,6 +205,9 @@ export function Step8Appointments() {
                           Povinné
                         </Badge>
                       </Group>
+                      <Text size="xl" fw={600} c="blue" mb="sm">
+                        10 000 Kč
+                      </Text>
                     </Box>
                     <Checkbox checked={true} disabled size="md" />
                   </Group>
@@ -235,12 +254,6 @@ export function Step8Appointments() {
                         Doporučeno
                       </Badge>
                     );
-                  } else {
-                    priorityBadge = (
-                      <Badge size="sm" variant="light" color="mou-blue">
-                        /Volitelné
-                      </Badge>
-                    );
                   }
 
                   return (
@@ -280,16 +293,7 @@ export function Step8Appointments() {
                           field.onChange(newValue);
                         }}
                       >
-                        <Box
-                          style={{
-                            position: "absolute",
-                            top: -12,
-                            left: 8,
-                            zIndex: 50,
-                          }}
-                        >
-                          {priorityBadge}
-                        </Box>
+                        <Box>{priorityBadge}</Box>
                         <Group
                           justify="space-between"
                           align="flex-start"
@@ -299,6 +303,11 @@ export function Step8Appointments() {
                             <Text fw={500} size="md" mb="xs">
                               {appointment.name}
                             </Text>
+                            {appointment.price && (
+                              <Text size="lg" fw={600} c="blue">
+                                {appointment.price.toLocaleString("cs-CZ")} Kč
+                              </Text>
+                            )}
                           </Box>
                           <Checkbox
                             checked={isSelected}
@@ -339,6 +348,56 @@ export function Step8Appointments() {
                 })}
               </Grid>
             </Box>
+
+            {/* Total Price Section */}
+            <Card
+              shadow="md"
+              padding="lg"
+              radius="md"
+              withBorder
+              style={{
+                borderColor: "var(--mantine-color-orange-6)",
+                borderWidth: 2,
+                backgroundColor: "var(--mantine-color-orange-0)",
+              }}
+            >
+              <Group justify="space-between" align="center">
+                <Box>
+                  <Text size="xl" fw={600} mb="xs">
+                    Celková cena vyšetření
+                  </Text>
+                  <Text size="sm" c="dimmed">
+                    Základní preventivní balíček a{" "}
+                    {
+                      field.value.filter((id: number) => {
+                        const app = appointments.find((a) => a.id === id);
+                        return app?.type === "optional";
+                      }).length
+                    }{" "}
+                    vybraných vyšetření
+                  </Text>
+                </Box>
+                <Text size="2rem" fw={700} c="orange">
+                  {(() => {
+                    // Base price for mandatory package
+                    let totalPrice = 10000;
+
+                    // Add prices of selected optional appointments
+                    field.value.forEach((id: number) => {
+                      const appointment = appointments.find(
+                        (a) => a.id === id && a.type === "optional"
+                      );
+                      if (appointment?.price) {
+                        totalPrice += appointment.price;
+                      }
+                    });
+
+                    return totalPrice.toLocaleString("cs-CZ");
+                  })()}{" "}
+                  Kč
+                </Text>
+              </Group>
+            </Card>
           </Stack>
         )}
       />

@@ -449,3 +449,4 @@ Možná vylepšení prioritizační logiky:
 - **BMI Calculation**: `utils/bmi.ts`
 - **Form Data Types**: `types/form.ts`
 
+

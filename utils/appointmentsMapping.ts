@@ -155,15 +155,30 @@ export function transformAppointmentsToScreenings(
     }
   };
 
-  // Set order to true for all selected appointments
+  // Set order to true for ALL mandatory appointments based on gender
+  Object.keys(result.mandatory).forEach((key) => {
+    // Gender-specific mandatory screenings
+    if (key === "testicularUltrasound" || key === "psaTest") {
+      // Only for males
+      if (formData.gender === "male") {
+        result.mandatory[key].order = true;
+      }
+    } else if (key === "breastUltrasound") {
+      // Only for females
+      if (formData.gender === "female") {
+        result.mandatory[key].order = true;
+      }
+    } else {
+      // All other mandatory screenings for everyone
+      result.mandatory[key].order = true;
+    }
+  });
+
+  // Set order to true for all selected optional appointments
   selectedAppointmentIds.forEach((id) => {
     const screeningKey = APPOINTMENT_TO_SCREENING_MAP[id];
     if (screeningKey) {
-      // Check in mandatory first
-      if (result.mandatory[screeningKey]) {
-        result.mandatory[screeningKey].order = true;
-      }
-      // Then check in optional
+      // Only check in optional (mandatory are already set above)
       if (result.optional[screeningKey]) {
         result.optional[screeningKey].order = true;
       }

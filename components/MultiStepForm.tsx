@@ -70,6 +70,8 @@ function HealthAssessmentForm({
   onComplete: (data: FormData) => void;
 }) {
   const methods = useForm<FormData>({
+    mode: "onChange",
+    reValidateMode: "onBlur",
     defaultValues: {
       gender: "male",
       age: undefined,

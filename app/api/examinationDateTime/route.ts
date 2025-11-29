@@ -104,17 +104,24 @@ function getCategoryPriority(category: ExaminationCategory | null): number {
 }
 
 /**
- * Kontroluje, zda se dva sloty časově překrývají
+ * Kontroluje, zda jsou dva sloty v konfliktu (překrývají se nebo jsou příliš blízko)
+ * Mezi sloty musí být minimálně 30 minut mezera
  */
-function doSlotsOverlap(slot1: Slot, slot2: Slot): boolean {
+function areSlotsConflicting(slot1: Slot, slot2: Slot): boolean {
+  const BUFFER_MINUTES = 30; // Minimální mezera mezi sloty
+  
   const start1 = new Date(slot1.dateTime);
   const end1 = new Date(start1.getTime() + slot1.minutes * 60000);
   
   const start2 = new Date(slot2.dateTime);
   const end2 = new Date(start2.getTime() + slot2.minutes * 60000);
   
-  // Sloty se překrývají, pokud se jejich časové intervaly protínají
-  return start1 < end2 && end1 > start2;
+  // Přidáme buffer k oběma slotům
+  const end1WithBuffer = new Date(end1.getTime() + BUFFER_MINUTES * 60000);
+  const end2WithBuffer = new Date(end2.getTime() + BUFFER_MINUTES * 60000);
+  
+  // Sloty jsou v konfliktu, pokud se jejich časové intervaly (včetně bufferu) protínají
+  return start1 < end2WithBuffer && end1WithBuffer > start2;
 }
 
 export async function POST(request: NextRequest) {
@@ -251,13 +258,13 @@ export async function POST(request: NextRequest) {
         // Pokud už máme doporučený slot, přestaň hledat
         if (nonOverlappingSlots.length >= 1) break;
 
-        // Kontrola, zda se tento slot nepřekrývá s již vybranými sloty
-        const overlaps = allSelectedSlots.some(selectedSlot => 
-          doSlotsOverlap(candidateSlot, selectedSlot)
+        // Kontrola, zda se tento slot nepřekrývá nebo není příliš blízko již vybraným slotům
+        const hasConflict = allSelectedSlots.some(selectedSlot => 
+          areSlotsConflicting(candidateSlot, selectedSlot)
         );
 
-        if (!overlaps) {
-          // Tento slot nevytváří konflikt, přidej ho
+        if (!hasConflict) {
+          // Tento slot nevytváří konflikt (nepřekrývá se a má dostatečnou mezeru), přidej ho
           nonOverlappingSlots.push({
             id: candidateSlot.id,
             timeFrom: candidateSlot.dateTime,
