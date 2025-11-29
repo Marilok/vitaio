@@ -5,7 +5,6 @@ export default function AssessmentPage() {
   return (
     <Container
       style={{
-        minHeight: "100vh",
         minWidth: "100%",
         display: "flex",
         alignItems: "center",
