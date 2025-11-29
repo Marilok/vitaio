@@ -21,7 +21,10 @@ import { calculatePriorityScore } from "@/utils/priority";
 const TOTAL_STEPS = 10;
 
 // Define which fields to validate for each step
-const getFieldsForStep = (step: number): (keyof FormData)[] => {
+const getFieldsForStep = (
+  step: number,
+  formValues?: Partial<FormData>
+): (keyof FormData)[] => {
   switch (step) {
     case 0:
       return ["gender", "age"];
@@ -31,9 +34,26 @@ const getFieldsForStep = (step: number): (keyof FormData)[] => {
       return []; // No required fields in step 3 (medications)
     case 3:
       return ["hasGynecologist"]; // Step 4 - only for women
-    case 4:
-      return ["height", "weight", "weeklyExerciseMinutes"]; // Step 5
-    // Add more cases for other steps
+    case 4: {
+      // Step 5 - Lifestyle: dynamically add fields based on checkbox state
+      const fields: (keyof FormData)[] = [
+        "height",
+        "weight",
+        "weeklyExerciseMinutes",
+      ];
+
+      // If user is a smoker, add smoking-related fields
+      if (formValues?.isSmoker) {
+        fields.push("cigarettePacksPerWeek", "smokingYears");
+      }
+
+      // If user drinks alcohol, add drinking-related fields
+      if (formValues?.drinksAlcohol) {
+        fields.push("beersPerWeek", "drinkingYears");
+      }
+
+      return fields;
+    }
     default:
       return [];
   }
@@ -99,7 +119,7 @@ export function MultiStepForm() {
     goToStep,
   } = useMultiStepForm({
     totalSteps: TOTAL_STEPS,
-    getFieldsForStep,
+    getFieldsForStep: (step: number) => getFieldsForStep(step, getValues()),
     trigger,
     shouldSkipStep,
   });

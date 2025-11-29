@@ -176,12 +176,17 @@ export function Lifestyle() {
               name="cigarettePacksPerWeek"
               control={control}
               rules={{
+                required: "Počet krabiček je povinný",
                 min: { value: 0, message: "Minimální hodnota je 0" },
               }}
               render={({ field }) => (
                 <NumberInput
                   {...field}
-                  label="Krabičky cigaret týdně"
+                  label={
+                    <Fragment>
+                      Krabičky cigaret týdně <RequiredIndicator />
+                    </Fragment>
+                  }
                   placeholder="Počet krabiček"
                   min={0}
                   decimalScale={1}
@@ -194,12 +199,17 @@ export function Lifestyle() {
               name="smokingYears"
               control={control}
               rules={{
+                required: "Počet let je povinný",
                 min: { value: 0, message: "Minimální hodnota je 0 let" },
               }}
               render={({ field }) => (
                 <NumberInput
                   {...field}
-                  label="Jak dlouho kouříte (roky)"
+                  label={
+                    <Fragment>
+                      Jak dlouho kouříte (roky) <RequiredIndicator />
+                    </Fragment>
+                  }
                   placeholder="Počet let"
                   min={0}
                   error={errors.smokingYears?.message}
@@ -237,12 +247,17 @@ export function Lifestyle() {
               name="beersPerWeek"
               control={control}
               rules={{
+                required: "Počet piv je povinný",
                 min: { value: 0, message: "Minimální hodnota je 0" },
               }}
               render={({ field }) => (
                 <NumberInput
                   {...field}
-                  label="Piv týdně"
+                  label={
+                    <Fragment>
+                      Piv týdně <RequiredIndicator />
+                    </Fragment>
+                  }
                   placeholder="Počet piv"
                   min={0}
                   decimalScale={1}
@@ -255,12 +270,17 @@ export function Lifestyle() {
               name="drinkingYears"
               control={control}
               rules={{
+                required: "Počet let je povinný",
                 min: { value: 0, message: "Minimální hodnota je 0 let" },
               }}
               render={({ field }) => (
                 <NumberInput
                   {...field}
-                  label="Jak dlouho pijete (roky)"
+                  label={
+                    <Fragment>
+                      Jak dlouho pijete (roky) <RequiredIndicator />
+                    </Fragment>
+                  }
                   placeholder="Počet let"
                   min={0}
                   error={errors.drinkingYears?.message}
