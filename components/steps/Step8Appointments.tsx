@@ -6,7 +6,6 @@ import {
   Stack,
   Title,
   Text,
-  Grid,
   Card,
   Checkbox,
   Group,
@@ -260,7 +259,7 @@ export function Step8Appointments() {
             )}
 
             {/* Examinations Section */}
-            {examinationAppointments.length > 0 && (
+            {/* {examinationAppointments.length > 0 && (
               <Box>
                 <Title order={4} mb="0">
                   Vyšetření
@@ -304,7 +303,7 @@ export function Step8Appointments() {
                   })}
                 </Box>
               </Box>
-            )}
+            )} */}
 
             {/* Consultations Section */}
             {consultationAppointments.length > 0 && (
