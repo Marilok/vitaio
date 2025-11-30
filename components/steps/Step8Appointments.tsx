@@ -17,7 +17,7 @@ import {
   Button,
   Alert,
 } from "@mantine/core";
-import { IconBrain, IconExternalLink, IconSearch } from "@tabler/icons-react";
+import { IconExternalLink, IconSparkles } from "@tabler/icons-react";
 import { FormData } from "@/types/form";
 import appointmentsData from "@/db/appointments.json";
 import { getScreeningEligibility } from "@/utils/priority";
@@ -267,13 +267,12 @@ export function Step8Appointments() {
             <Button
               onClick={quickSearch}
               loading={isSearching}
-              leftSection={<IconSearch size={16} />}
               size="md"
               variant="filled"
               color="orange"
               disabled={!searchQuery.trim()}
             >
-              Vyhledat doporučená vyšetření
+              Chci pomoci s rozhodnutím
             </Button>
           </Group>
 
@@ -284,27 +283,48 @@ export function Step8Appointments() {
           )}
 
           {searchResults !== null && (
-            <Card withBorder padding="md" radius="md">
-              <Text fw={500} size="md" mb="sm">
-                <IconBrain size={16} /> Výsledky AI analýzy:
-              </Text>
-              <Box
-                component="pre"
+            <Card
+              withBorder
+              padding="lg"
+              radius="md"
+              style={{
+                borderColor: "var(--mantine-color-orange-4)",
+                backgroundColor: "var(--mantine-color-orange-0)",
+              }}
+            >
+              <Group gap="xs" mb="md" align="center">
+                <Box
+                  style={{
+                    background:
+                      "linear-gradient(135deg, var(--mantine-color-orange-6) 0%, var(--mantine-color-orange-4) 100%)",
+                    borderRadius: "8px",
+                    padding: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <IconSparkles size={20} color="white" />
+                </Box>
+                <Text fw={600} size="lg" c="orange.7">
+                  AI Analýza vašeho problému
+                </Text>
+              </Group>
+              <Text
+                size="md"
                 style={{
-                  whiteSpace: "pre-wrap",
-                  fontSize: "0.875rem",
-                  color: "var(--mantine-color-dimmed)",
-                  margin: 0,
+                  lineHeight: 1.6,
+                  color: "var(--mantine-color-gray-8)",
                 }}
               >
                 {searchResults.ai_analysis}
-              </Box>
+              </Text>
             </Card>
           )}
         </Stack>
       </Box>
 
-      <Box>
+      <Box mt="xl">
         <Title order={3} mb="xs">
           🧑‍⚕️ Doporučené vyšetření pro mě
         </Title>
