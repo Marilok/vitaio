@@ -103,11 +103,8 @@ export function ContactInfo() {
           render={({ field }) => (
             <TextInput
               {...field}
-              label={
-                <>
-                  Jméno <RequiredIndicator />
-                </>
-              }
+              required
+              label={"Jméno"}
               placeholder="Jan"
               error={errors.firstName?.message}
               size="md"
@@ -129,11 +126,7 @@ export function ContactInfo() {
           render={({ field }) => (
             <TextInput
               {...field}
-              label={
-                <>
-                  Příjmení <RequiredIndicator />
-                </>
-              }
+              label="Příjmení"
               placeholder="Novák"
               error={errors.lastName?.message}
               size="md"
@@ -157,11 +150,8 @@ export function ContactInfo() {
           render={({ field }) => (
             <TextInput
               {...field}
-              label={
-                <>
-                  E-mail <RequiredIndicator />
-                </>
-              }
+              label="E-mail"
+              required
               placeholder="vas.email@example.com"
               error={errors.email?.message}
               size="md"
@@ -192,8 +182,9 @@ export function ContactInfo() {
                 }
               }}
               size="md"
-              
               allowDeselect={false}
+              leftSection={<IconPhone size={16} />}
+              style={{ width: "120px" }}
             />
             <Controller
               name="phone"
@@ -209,21 +200,61 @@ export function ContactInfo() {
               render={({ field }) => (
                 <TextInput
                   {...field}
-                  placeholder="123456789"
+                  placeholder="777 777 777"
                   error={errors.phone?.message}
                   size="md"
                   type="tel"
                   style={{ flex: 1 }}
-                  leftSection={<IconPhone size={16} />}
                   onChange={(event) => {
-                    const phoneNumber = event.currentTarget.value.replace(
-                      /^\+\d{3}/,
+                    // Remove all non-digits
+                    const digitsOnly = event.currentTarget.value.replace(
+                      /\D/g,
                       ""
                     );
-                    const fullPhone = `${countryCode}${phoneNumber}`;
+
+                    // Format with spaces: XXX XXX XXX
+                    let formattedPhone = digitsOnly;
+                    if (digitsOnly.length > 3) {
+                      formattedPhone =
+                        digitsOnly.slice(0, 3) + " " + digitsOnly.slice(3);
+                    }
+                    if (digitsOnly.length > 6) {
+                      formattedPhone =
+                        digitsOnly.slice(0, 3) +
+                        " " +
+                        digitsOnly.slice(3, 6) +
+                        " " +
+                        digitsOnly.slice(6, 9);
+                    }
+
+                    // Update the display value
+                    event.currentTarget.value = formattedPhone;
+
+                    // Store the full phone number with country code
+                    const fullPhone = `${countryCode}${digitsOnly}`;
                     field.onChange(fullPhone);
                   }}
-                  value={field.value?.replace(/^\+\d{3}/, "") || ""}
+                  value={(() => {
+                    const phoneWithoutPrefix =
+                      field.value?.replace(/^\+\d{3}/, "") || "";
+                    // Format the display value with spaces
+                    if (phoneWithoutPrefix.length > 6) {
+                      return (
+                        phoneWithoutPrefix.slice(0, 3) +
+                        " " +
+                        phoneWithoutPrefix.slice(3, 6) +
+                        " " +
+                        phoneWithoutPrefix.slice(6)
+                      );
+                    } else if (phoneWithoutPrefix.length > 3) {
+                      return (
+                        phoneWithoutPrefix.slice(0, 3) +
+                        " " +
+                        phoneWithoutPrefix.slice(3)
+                      );
+                    }
+                    return phoneWithoutPrefix;
+                  })()}
                 />
               )}
             />
