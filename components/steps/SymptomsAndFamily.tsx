@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormContext, Controller } from "react-hook-form";
-import { Stack, Title, Text, Checkbox, Box } from "@mantine/core";
+import { Stack, Title, Text, Checkbox, Box, Textarea } from "@mantine/core";
 import { FormData } from "@/types/form";
 
 export function SymptomsAndFamily() {
@@ -93,6 +93,27 @@ export function SymptomsAndFamily() {
           )}
         />
       )}
+
+      <Box mt="xl">
+        <Title order={3} mb="xs">
+          🔍 Mám konkrétní zdravotní problém
+        </Title>
+        <Text size="sm" c="dimmed" mb="md">
+          Popište svůj zdravotní problém a my vám doporučíme vhodná vyšetření.
+        </Text>
+
+        <Stack gap="md">
+          <Textarea
+            label="Můj problém"
+            placeholder="Vložte lékařskou zprávu, nebo vyhledejte pomocí dotazu"
+            value="vyšel mi pozitivní test na okultní krvácení a chtěl bych poradit které vyšetření bych si měl vybrat"
+            minRows={3}
+            maxRows={5}
+            size="md"
+            disabled={true}
+          />
+        </Stack>
+      </Box>
     </Stack>
   );
 }

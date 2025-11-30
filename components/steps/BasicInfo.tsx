@@ -9,10 +9,18 @@ import {
   SegmentedControl,
   Box,
   Group,
+  Textarea,
+  Button,
+  Card,
 } from "@mantine/core";
 import { FormData } from "@/types/form";
 import { RequiredIndicator } from "@/components/form/RequiredIndicator";
-import { IconMars, IconVenus, IconCalendar } from "@tabler/icons-react";
+import {
+  IconMars,
+  IconVenus,
+  IconCalendar,
+  IconSparkles,
+} from "@tabler/icons-react";
 
 export function BasicInfo() {
   const {

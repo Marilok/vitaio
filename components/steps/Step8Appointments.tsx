@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormContext, Controller } from "react-hook-form";
-import React, { useState } from "react";
+import React from "react";
 import {
   Stack,
   Title,
@@ -11,11 +11,7 @@ import {
   Group,
   Box,
   Badge,
-  Textarea,
-  Button,
-  Alert,
 } from "@mantine/core";
-import { IconSparkles } from "@tabler/icons-react";
 
 import { AppointmentCard } from "./AppointmentCard";
 import { FormData } from "@/types/form";
@@ -26,6 +22,7 @@ import {
   transformAppointmentsToScreenings,
 } from "@/utils/appointmentsMapping";
 import { getScreeningPrice } from "@/utils/screeningPrice";
+import { IconSparkles } from "@tabler/icons-react";
 
 interface AppointmentData {
   id: number;
@@ -76,21 +73,8 @@ function getAppointmentPriority(
   return 0;
 }
 
-interface QuickSearchResult {
-  query: string;
-  results: {
-    id: number;
-    name: string;
-    description: string;
-    price: number;
-    url: string;
-  }[];
-  ai_analysis: string;
-}
-
 export function Step8Appointments() {
   const { control, watch, setValue } = useFormContext<FormData>();
-  const [searchQuery, setSearchQuery] = useState("");
 
   const formData = watch(); // Get all form data for priority calculation
   const gender = watch("gender");
@@ -209,76 +193,7 @@ export function Step8Appointments() {
 
   return (
     <Stack gap="lg" pt="md">
-      {/* Quick Search Section */}
       <Box>
-        <Title order={3} mb="xs">
-          🔍 Mám konkrétní zdravotní problém
-        </Title>
-        <Text size="sm" c="dimmed" mb="md">
-          Popište svůj zdravotní problém a my vám doporučíme vhodná vyšetření.
-        </Text>
-
-        <Stack gap="md">
-          <Textarea
-            label="Můj problém"
-            placeholder="Vložte lékařskou zprávu, nebo vyhledejte pomocí dotazu"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.currentTarget.value)}
-            minRows={3}
-            maxRows={5}
-            size="md"
-            disabled={true}
-          />
-
-          <Group>
-            <Button size="md" variant="filled" color="orange" disabled={true}>
-              Chci pomoci s rozhodnutím
-            </Button>
-          </Group>
-
-          {
-            <Card
-              withBorder
-              padding="lg"
-              radius="md"
-              style={{
-                borderColor: "var(--mantine-color-orange-4)",
-                backgroundColor: "var(--mantine-color-orange-0)",
-              }}
-            >
-              <Group gap="xs" mb="md" align="center">
-                <Box
-                  style={{
-                    background:
-                      "linear-gradient(135deg, var(--mantine-color-orange-6) 0%, var(--mantine-color-orange-4) 100%)",
-                    borderRadius: "8px",
-                    padding: "8px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <IconSparkles size={20} color="white" />
-                </Box>
-                <Text fw={600} size="lg" c="orange.7">
-                  AI Analýza vašeho problému
-                </Text>
-              </Group>
-              <Text
-                size="md"
-                style={{
-                  lineHeight: 1.6,
-                  color: "var(--mantine-color-gray-8)",
-                }}
-              >
-                AI Analýza vašeho problému
-              </Text>
-            </Card>
-          }
-        </Stack>
-      </Box>
-
-      <Box mt="xl">
         <Title order={3} mb="xs">
           🧑‍⚕️ Doporučené vyšetření pro mě
         </Title>
@@ -286,6 +201,55 @@ export function Step8Appointments() {
           Na základě vyplněných informací jsme navrhli následující vyšetření:
         </Text>
       </Box>
+
+      <Card
+        withBorder
+        padding="lg"
+        radius="md"
+        style={{
+          borderColor: "var(--mantine-color-orange-4)",
+          backgroundColor: "var(--mantine-color-orange-0)",
+        }}
+      >
+        <Group gap="xs" mb="md" align="center">
+          <Box
+            style={{
+              background:
+                "linear-gradient(135deg, var(--mantine-color-orange-6) 0%, var(--mantine-color-orange-4) 100%)",
+              borderRadius: "8px",
+              padding: "8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <IconSparkles size={20} color="white" />
+          </Box>
+          <Text fw={600} size="lg" c="orange.7">
+            AI Analýza vašeho problému
+          </Text>
+        </Group>
+        <Text
+          size="md"
+          style={{
+            lineHeight: 1.6,
+            color: "var(--mantine-color-gray-8)",
+          }}
+        >
+          Pozitivní test na okultní krvácení ve stolici může být známkou různých
+          stavů, včetně problémů s trávicím traktem, jako jsou polypy, zánětlivá
+          onemocnění střev, nebo dokonce rakovina. Vzhledem k vašim symptómům je
+          důležité podstoupit další vyšetření, aby se určila přesná příčina.
+          Doporučená vyšetření mohou zahrnovat kolonoskopii, která umožňuje
+          přímý pohled na vnitřní povrch tlustého střeva a odhalení případných
+          abnormalit. Dále by mohla být vhodná konzultace s gastroenterologem,
+          který se specializuje na onemocnění trávicího systému. Krevní testy
+          mohou také pomoci odhalit další související problémy, jako jsou záněty
+          nebo anémie způsobená chronickým krvácením. Je velmi důležité co
+          nejdříve vyhledat lékaře, který vám na základě vašich symptómů a
+          zdravotní historie doporučí vhodné další kroky.
+        </Text>
+      </Card>
 
       <Controller
         name="selectedAppointments"
