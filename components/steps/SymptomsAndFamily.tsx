@@ -96,17 +96,20 @@ export function SymptomsAndFamily() {
 
       <Box mt="xl">
         <Title order={3} mb="xs">
-          🔍 Mám konkrétní zdravotní problém
+          🔍 Zdravotní problémy
         </Title>
         <Text size="sm" c="dimmed" mb="md">
-          Popište svůj zdravotní problém a my vám doporučíme vhodná vyšetření.
+          Trápí Vás nějaký zdravotní problém? Popište ho prosím co nejpodrobněji
+          (od kdy Vás trápí, jak se projevuje, co Vám řekl lékař...), pomůže nám
+          to vyhodnotit a doporučit vhodné prohlídky.
         </Text>
 
         <Stack gap="md">
           <Textarea
-            label="Můj problém"
+            label="Můj zdravotní problém"
+            description="(ve formuláři je příklad odpovědi pacienta, kvůli API tokenům je pole neaktivní)"
             placeholder="Vložte lékařskou zprávu, nebo vyhledejte pomocí dotazu"
-            value="vyšel mi pozitivní test na okultní krvácení a chtěl bych poradit které vyšetření bych si měl vybrat"
+            value="nedávno mi vyšel pozitivní test na okultní krvácení a chtěl bych poradit které vyšetření bych si měl vybrat"
             minRows={3}
             maxRows={5}
             size="md"

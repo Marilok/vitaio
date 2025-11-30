@@ -114,7 +114,7 @@ export async function POST(request: NextRequest) {
           endDate.getMinutes(),
         ],
         title: appointment.appointmentName,
-        description: appointment.description || "Health Screening Appointment",
+        description: appointment.description || "Vyšetření",
         attendees: [{ name: body.name, email: body.email }],
         status: "CONFIRMED",
         location: body.location || "MOÚ, Pekařská 53, 656 91 Brno",
