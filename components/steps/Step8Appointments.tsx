@@ -91,45 +91,11 @@ interface QuickSearchResult {
 export function Step8Appointments() {
   const { control, watch, setValue } = useFormContext<FormData>();
   const [searchQuery, setSearchQuery] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
-  const [searchResults, setSearchResults] = useState<QuickSearchResult | null>(
-    null
-  );
-  const [searchError, setSearchError] = useState<string | null>(null);
 
   const formData = watch(); // Get all form data for priority calculation
   const gender = watch("gender");
   const age = watch("age");
 
-  const quickSearch = async () => {
-    if (!searchQuery.trim()) return;
-
-    setIsSearching(true);
-    setSearchError(null);
-    setSearchResults(null);
-
-    try {
-      const response = await fetch(
-        `http://localhost:8000/api/quick-search?query=${encodeURIComponent(
-          searchQuery
-        )}&limit=5`
-      );
-
-      if (!response.ok) {
-        throw new Error("Chyba při vyhledávání");
-      }
-
-      const results = await response.json();
-      setSearchResults(results);
-    } catch (error) {
-      console.error("Error during quick search:", error);
-      setSearchError(
-        "Nepodařilo se vyhledat vyšetření. Zkuste to prosím znovu."
-      );
-    } finally {
-      setIsSearching(false);
-    }
-  };
   const hasFamilyCancerHistory = watch("hasFamilyCancerHistory");
   const hadProstateScreening = watch("hadProstateScreening");
   const isSmoker = watch("isSmoker");
@@ -261,28 +227,16 @@ export function Step8Appointments() {
             minRows={3}
             maxRows={5}
             size="md"
+            disabled={true}
           />
 
           <Group>
-            <Button
-              onClick={quickSearch}
-              loading={isSearching}
-              size="md"
-              variant="filled"
-              color="orange"
-              disabled={!searchQuery.trim()}
-            >
+            <Button size="md" variant="filled" color="orange" disabled={true}>
               Chci pomoci s rozhodnutím
             </Button>
           </Group>
 
-          {searchError && (
-            <Alert color="red" title="Chyba">
-              {searchError}
-            </Alert>
-          )}
-
-          {searchResults !== null && (
+          {
             <Card
               withBorder
               padding="lg"
@@ -317,10 +271,10 @@ export function Step8Appointments() {
                   color: "var(--mantine-color-gray-8)",
                 }}
               >
-                {searchResults.ai_analysis}
+                AI Analýza vašeho problému
               </Text>
             </Card>
-          )}
+          }
         </Stack>
       </Box>
 
